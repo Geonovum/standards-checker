@@ -5,7 +5,7 @@ export type { Rulesets } from './spectral';
 export type { Spec, SpecLinter, SpecInput, SpecResponseMapper, Severity, Diagnostic, GeometryTypes, DocumentTypes } from './types';
 export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from './util';
 export { APPLICATION_JSON_TYPE, APPLICATION_GEO_JSON_TYPE, APPLICATION_OPENAPI_JSON_3_0_TYPE } from './constants';
-export type { OpenAPIV3_0 } from './openapi-types';
+export type { OpenAPIV3_0 } from '../engine/openapi-types';
 
 // React components and router
 export { default as App } from './App';

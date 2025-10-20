@@ -7,3 +7,4 @@ export type {
   Spec,
 } from './types';
 export { mapSeverity } from './types';
+export * from './functions';
