@@ -11,9 +11,6 @@ importers:
       '@codemirror/lang-json':
         specifier: ^6.0.2
         version: 6.0.2
-      '@codemirror/language':
-        specifier: ^6.11.3
-        version: 6.11.3
       '@codemirror/lint':
         specifier: ^6.9.0
         version: 6.9.0
@@ -24,26 +21,17 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       '@stoplight/path':
-        specifier: ^1.3.2
-        version: 1.3.2
+        specifier: ^2.0.1
+        version: 2.0.1
       '@stoplight/spectral-core':
         specifier: ^1.20.0
         version: 1.20.0
-      '@stoplight/spectral-formats':
-        specifier: ^1.8.2
-        version: 1.8.2
-      '@stoplight/spectral-functions':
-        specifier: ^1.10.1
-        version: 1.10.1
       '@stoplight/spectral-parsers':
         specifier: ^1.0.5
         version: 1.0.5
       '@stoplight/spectral-ref-resolver':
         specifier: ^1.0.5
         version: 1.0.5
-      '@stoplight/spectral-rulesets':
-        specifier: ^1.22.0
-        version: 1.22.0
       '@stoplight/types':
         specifier: ^14.1.1
         version: 14.1.1
@@ -63,8 +51,8 @@ importers:
         specifier: ^0.8.1
         version: 0.8.1
       lucide-react:
-        specifier: ^0.545.0
-        version: 0.545.0(react@19.2.0)
+        specifier: ^0.546.0
+        version: 0.546.0(react@19.2.0)
       nimma:
         specifier: ^0.7.2
         version: 0.7.2
@@ -101,9 +89,6 @@ importers:
         version: 5.9.3
 
 packages:
-
-  '@asyncapi/specs@6.10.0':
-    resolution: {integrity: sha512-vB5oKLsdrLUORIZ5BXortZTlVyGWWMC1Nud/0LtgxQ3Yn2738HigAD6EVqScvpPsDUI/bcLVsYEXN4dtXQHVng==}
 
   '@babel/runtime@7.28.4':
     resolution: {integrity: sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==}
@@ -195,16 +180,12 @@ packages:
     resolution: {integrity: sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==}
     engines: {node: '>=8'}
 
+  '@stoplight/path@2.0.1':
+    resolution: {integrity: sha512-GI3+T25Szj0iT1J/uMQgSiUEX36gM5veI/qJxb28k2t6lQ2Vt2Fa66ItTUTSiGdd5IdG23PSTWhMQz6LgqjdcQ==}
+    engines: {node: ^12.20 || >=14.13}
+
   '@stoplight/spectral-core@1.20.0':
     resolution: {integrity: sha512-5hBP81nCC1zn1hJXL/uxPNRKNcB+/pEIHgCjPRpl/w/qy9yC9ver04tw1W0l/PMiv0UeB5dYgozXVQ4j5a6QQQ==}
-    engines: {node: ^16.20 || ^18.18 || >= 20.17}
-
-  '@stoplight/spectral-formats@1.8.2':
-    resolution: {integrity: sha512-c06HB+rOKfe7tuxg0IdKDEA5XnjL2vrn/m/OVIIxtINtBzphZrOgtRn7epQ5bQF5SWp84Ue7UJWaGgDwVngMFw==}
-    engines: {node: ^16.20 || ^18.18 || >= 20.17}
-
-  '@stoplight/spectral-functions@1.10.1':
-    resolution: {integrity: sha512-obu8ZfoHxELOapfGsCJixKZXZcffjg+lSoNuttpmUFuDzVLT3VmH8QkPXfOGOL5Pz80BR35ClNAToDkdnYIURg==}
     engines: {node: ^16.20 || ^18.18 || >= 20.17}
 
   '@stoplight/spectral-parsers@1.0.5':
@@ -213,10 +194,6 @@ packages:
 
   '@stoplight/spectral-ref-resolver@1.0.5':
     resolution: {integrity: sha512-gj3TieX5a9zMW29z3mBlAtDOCgN3GEc1VgZnCVlr5irmR4Qi5LuECuFItAq4pTn5Zu+sW5bqutsCH7D4PkpyAA==}
-    engines: {node: ^16.20 || ^18.18 || >= 20.17}
-
-  '@stoplight/spectral-rulesets@1.22.0':
-    resolution: {integrity: sha512-l2EY2jiKKLsvnPfGy+pXC0LeGsbJzcQP5G/AojHgf+cwN//VYxW1Wvv4WKFx/CLmLxc42mJYF2juwWofjWYNIQ==}
     engines: {node: ^16.20 || ^18.18 || >= 20.17}
 
   '@stoplight/spectral-runtime@1.1.4':
@@ -293,14 +270,6 @@ packages:
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
-
-  ajv-draft-04@1.0.0:
-    resolution: {integrity: sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw==}
-    peerDependencies:
-      ajv: ^8.5.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
 
   ajv-errors@3.0.0:
     resolution: {integrity: sha512-V3wD15YHfHz6y0KdhYFjyy9vWtEVALT9UrxfN3zqlI6dMioHnJrqOYfyPKol3oqrnCM9uwkcdCwkJ0WUcbLMTQ==}
@@ -650,8 +619,8 @@ packages:
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
-  lucide-react@0.545.0:
-    resolution: {integrity: sha512-7r1/yUuflQDSt4f1bpn5ZAocyIxcTyVyBBChSVtBKn5M+392cPmI5YJMWOJKk/HUWGm5wg83chlAZtCcGbEZtw==}
+  lucide-react@0.546.0:
+    resolution: {integrity: sha512-Z94u6fKT43lKeYHiVyvyR8fT7pwCzDu7RyMPpTvh054+xahSgj4HFQ+NmflvzdXsoAjYGdCguGaFKYuvq0ThCQ==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -926,10 +895,6 @@ packages:
 
 snapshots:
 
-  '@asyncapi/specs@6.10.0':
-    dependencies:
-      '@types/json-schema': 7.0.15
-
   '@babel/runtime@7.28.4': {}
 
   '@codemirror/autocomplete@6.19.0':
@@ -1059,6 +1024,8 @@ snapshots:
 
   '@stoplight/path@1.3.2': {}
 
+  '@stoplight/path@2.0.1': {}
+
   '@stoplight/spectral-core@1.20.0':
     dependencies:
       '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
@@ -1085,31 +1052,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@stoplight/spectral-formats@1.8.2':
-    dependencies:
-      '@stoplight/json': 3.21.7
-      '@stoplight/spectral-core': 1.20.0
-      '@types/json-schema': 7.0.15
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@stoplight/spectral-functions@1.10.1':
-    dependencies:
-      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
-      '@stoplight/json': 3.21.7
-      '@stoplight/spectral-core': 1.20.0
-      '@stoplight/spectral-formats': 1.8.2
-      '@stoplight/spectral-runtime': 1.1.4
-      ajv: 8.17.1
-      ajv-draft-04: 1.0.0(ajv@8.17.1)
-      ajv-errors: 3.0.0(ajv@8.17.1)
-      ajv-formats: 2.1.1(ajv@8.17.1)
-      lodash: 4.17.21
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - encoding
-
   '@stoplight/spectral-parsers@1.0.5':
     dependencies:
       '@stoplight/json': 3.21.7
@@ -1123,26 +1065,6 @@ snapshots:
       '@stoplight/json-ref-resolver': 3.1.6
       '@stoplight/spectral-runtime': 1.1.4
       dependency-graph: 0.11.0
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - encoding
-
-  '@stoplight/spectral-rulesets@1.22.0':
-    dependencies:
-      '@asyncapi/specs': 6.10.0
-      '@stoplight/better-ajv-errors': 1.0.3(ajv@8.17.1)
-      '@stoplight/json': 3.21.7
-      '@stoplight/spectral-core': 1.20.0
-      '@stoplight/spectral-formats': 1.8.2
-      '@stoplight/spectral-functions': 1.10.1
-      '@stoplight/spectral-runtime': 1.1.4
-      '@stoplight/types': 13.20.0
-      '@types/json-schema': 7.0.15
-      ajv: 8.17.1
-      ajv-formats: 2.1.1(ajv@8.17.1)
-      json-schema-traverse: 1.0.0
-      leven: 3.1.0
-      lodash: 4.17.21
       tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
@@ -1241,10 +1163,6 @@ snapshots:
   abort-controller@3.0.0:
     dependencies:
       event-target-shim: 5.0.1
-
-  ajv-draft-04@1.0.0(ajv@8.17.1):
-    optionalDependencies:
-      ajv: 8.17.1
 
   ajv-errors@3.0.0(ajv@8.17.1):
     dependencies:
@@ -1686,7 +1604,7 @@ snapshots:
 
   lodash@4.17.21: {}
 
-  lucide-react@0.545.0(react@19.2.0):
+  lucide-react@0.546.0(react@19.2.0):
     dependencies:
       react: 19.2.0
 
