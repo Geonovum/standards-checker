@@ -1,6 +1,6 @@
 {
   "name": "@geonovum/standards-checker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Standards checker engine for OGC specifications with CLI, API, and UI support",
   "main": "./dist/index.js",
