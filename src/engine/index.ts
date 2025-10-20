@@ -5,5 +5,7 @@ export type {
   ValidateOptions,
   ValidateUrlOptions,
   Spec,
+  GeometryTypes,
+  DocumentTypes
 } from './types';
 export { mapSeverity } from './types';
