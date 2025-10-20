@@ -109,3 +109,8 @@ export enum GeometryTypes {
   MULTIPRISM = 'MultiPrism',
   GEOMETRYCOLLECTION = 'GeometryCollection',
 }
+
+export enum DocumentTypes {
+  FEATURE = 'Feature',
+  FEATURECOLLECTION = 'FeatureCollection',
+}
