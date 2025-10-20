@@ -30,3 +30,22 @@ export type Diagnostic = CodemirrorDiagnostic & {
 
 // Re-export for convenience
 export type { RulesetDefinition };
+
+export enum GeometryTypes {
+  POINT = 'Point',
+  MULTIPOINT = 'MultiPoint',
+  LINESTRING = 'LineString',
+  MULTILINESTRING = 'MultiLineString',
+  POLYGON = 'Polygon',
+  MULTIPOLYGON = 'MultiPolygon',
+  POLYHEDRON = 'Polyhedron',
+  MULTIPOLYHEDRON = 'MultiPolyhedron',
+  PRISM = 'Prism',
+  MULTIPRISM = 'MultiPrism',
+  GEOMETRYCOLLECTION = 'GeometryCollection',
+}
+
+export enum DocumentTypes {
+  FEATURE = 'Feature',
+  FEATURECOLLECTION = 'FeatureCollection',
+}
