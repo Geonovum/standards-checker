@@ -1,5 +1,5 @@
 /**
- * @geonovum/ogc-checker-core
+ * @geonovum/standards-checker
  *
  * Core validation engine for OGC specifications
  * Supports CLI, programmatic API, and UI integration

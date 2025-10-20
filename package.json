@@ -5,9 +5,6 @@
   "description": "Standards checker engine for OGC specifications with CLI, API, and UI support",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "standards-checker": "./dist/cli/index.js"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
