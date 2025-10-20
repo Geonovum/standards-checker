@@ -1,9 +1,7 @@
 import mergeAllOf from 'json-schema-merge-allof';
 import nimma from 'nimma';
 import { last, omit } from 'ramda';
-// Import OpenAPI types from core
-// Re-export common utilities from core
-export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '@geonovum/standards-checker';
+export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '../shared/util';
 // Spec-specific utilities
 export const errorMessage = (message, path) => [{ message, path }];
 export const errorStr = (error, path) => path.length > 0 ? `${error} (schema path: "${path.map(error => error.replace('/', '\\/')).join('/')}")` : error;

@@ -1,7 +1,6 @@
 import type { Diagnostic } from './types';
-export declare const groupBy: <T>(arr: T[], key: (i: T) => string) => Record<string, T[]>;
-export declare const handleResponse: (response: Response, uri: string) => Promise<string>;
-export declare const handleResponseJson: (response: Response, uri: string) => Promise<any>;
+import { formatDocument, handleResponse, handleResponseJson } from '../shared/util';
+export declare const groupBy: <T>(arr: T[], key: (item: T) => string) => Record<string, T[]>;
 export declare const groupBySource: (diagnostics: Diagnostic[]) => Record<string, Diagnostic[]>;
-export declare const formatDocument: (content: string) => string;
+export { handleResponse, handleResponseJson, formatDocument };
 //# sourceMappingURL=util.d.ts.map

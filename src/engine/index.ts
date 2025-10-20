@@ -8,3 +8,4 @@ export type {
 } from './types';
 export { mapSeverity } from './types';
 export * from './functions';
+export * from './util';

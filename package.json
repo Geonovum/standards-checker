@@ -21,6 +21,14 @@
       "types": "./dist/engine/functions/index.d.ts",
       "import": "./dist/engine/functions/index.js"
     },
+    "./engine/util": {
+      "types": "./dist/engine/util.d.ts",
+      "import": "./dist/engine/util.js"
+    },
+    "./shared/util": {
+      "types": "./dist/shared/util.d.ts",
+      "import": "./dist/shared/util.js"
+    },
     "./ui": {
       "types": "./dist/ui/index.d.ts",
       "import": "./dist/ui/index.js"

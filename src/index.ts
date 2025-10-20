@@ -13,5 +13,6 @@ export type {
   ValidateUrlOptions,
   Spec as EngineSpec,
 } from './engine/types';
+export { GeometryTypes, DocumentTypes } from './ui/types';
 export * from './engine/functions';
 export * from './ui';

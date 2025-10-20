@@ -1,13 +1,10 @@
-import { OpenAPIV3_0 } from '@geonovum/standards-checker';
+import { OpenAPIV3_0 } from './openapi-types';
 import type { IFunctionResult, RulesetFunctionContext } from '@stoplight/spectral-core';
 import mergeAllOf from 'json-schema-merge-allof';
 import nimma from 'nimma';
 import { last, omit } from 'ramda';
 
-// Import OpenAPI types from core
-
-// Re-export common utilities from core
-export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '@geonovum/standards-checker';
+export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '../shared/util';
 
 // Spec-specific utilities
 export const errorMessage = (message: string, path?: (string | number)[]): IFunctionResult[] => [{ message, path }];

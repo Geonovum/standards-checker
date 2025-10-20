@@ -1,6 +1,6 @@
-import { OpenAPIV3_0 } from '@geonovum/standards-checker';
+import { OpenAPIV3_0 } from './openapi-types';
 import type { IFunctionResult, RulesetFunctionContext } from '@stoplight/spectral-core';
-export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '@geonovum/standards-checker';
+export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '../shared/util';
 export declare const errorMessage: (message: string, path?: (string | number)[]) => IFunctionResult[];
 export declare const errorStr: (error: string, path: string[]) => string;
 /**
