@@ -5,7 +5,6 @@
  * Supports CLI, programmatic API, and UI integration
  */
 
-// Engine exports (headless validation)
 export { validate, validateUrl, formatJson } from './engine/validator';
 export type {
   ValidationResult,
@@ -15,5 +14,4 @@ export type {
   Spec as EngineSpec,
 } from './engine/types';
 export * from './engine/functions';
-// UI exports (for React integration)
 export * from './ui';
