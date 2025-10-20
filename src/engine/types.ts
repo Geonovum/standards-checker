@@ -95,3 +95,17 @@ export const mapSeverity = (severity: DiagnosticSeverity): 'error' | 'warning' |
       return 'error';
   }
 };
+
+export enum GeometryTypes {
+  POINT = 'Point',
+  MULTIPOINT = 'MultiPoint',
+  LINESTRING = 'LineString',
+  MULTILINESTRING = 'MultiLineString',
+  POLYGON = 'Polygon',
+  MULTIPOLYGON = 'MultiPolygon',
+  POLYHEDRON = 'Polyhedron',
+  MULTIPOLYHEDRON = 'MultiPolyhedron',
+  PRISM = 'Prism',
+  MULTIPRISM = 'MultiPrism',
+  GEOMETRYCOLLECTION = 'GeometryCollection',
+}
