@@ -26,13 +26,17 @@
       "types": "./dist/shared/util.d.ts",
       "import": "./dist/shared/util.js"
     },
+    "./ui/index.css": {
+      "default": "./src/ui/index.css"
+    },
     "./ui": {
       "types": "./dist/ui/index.d.ts",
       "import": "./dist/ui/index.js"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "src/ui/index.css"
   ],
   "scripts": {
     "dev": "tsc --watch",
