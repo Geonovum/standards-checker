@@ -49,3 +49,11 @@ export enum DocumentTypes {
   FEATURE = 'Feature',
   FEATURECOLLECTION = 'FeatureCollection',
 }
+
+export type Position2D = [number, number];
+
+export type Position3D = [number, number, number];
+
+export type Position = Position2D | Position3D;
+
+export type Coordinates = Position | Coordinates[];
