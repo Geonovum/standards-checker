@@ -14,6 +14,6 @@ export type {
   ValidateUrlOptions,
   Spec as EngineSpec,
 } from './engine/types';
-
+export * from './engine/functions';
 // UI exports (for React integration)
 export * from './ui';
