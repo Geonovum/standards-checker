@@ -1,0 +1,1 @@
+{"version":3,"file":"spectral.d.ts","sourceRoot":"","sources":["../../src/ui/spectral.ts"],"names":[],"mappings":"AACA,OAAO,EAAY,iBAAiB,EAAY,MAAM,0BAA0B,CAAC;AAGjF,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,uBAAuB,CAAC;AAGvD,MAAM,WAAW,QAAQ;IACvB,CAAC,SAAS,EAAE,MAAM,GAAG,iBAAiB,CAAC;CACxC;AAeD,eAAO,MAAM,cAAc,GAAI,MAAM,MAAM,EAAE,SAAS,iBAAiB,KAAG,SAmBzE,CAAC"}
