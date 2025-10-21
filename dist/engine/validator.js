@@ -1,6 +1,6 @@
 import * as SpectralCore from '@stoplight/spectral-core';
 import * as Parsers from '@stoplight/spectral-parsers';
-import { mapSeverity } from './types';
+import { mapSeverity } from './types.js';
 const spectralCore = (SpectralCore.default ??
     SpectralCore);
 const parsers = (Parsers.default ??

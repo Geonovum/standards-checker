@@ -1,4 +1,4 @@
-export { validate, validateUrl, formatJson } from './validator';
-export { mapSeverity } from './types';
-export * from './functions';
-export * from './util';
+export { validate, validateUrl, formatJson } from './validator.js';
+export { mapSeverity } from './types.js';
+export * from './functions/index.js';
+export * from './util.js';

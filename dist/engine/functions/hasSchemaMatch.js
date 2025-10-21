@@ -2,8 +2,8 @@ import { resolveHttp } from '@stoplight/json-ref-readers';
 import { extname } from '@stoplight/path';
 import * as Parsers from '@stoplight/spectral-parsers';
 import { Resolver } from '@stoplight/spectral-ref-resolver';
-import { errorMessage, matchSchema } from '../util';
-import { APPLICATION_JSON_TYPE } from '../../shared/constants';
+import { errorMessage, matchSchema } from '../util.js';
+import { APPLICATION_JSON_TYPE } from '../../shared/constants.js';
 const parsers = (Parsers.default ??
     Parsers);
 const { Json, Yaml } = parsers;

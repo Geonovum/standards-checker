@@ -7,8 +7,8 @@ import { AlertCircle, SquareArrowOutUpRight } from 'lucide-react';
 import { isEmpty, pick } from 'ramda';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { useChecker } from '../store';
-import { groupBySource } from '../util';
+import { useChecker } from '../store.js';
+import { groupBySource } from '../util.js';
 const EXTENSIONS = [json(), linter(jsonParseLinter()), lintGutter()];
 const CodeEditor = ({ spec }) => {
     const { content, setContent, linters, setLinters, checking, setChecking, error, setError } = useChecker(useShallow(state => pick(['content', 'setContent', 'linters', 'setLinters', 'checking', 'setChecking', 'error', 'setError'], state)));

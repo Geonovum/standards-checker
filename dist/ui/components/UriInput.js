@@ -2,8 +2,8 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { pick } from 'ramda';
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { useChecker } from '../store';
-import { formatDocument, handleResponse } from '../util';
+import { useChecker } from '../store.js';
+import { formatDocument, handleResponse } from '../util.js';
 const UriInput = ({ spec }) => {
     const [uri, setUri] = useState('');
     const [fetching, setFetching] = useState(false);

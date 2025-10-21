@@ -1,7 +1,7 @@
 import mergeAllOf from 'json-schema-merge-allof';
 import nimma from 'nimma';
 import { last, omit } from 'ramda';
-export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '../shared/util';
+export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from '../shared/util.js';
 // Spec-specific utilities
 export const errorMessage = (message, path) => [{ message, path }];
 export const errorStr = (error, path) => path.length > 0 ? `${error} (schema path: "${path.map(error => error.replace('/', '\\/')).join('/')}")` : error;

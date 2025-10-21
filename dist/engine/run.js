@@ -1,7 +1,7 @@
 import * as SpectralCore from '@stoplight/spectral-core';
 import * as Parsers from '@stoplight/spectral-parsers';
 import * as SpectralFormats from '@stoplight/spectral-formats';
-import { mapSeverity } from './types';
+import { mapSeverity } from './types.js';
 const spectralCore = SpectralCore.default ?? SpectralCore;
 const parsers = Parsers.default ?? Parsers;
 const spectralFormats = (SpectralFormats.default ??
@@ -37,7 +37,7 @@ const normalizeRulesets = (plugin) => {
         for (const [key, value] of Object.entries(plugin.rulesets)) {
             const ruleset = toRulesetDefinition(value);
             if (ruleset) {
-                map[key] = withResolvedFormats(ruleset, `${plugin.id}:${key}`);
+                map[key] = withResolvedFormats(ruleset);
             }
         }
     }
@@ -45,7 +45,7 @@ const normalizeRulesets = (plugin) => {
         const rulesArray = Array.isArray(plugin.rules) ? plugin.rules : [plugin.rules];
         const ruleset = rulesArray.map(toRulesetDefinition).find(Boolean);
         if (ruleset) {
-            map[plugin.id] = withResolvedFormats(ruleset, plugin.id);
+            map[plugin.id] = withResolvedFormats(ruleset);
         }
     }
     const ids = Object.keys(map);
@@ -64,7 +64,7 @@ const resolveFormat = (format) => {
     }
     return undefined;
 };
-const withResolvedFormats = (ruleset, id) => {
+const withResolvedFormats = (ruleset) => {
     if (!ruleset.formats) {
         return ruleset;
     }

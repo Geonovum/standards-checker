@@ -1,5 +1,5 @@
 import { equals, isEmpty, omit } from 'ramda';
-import { errorMessage, matchSchema } from '../util';
+import { errorMessage, matchSchema } from '../util.js';
 const applyDefaults = (parameter) => {
     const style = parameter.style ?? (['query', 'cookie'].includes(parameter.in) ? 'form' : 'simple');
     const extProps = Object.keys(parameter).filter(key => /^x-/.test(key));

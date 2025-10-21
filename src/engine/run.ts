@@ -69,7 +69,7 @@ const normalizeRulesets = (plugin: RulesetPlugin): NormalizedRulesets => {
       const ruleset = toRulesetDefinition(value);
 
       if (ruleset) {
-        map[key] = withResolvedFormats(ruleset, `${plugin.id}:${key}`);
+        map[key] = withResolvedFormats(ruleset);
       }
     }
   }
@@ -79,7 +79,7 @@ const normalizeRulesets = (plugin: RulesetPlugin): NormalizedRulesets => {
     const ruleset = rulesArray.map(toRulesetDefinition).find(Boolean);
 
     if (ruleset) {
-      map[plugin.id] = withResolvedFormats(ruleset, plugin.id);
+      map[plugin.id] = withResolvedFormats(ruleset);
     }
   }
 
@@ -106,7 +106,7 @@ const resolveFormat = (format: unknown) => {
   return undefined;
 };
 
-const withResolvedFormats = (ruleset: RulesetDefinition, id: string): RulesetDefinition => {
+const withResolvedFormats = (ruleset: RulesetDefinition): RulesetDefinition => {
   if (!ruleset.formats) {
     return ruleset;
   }

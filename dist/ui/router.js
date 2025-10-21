@@ -1,6 +1,6 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import { createHashRouter, Navigate } from 'react-router-dom';
-import App from './App';
+import App from './App.js';
 export const createRouter = (specs) => {
     return createHashRouter([
         {
