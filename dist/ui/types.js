@@ -6,11 +6,16 @@ export var GeometryTypes;
     GeometryTypes["MULTILINESTRING"] = "MultiLineString";
     GeometryTypes["POLYGON"] = "Polygon";
     GeometryTypes["MULTIPOLYGON"] = "MultiPolygon";
+    GeometryTypes["GEOMETRYCOLLECTION"] = "GeometryCollection";
     GeometryTypes["POLYHEDRON"] = "Polyhedron";
     GeometryTypes["MULTIPOLYHEDRON"] = "MultiPolyhedron";
     GeometryTypes["PRISM"] = "Prism";
     GeometryTypes["MULTIPRISM"] = "MultiPrism";
-    GeometryTypes["GEOMETRYCOLLECTION"] = "GeometryCollection";
+    GeometryTypes["CIRCULARSTRING"] = "CircularString";
+    GeometryTypes["COMPOUNDCURVE"] = "CompoundCurve";
+    GeometryTypes["CURVEPOLYGON"] = "CurvePolygon";
+    GeometryTypes["MULTICURVE"] = "MultiCurve";
+    GeometryTypes["MULTISURFACE"] = "MultiSurface";
 })(GeometryTypes || (GeometryTypes = {}));
 export var DocumentTypes;
 (function (DocumentTypes) {

@@ -15,6 +15,7 @@ export interface SchemaFunctionResult {
 export type SchemaFunction = (input: unknown) => SchemaFunctionResult;
 
 const ajv = new Ajv({
+  discriminator: true,
   loadSchema: async uri => {
     const response = await fetch(uri);
     return response.json();
@@ -47,12 +48,10 @@ export const remoteSchema: RulesetFunction<unknown, Options> = async (input, opt
       return betterAjvErrors(schema, validate.errors, {
         propertyPath: context.path,
         targetValue: input,
-      }).map(
-        ({ suggestion, error, path: errorPath }: { suggestion?: string; error: string; path: string }) => ({
-          message: suggestion !== void 0 ? `${error}. ${suggestion}` : error,
-          path: [...context.path, ...(errorPath !== '' ? errorPath.replace(/^\//, '').split('/') : [])],
-        })
-      );
+      }).map(({ suggestion, error, path: errorPath }: { suggestion?: string; error: string; path: string }) => ({
+        message: suggestion !== void 0 ? `${error}. ${suggestion}` : error,
+        path: [...context.path, ...(errorPath !== '' ? errorPath.replace(/^\//, '').split('/') : [])],
+      }));
     }
   });
 };

@@ -38,11 +38,16 @@ export enum GeometryTypes {
   MULTILINESTRING = 'MultiLineString',
   POLYGON = 'Polygon',
   MULTIPOLYGON = 'MultiPolygon',
+  GEOMETRYCOLLECTION = 'GeometryCollection',
   POLYHEDRON = 'Polyhedron',
   MULTIPOLYHEDRON = 'MultiPolyhedron',
   PRISM = 'Prism',
   MULTIPRISM = 'MultiPrism',
-  GEOMETRYCOLLECTION = 'GeometryCollection',
+  CIRCULARSTRING = 'CircularString',
+  COMPOUNDCURVE = 'CompoundCurve',
+  CURVEPOLYGON = 'CurvePolygon',
+  MULTICURVE = 'MultiCurve',
+  MULTISURFACE = 'MultiSurface',
 }
 
 export enum DocumentTypes {
