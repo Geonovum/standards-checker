@@ -1,7 +1,7 @@
 import betterAjvErrors from '@stoplight/better-ajv-errors';
-import { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
+import type { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
 import addFormats from 'ajv-formats';
-import Ajv, { AnySchemaObject } from 'ajv/dist/2020';
+import Ajv, { AnySchemaObject } from 'ajv/dist/2020.js';
 
 export interface Options {
   schema: AnySchemaObject | SchemaFunction;

@@ -1,4 +1,4 @@
-import { RulesetFunction } from '@stoplight/spectral-core';
+import type { RulesetFunction } from '@stoplight/spectral-core';
 export interface Options {
     anyOf?: string[];
 }

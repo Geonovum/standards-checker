@@ -1,4 +1,4 @@
-import { RulesetDefinition } from '@stoplight/spectral-core';
+import type { RulesetDefinition } from '@stoplight/spectral-core';
 import type { Extension } from '@uiw/react-codemirror';
 export interface Rulesets {
     [confClass: string]: RulesetDefinition;

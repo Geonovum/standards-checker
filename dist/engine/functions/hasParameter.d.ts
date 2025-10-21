@@ -1,4 +1,4 @@
-import { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
+import type { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
 import { OpenAPIV3_0 } from '../openapi-types';
 export interface Options {
     spec: OpenAPIV3_0.ParameterObject;

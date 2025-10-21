@@ -1,10 +1,18 @@
 import { resolveHttp } from '@stoplight/json-ref-readers';
 import { extname } from '@stoplight/path';
-import { RulesetFunction } from '@stoplight/spectral-core';
-import { Json, Yaml } from '@stoplight/spectral-parsers';
+import type { RulesetFunction } from '@stoplight/spectral-core';
+import * as Parsers from '@stoplight/spectral-parsers';
 import { Resolver } from '@stoplight/spectral-ref-resolver';
 import { errorMessage, matchSchema } from '../util';
-import { APPLICATION_JSON_TYPE, OpenAPIV3_0 } from '@geonovum/standards-checker';
+import type { OpenAPIV3_0 } from '../openapi-types';
+import { APPLICATION_JSON_TYPE } from '../../shared/constants';
+
+type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
+
+const parsers =
+  ((Parsers as unknown as { default?: SpectralParsersModule }).default ??
+    (Parsers as unknown as SpectralParsersModule));
+const { Json, Yaml } = parsers;
 
 export interface Options {
   schema?: OpenAPIV3_0.SchemaObject;

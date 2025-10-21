@@ -1,4 +1,4 @@
-import { RulesetFunction } from '@stoplight/spectral-core';
+import type { RulesetFunction } from '@stoplight/spectral-core';
 import { OpenAPIV3_0 } from '../openapi-types';
 
 export interface Options {

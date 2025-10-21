@@ -1,4 +1,4 @@
-import { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
+import type { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
 import { equals, isEmpty, omit } from 'ramda';
 import { OpenAPIV3_0 } from '../openapi-types';
 import { errorMessage, matchSchema } from '../util';

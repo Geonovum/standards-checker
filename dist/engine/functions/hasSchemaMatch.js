@@ -1,9 +1,12 @@
 import { resolveHttp } from '@stoplight/json-ref-readers';
 import { extname } from '@stoplight/path';
-import { Json, Yaml } from '@stoplight/spectral-parsers';
+import * as Parsers from '@stoplight/spectral-parsers';
 import { Resolver } from '@stoplight/spectral-ref-resolver';
 import { errorMessage, matchSchema } from '../util';
-import { APPLICATION_JSON_TYPE } from '@geonovum/standards-checker';
+import { APPLICATION_JSON_TYPE } from '../../shared/constants';
+const parsers = (Parsers.default ??
+    Parsers);
+const { Json, Yaml } = parsers;
 const resolver = new Resolver({
     resolvers: {
         http: { resolve: resolveHttp },

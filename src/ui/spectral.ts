@@ -1,9 +1,23 @@
 import { linter } from '@codemirror/lint';
-import { Document, RulesetDefinition, Spectral } from '@stoplight/spectral-core';
-import { Json } from '@stoplight/spectral-parsers';
+import * as SpectralCore from '@stoplight/spectral-core';
+import type { RulesetDefinition } from '@stoplight/spectral-core';
+import * as Parsers from '@stoplight/spectral-parsers';
 import { DiagnosticSeverity } from '@stoplight/types';
 import type { Extension } from '@uiw/react-codemirror';
 import type { Severity } from './types';
+
+type SpectralCoreModule = typeof import('@stoplight/spectral-core');
+type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
+
+const spectralCore =
+  ((SpectralCore as unknown as { default?: SpectralCoreModule }).default ??
+    (SpectralCore as unknown as SpectralCoreModule));
+const parsers =
+  ((Parsers as unknown as { default?: SpectralParsersModule }).default ??
+    (Parsers as unknown as SpectralParsersModule));
+
+const { Document, Spectral } = spectralCore;
+const { Json } = parsers;
 
 export interface Rulesets {
   [confClass: string]: RulesetDefinition;

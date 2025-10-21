@@ -1,5 +1,5 @@
-import { RulesetFunction } from '@stoplight/spectral-core';
-import { OpenAPIV3_0 } from '@geonovum/standards-checker';
+import type { RulesetFunction } from '@stoplight/spectral-core';
+import type { OpenAPIV3_0 } from '../openapi-types';
 export interface Options {
     schema?: OpenAPIV3_0.SchemaObject;
     schemaUri?: string;

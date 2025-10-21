@@ -1,6 +1,12 @@
-import { Document, Spectral } from '@stoplight/spectral-core';
-import { Json } from '@stoplight/spectral-parsers';
+import * as SpectralCore from '@stoplight/spectral-core';
+import * as Parsers from '@stoplight/spectral-parsers';
 import { mapSeverity } from './types';
+const spectralCore = (SpectralCore.default ??
+    SpectralCore);
+const parsers = (Parsers.default ??
+    Parsers);
+const { Document, Spectral } = spectralCore;
+const { Json } = parsers;
 /**
  * Validate JSON content against rulesets
  */

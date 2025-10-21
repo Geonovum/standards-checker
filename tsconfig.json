@@ -8,6 +8,7 @@
     "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "types": ["node"],
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

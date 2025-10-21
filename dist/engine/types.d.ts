@@ -84,6 +84,38 @@ export interface Spec {
     }>;
 }
 /**
+ * Plugin definition for the CLI runner
+ */
+export interface RulesetPlugin {
+    /** Identifier for the plugin */
+    id: string;
+    /** Collection of rule definitions */
+    rules?: RulesetDefinition | RulesetDefinition[];
+    /** Optional map of rule sets keyed by identifier */
+    rulesets?: Record<string, RulesetDefinition>;
+    /** Custom spectral functions */
+    funcs?: Record<string, unknown>;
+    /** Optional preprocessing hook */
+    preprocess?: (doc: unknown, ctx: RunContext) => unknown | Promise<unknown>;
+    /** Optional postprocessing hook */
+    postprocess?: (result: ValidationResult, ctx: RunContext) => ValidationResult | Promise<ValidationResult | void> | void;
+}
+export type RulesetPluginIndex = Record<string, RulesetPlugin>;
+export type RunFormat = 'table' | 'json' | 'sarif' | 'junit';
+export type FailLevel = 'none' | 'warn' | 'error';
+export interface RunOptions {
+    format?: RunFormat | string;
+    failOn?: FailLevel | string;
+}
+export interface RunResult {
+    exitCode: number;
+    output: string;
+    result: ValidationResult;
+}
+export interface RunContext {
+    plugin: RulesetPlugin;
+}
+/**
  * Map DiagnosticSeverity to string
  */
 export declare const mapSeverity: (severity: DiagnosticSeverity) => "error" | "warning" | "info" | "hint";

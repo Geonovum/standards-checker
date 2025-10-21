@@ -1,6 +1,6 @@
 import betterAjvErrors from '@stoplight/better-ajv-errors';
 import addFormats from 'ajv-formats';
-import Ajv from 'ajv/dist/2020';
+import Ajv from 'ajv/dist/2020.js';
 const ajv = new Ajv({
     loadSchema: async (uri) => {
         const response = await fetch(uri);

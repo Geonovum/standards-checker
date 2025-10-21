@@ -1,7 +1,20 @@
-import { Document, Spectral } from '@stoplight/spectral-core';
-import { Json } from '@stoplight/spectral-parsers';
+import * as SpectralCore from '@stoplight/spectral-core';
+import * as Parsers from '@stoplight/spectral-parsers';
 import type { ValidateOptions, ValidateUrlOptions, ValidationResult, ValidationDiagnostic } from './types';
 import { mapSeverity } from './types';
+
+type SpectralCoreModule = typeof import('@stoplight/spectral-core');
+type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
+
+const spectralCore =
+  ((SpectralCore as unknown as { default?: SpectralCoreModule }).default ??
+    (SpectralCore as unknown as SpectralCoreModule));
+const parsers =
+  ((Parsers as unknown as { default?: SpectralParsersModule }).default ??
+    (Parsers as unknown as SpectralParsersModule));
+
+const { Document, Spectral } = spectralCore;
+const { Json } = parsers;
 
 /**
  * Validate JSON content against rulesets

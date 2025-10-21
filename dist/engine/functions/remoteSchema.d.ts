@@ -1,5 +1,5 @@
-import { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
-import { AnySchemaObject } from 'ajv/dist/2020';
+import type { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
+import { AnySchemaObject } from 'ajv/dist/2020.js';
 export interface Options {
     schema: AnySchemaObject | SchemaFunction;
 }
