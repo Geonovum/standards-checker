@@ -1,6 +1,5 @@
 import type { Extension } from '@uiw/react-codemirror';
 import type { Diagnostic as CodemirrorDiagnostic } from '@codemirror/lint';
-import type { RulesetDefinition } from '@stoplight/spectral-core';
 export interface Spec {
     name: string;
     slug: string;
@@ -21,31 +20,4 @@ export type Severity = 'hint' | 'info' | 'warning' | 'error';
 export type Diagnostic = CodemirrorDiagnostic & {
     documentationUrl?: string;
 };
-export type { RulesetDefinition };
-export declare enum GeometryTypes {
-    POINT = "Point",
-    MULTIPOINT = "MultiPoint",
-    LINESTRING = "LineString",
-    MULTILINESTRING = "MultiLineString",
-    POLYGON = "Polygon",
-    MULTIPOLYGON = "MultiPolygon",
-    GEOMETRYCOLLECTION = "GeometryCollection",
-    POLYHEDRON = "Polyhedron",
-    MULTIPOLYHEDRON = "MultiPolyhedron",
-    PRISM = "Prism",
-    MULTIPRISM = "MultiPrism",
-    CIRCULARSTRING = "CircularString",
-    COMPOUNDCURVE = "CompoundCurve",
-    CURVEPOLYGON = "CurvePolygon",
-    MULTICURVE = "MultiCurve",
-    MULTISURFACE = "MultiSurface"
-}
-export declare enum DocumentTypes {
-    FEATURE = "Feature",
-    FEATURECOLLECTION = "FeatureCollection"
-}
-export type Position2D = [number, number];
-export type Position3D = [number, number, number];
-export type Position = Position2D | Position3D;
-export type Coordinates = Position | Coordinates[];
 //# sourceMappingURL=types.d.ts.map

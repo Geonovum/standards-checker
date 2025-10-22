@@ -10,7 +10,7 @@ import type { RulesetPlugin, RulesetPluginIndex } from '../engine/types';
 import * as Engine from '../index.js';
 
 interface RunCommandOptions {
-  rule: string;
+  ruleset: string;
   rulesetIndex?: string;
   rulesetDir?: string;
   json?: string;
@@ -22,7 +22,7 @@ const program = new Command().name('standards-checker');
 
 program
   .command('validate')
-  .requiredOption('--rule <name>', "Ruleset naam, bv. 'json-fg'")
+  .requiredOption('--ruleset <name>', "Ruleset naam, bv. 'json-fg'")
   .option('--ruleset-index <file>', 'Pad naar index.js van de ruleset')
   .option('--ruleset-dir <dir>', 'Map met index.js van de ruleset')
   .option('--json <file>', "JSON bestand of '-' voor stdin", '-')
@@ -33,7 +33,7 @@ program
       const indexPath = await resolveIndexPath(options);
       const mod = await importModule(indexPath);
       const plugins = extractPluginIndex(mod, indexPath);
-      const plugin = selectPlugin(plugins, options.rule);
+      const plugin = selectPlugin(plugins, options.ruleset);
       const document = await readJsonInput(options.json ?? '-');
       const runResult = await invokeEngine(document, plugin, options);
 

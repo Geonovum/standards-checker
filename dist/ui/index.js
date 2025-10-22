@@ -1,7 +1,6 @@
 // Store and utilities
 export { useChecker } from './store.js';
 export { spectralLinter } from './spectral.js';
-export { GeometryTypes, DocumentTypes } from './types.js';
 export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from './util.js';
 export { APPLICATION_JSON_TYPE, APPLICATION_GEO_JSON_TYPE, APPLICATION_OPENAPI_JSON_3_0_TYPE } from '../shared/constants.js';
 // React components and router
