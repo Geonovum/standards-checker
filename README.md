@@ -110,11 +110,6 @@ export const jsonFgSpec: Spec = {
     name: linterName(confClass),
     linter: spectralLinter(linterName(confClass), ruleset),
   })),
-  strings: {
-    noViolations: 'Geen fouten gevonden.',
-    showInEditor: 'Toon in editor',
-    documentation: 'Documentatie',
-  },
 };
 ```
 
@@ -137,11 +132,23 @@ createRoot(document.getElementById('root')!).render(
 );
 ```
 
+To override the default UI copy, pass strings as the second argument:
+
+```tsx
+const router = createRouter(specs, {
+  strings: {
+    noViolations: 'Geen fouten gevonden.',
+    showInEditor: 'Toon in editor',
+    documentation: 'Documentatie',
+  },
+});
+```
+
 A complete example of this flow lives in the **ogc-checker** repository.
 
 ### UI text overrides
 
-Specs can optionally provide a `strings` object to override UI copy:
+Override any of these keys from `DEFAULT_UI_STRINGS`:
 
 | Key | Description |
 | --- | ----------- |
@@ -151,6 +158,8 @@ Specs can optionally provide a `strings` object to override UI copy:
 | `lintingErrorsSummary` | Summary shown when diagnostics exist (`{count}` placeholder is replaced with the number of issues) |
 | `showInEditor` | Label for the “jump to location” button in the diagnostics list |
 | `documentation` | Label for the documentation link |
+
+Default values are available via `DEFAULT_UI_STRINGS`.
 
 ---
 

@@ -1,8 +1,10 @@
 import { createHashRouter, Navigate } from 'react-router-dom';
 import App from './App';
-import type { Spec } from './types';
+import type { Spec, UiConfig } from './types';
 
-export const createRouter = (specs: Spec[]) => {
+export const createRouter = (specs: Spec[], config: UiConfig = {}) => {
+  const { strings } = config;
+
   return createHashRouter([
     {
       path: '/',
@@ -10,7 +12,7 @@ export const createRouter = (specs: Spec[]) => {
     },
     ...specs.map(spec => ({
       path: `/${spec.slug}`,
-      element: <App spec={spec} specs={specs} />,
+      element: <App spec={spec} specs={specs} strings={strings} />,
     })),
   ]);
 };

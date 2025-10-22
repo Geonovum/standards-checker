@@ -7,7 +7,6 @@ export interface Spec {
   example: string;
   linters: SpecLinter[];
   responseMapper?: SpecResponseMapper;
-  strings?: Partial<SpecStrings>;
 }
 
 export interface SpecInput {
@@ -28,7 +27,7 @@ export type Diagnostic = CodemirrorDiagnostic & {
   documentationUrl?: string;
 };
 
-export interface SpecStrings {
+export interface UiStrings {
   checking: string;
   noMatchingRulesets: string;
   noViolations: string;
@@ -37,7 +36,7 @@ export interface SpecStrings {
   documentation: string;
 }
 
-export const DEFAULT_SPEC_STRINGS: SpecStrings = {
+export const DEFAULT_UI_STRINGS: UiStrings = {
   checking: 'Checking...',
   noMatchingRulesets: 'No matching rulesets found.',
   noViolations: 'No violations found.',
@@ -45,3 +44,7 @@ export const DEFAULT_SPEC_STRINGS: SpecStrings = {
   showInEditor: 'Show in editor',
   documentation: 'Documentation',
 };
+
+export interface UiConfig {
+  strings?: Partial<UiStrings>;
+}

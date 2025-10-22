@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
-import type { Spec } from './types';
+import type { Spec, UiStrings } from './types';
 import CodeEditor from './components/CodeEditor';
 import GitHubIcon from './components/GitHubIcon';
 import SpecSelector from './components/SpecSelector';
@@ -9,9 +9,10 @@ import UriInput from './components/UriInput';
 interface Props {
   spec: Spec;
   specs: Spec[];
+  strings?: Partial<UiStrings>;
 }
 
-const App: FC<Props> = ({ spec, specs }) => (
+const App: FC<Props> = ({ spec, specs, strings }) => (
   <div className="flex flex-col h-screen">
     <header className="flex justify-between items-center px-4 py-2 bg-slate-700 text-white">
       <div>
@@ -28,7 +29,7 @@ const App: FC<Props> = ({ spec, specs }) => (
       </div>
     </header>
     <div className="flex-1 overflow-hidden">
-      <CodeEditor spec={spec} />
+      <CodeEditor spec={spec} strings={strings} />
     </div>
   </div>
 );

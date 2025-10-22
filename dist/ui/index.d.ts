@@ -1,8 +1,8 @@
 export { useChecker } from './store';
 export { spectralLinter } from './spectral';
 export type { Rulesets } from './spectral';
-export type { Spec, SpecLinter, SpecInput, SpecResponseMapper, Severity, Diagnostic, SpecStrings } from './types';
-export { DEFAULT_SPEC_STRINGS } from './types';
+export type { Spec, SpecLinter, SpecInput, SpecResponseMapper, Severity, Diagnostic, UiStrings, UiConfig } from './types';
+export { DEFAULT_UI_STRINGS } from './types';
 export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from './util';
 export { APPLICATION_JSON_TYPE, APPLICATION_GEO_JSON_TYPE, APPLICATION_OPENAPI_JSON_3_0_TYPE } from '../shared/constants';
 export type { OpenAPIV3_0 } from '../engine/openapi-types';

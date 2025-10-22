@@ -9,23 +9,24 @@ import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChecker } from '../store';
-import { DEFAULT_SPEC_STRINGS, type Diagnostic, type Spec } from '../types';
+import { DEFAULT_UI_STRINGS, type Diagnostic, type Spec, type UiStrings } from '../types';
 import { groupBySource } from '../util';
 
 const EXTENSIONS: Extension[] = [json(), linter(jsonParseLinter()), lintGutter()];
 
 interface Props {
   spec: Spec;
+  strings?: Partial<UiStrings>;
 }
 
-const CodeEditor: FC<Props> = ({ spec }) => {
+const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
   const { content, setContent, linters, setLinters, checking, setChecking, error, setError } = useChecker(
     useShallow(state => pick(['content', 'setContent', 'linters', 'setLinters', 'checking', 'setChecking', 'error', 'setError'], state))
   );
 
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
   const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
-  const strings = { ...DEFAULT_SPEC_STRINGS, ...(spec.strings ?? {}) };
+  const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
 
   useEffect(() => {
     setContent(spec.example);

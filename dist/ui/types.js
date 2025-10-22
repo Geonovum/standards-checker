@@ -1,4 +1,4 @@
-export const DEFAULT_SPEC_STRINGS = {
+export const DEFAULT_UI_STRINGS = {
     checking: 'Checking...',
     noMatchingRulesets: 'No matching rulesets found.',
     noViolations: 'No violations found.',

@@ -8,14 +8,14 @@ import { isEmpty, pick } from 'ramda';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChecker } from '../store.js';
-import { DEFAULT_SPEC_STRINGS } from '../types.js';
+import { DEFAULT_UI_STRINGS } from '../types.js';
 import { groupBySource } from '../util.js';
 const EXTENSIONS = [json(), linter(jsonParseLinter()), lintGutter()];
-const CodeEditor = ({ spec }) => {
+const CodeEditor = ({ spec, strings: stringOverrides }) => {
     const { content, setContent, linters, setLinters, checking, setChecking, error, setError } = useChecker(useShallow(state => pick(['content', 'setContent', 'linters', 'setLinters', 'checking', 'setChecking', 'error', 'setError'], state)));
     const [diagnostics, setDiagnostics] = useState({});
     const codeMirrorRef = useRef(null);
-    const strings = { ...DEFAULT_SPEC_STRINGS, ...(spec.strings ?? {}) };
+    const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
     useEffect(() => {
         setContent(spec.example);
         setLinters(spec.linters);
