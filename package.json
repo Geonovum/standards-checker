@@ -33,10 +33,6 @@
       "types": "./dist/shared/constants.d.ts",
       "import": "./dist/shared/constants.js"
     },
-    "./shared/geospatial": {
-      "types": "./dist/shared/geospatial.d.ts",
-      "import": "./dist/shared/geospatial.js"
-    },
     "./cli": {
       "types": "./dist/cli/index.d.ts",
       "import": "./dist/cli/index.js"
