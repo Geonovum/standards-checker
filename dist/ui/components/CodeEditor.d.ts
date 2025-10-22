@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import type { Spec } from '../types';
+import { type Spec } from '../types';
 interface Props {
     spec: Spec;
 }

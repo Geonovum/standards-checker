@@ -9,7 +9,7 @@ import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChecker } from '../store';
-import type { Diagnostic, Spec } from '../types';
+import { DEFAULT_SPEC_STRINGS, type Diagnostic, type Spec } from '../types';
 import { groupBySource } from '../util';
 
 const EXTENSIONS: Extension[] = [json(), linter(jsonParseLinter()), lintGutter()];
@@ -25,6 +25,7 @@ const CodeEditor: FC<Props> = ({ spec }) => {
 
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
   const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
+  const strings = { ...DEFAULT_SPEC_STRINGS, ...(spec.strings ?? {}) };
 
   useEffect(() => {
     setContent(spec.example);
@@ -59,30 +60,42 @@ const CodeEditor: FC<Props> = ({ spec }) => {
         />
       </div>
       <div className="flex-1 overflow-auto p-4 bg-sky-50 text-sm">
-        {checking && <p>Checking...</p>}
+        {checking && <p>{strings.checking}</p>}
         {!checking && error && <div className="mb-4 p-4 bg-red-500 text-white rounded-sm shadow-lg">{error}</div>}
-        {!checking && !error && isEmpty(linters) && <p>No matching rulesets found.</p>}
+        {!checking && !error && isEmpty(linters) && <p>{strings.noMatchingRulesets}</p>}
         {!checking &&
           !error &&
-          linters.map(linter => (
-            <div key={linter.name}>
-              {!diagnostics[linter.name] ? (
-                <div className="mb-4 p-4 bg-green-600 text-white rounded-sm shadow-lg">[{linter.name}] No violations found.</div>
-              ) : (
-                <>
-                  <div className="mb-4 p-4 bg-red-500 text-white rounded-sm shadow-lg">
-                    [{linter.name}] Found {diagnostics[linter.name].length} linting error(s).
+          linters.map(linter => {
+            const linterDiagnostics = diagnostics[linter.name];
+
+            if (!linterDiagnostics) {
+              return (
+                <div key={linter.name}>
+                  <div className="mb-4 p-4 bg-green-600 text-white rounded-sm shadow-lg">
+                    [{linter.name}] {strings.noViolations}
                   </div>
-                  <ul>
-                    {diagnostics[linter.name].map((diagnostic, i) => (
-                      <li key={i}>
-                        <div
-                          className={clsx('diagnostic', {
-                            'diagnostic-error': diagnostic.severity === 'error',
-                            'diagnostic-warning': diagnostic.severity === 'warning',
-                            'diagnostic-info': diagnostic.severity === 'info' || diagnostic.severity === 'hint',
-                          })}
-                        >
+                </div>
+              );
+            }
+
+            const lintCount = linterDiagnostics.length;
+            const summary = strings.lintingErrorsSummary.replace('{count}', lintCount.toString());
+
+            return (
+              <div key={linter.name}>
+                <div className="mb-4 p-4 bg-red-500 text-white rounded-sm shadow-lg">
+                  [{linter.name}] {summary}
+                </div>
+                <ul>
+                  {linterDiagnostics.map((diagnostic, i) => (
+                    <li key={i}>
+                      <div
+                        className={clsx('diagnostic', {
+                          'diagnostic-error': diagnostic.severity === 'error',
+                          'diagnostic-warning': diagnostic.severity === 'warning',
+                          'diagnostic-info': diagnostic.severity === 'info' || diagnostic.severity === 'hint',
+                        })}
+                      >
                           <AlertCircle size={28} />
                           <div>
                             <span>{diagnostic.message}</span>
@@ -96,12 +109,12 @@ const CodeEditor: FC<Props> = ({ spec }) => {
                                   })
                                 }
                               >
-                                Show in editor
+                                {strings.showInEditor}
                                 <SquareArrowOutUpRight size={12} strokeWidth={2} className="ml-1.5" />
                               </button>
                               {diagnostic.documentationUrl && (
                                 <a className="btn" href={diagnostic.documentationUrl} target="_blank" rel="noopener noreferrer">
-                                  Documentation
+                                  {strings.documentation}
                                   <SquareArrowOutUpRight size={12} strokeWidth={2} className="ml-1.5" />
                                 </a>
                               )}
@@ -110,11 +123,10 @@ const CodeEditor: FC<Props> = ({ spec }) => {
                         </div>
                       </li>
                     ))}
-                  </ul>
-                </>
-              )}
-            </div>
-          ))}
+                </ul>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

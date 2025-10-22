@@ -6,6 +6,7 @@ export interface Spec {
     example: string;
     linters: SpecLinter[];
     responseMapper?: SpecResponseMapper;
+    strings?: Partial<SpecStrings>;
 }
 export interface SpecInput {
     content: string;
@@ -20,4 +21,13 @@ export type Severity = 'hint' | 'info' | 'warning' | 'error';
 export type Diagnostic = CodemirrorDiagnostic & {
     documentationUrl?: string;
 };
+export interface SpecStrings {
+    checking: string;
+    noMatchingRulesets: string;
+    noViolations: string;
+    lintingErrorsSummary: string;
+    showInEditor: string;
+    documentation: string;
+}
+export declare const DEFAULT_SPEC_STRINGS: SpecStrings;
 //# sourceMappingURL=types.d.ts.map
