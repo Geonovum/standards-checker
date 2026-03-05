@@ -5,15 +5,16 @@ import yaml from '@modyfi/vite-plugin-yaml';
 const _require = createRequire(import.meta.url);
 
 /**
- * Vite plugin that resolves peer dependencies from this package's node_modules.
- * When standards-checker-ui is linked (via pnpm link/overrides), the pre-built
- * dist files import packages like zustand, clsx, etc. Vite's standard resolver
- * can't find these in the consumer's node_modules (pnpm strict mode). This
- * plugin resolves them from the UI package's own node_modules as a fallback.
+ * Vite plugin that resolves dependencies from this package's node_modules.
+ * The pre-built dist files import packages like zustand, clsx, etc. that are
+ * dependencies of the UI package. With pnpm's strict node_modules, the consumer
+ * app can't resolve these directly. This plugin resolves them from the UI
+ * package's own node_modules, letting Vite's default resolver try first so that
+ * shared packages (react, react-dom, etc.) resolve to a single copy.
  */
-function resolveLinkedDeps(): Record<string, unknown> {
+function resolveDeps(): Record<string, unknown> {
   return {
-    name: 'resolve-linked-deps',
+    name: 'resolve-deps',
     async resolveId(
       this: { resolve: (source: string, importer?: string, options?: Record<string, unknown>) => Promise<unknown> },
       source: string,
@@ -21,13 +22,12 @@ function resolveLinkedDeps(): Record<string, unknown> {
       options: Record<string, unknown>,
     ) {
       if (!source || source.startsWith('.') || source.startsWith('/') || source.startsWith('\0')) return null;
-      if (!importer || !importer.includes('/standards-checker/')) return null;
+      if (!importer || !importer.includes('/standards-checker')) return null;
       // Let Vite's default resolver try first — this ensures packages the consumer
       // has installed (react, react-router-dom, etc.) resolve to a single copy.
       const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
-      if (resolved) return null;
-      // Fallback: resolve from the UI package's own node_modules for peer deps
-      // that the consumer doesn't have installed (clsx, zustand, lucide-react, etc.)
+      if (resolved) return resolved;
+      // Fallback: resolve from the UI package's own node_modules
       try {
         return _require.resolve(source);
       } catch {
@@ -46,7 +46,7 @@ function resolveLinkedDeps(): Record<string, unknown> {
  *   export default defineConfig(mergeConfig(sharedConfig, { base: '/my-app/' }));
  */
 export const sharedConfig: Record<string, unknown> = {
-  plugins: [react(), yaml(), resolveLinkedDeps()],
+  plugins: [react(), yaml(), resolveDeps()],
   build: {
     outDir: 'docs',
     chunkSizeWarningLimit: 2500,

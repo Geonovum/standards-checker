@@ -3,10 +3,12 @@
  * Consumer apps can import from '@geonovum/standards-checker/spectral/functions'
  * instead of depending on @stoplight/spectral-functions directly.
  *
- * Uses default import + destructured re-export because @stoplight/spectral-functions
- * is CJS and `export *` from CJS doesn't expose named exports properly in ESM bundlers.
+ * CJS→ESM interop: Node's native ESM puts CJS exports on `.default`, while
+ * bundlers (Vite/esbuild) put them directly on the namespace. We handle both.
  */
-import * as spectralFunctions from '@stoplight/spectral-functions';
+import * as _spectralFunctions from '@stoplight/spectral-functions';
+
+const spectralFunctions = (_spectralFunctions as unknown as { default?: typeof _spectralFunctions }).default ?? _spectralFunctions;
 
 export const { alphabetical, casing, defined, enumeration, falsy, length, pattern, schema, truthy, unreferencedReusableObject, xor } =
   spectralFunctions;

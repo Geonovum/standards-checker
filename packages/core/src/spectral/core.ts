@@ -3,10 +3,12 @@
  * Consumer apps can import from '@geonovum/standards-checker/spectral/core'
  * instead of depending on @stoplight/spectral-core directly.
  *
- * Uses default import + destructured re-export because @stoplight/spectral-core
- * is CJS and `export *` from CJS doesn't expose named exports properly in ESM bundlers.
+ * CJS→ESM interop: Node's native ESM puts CJS exports on `.default`, while
+ * bundlers (Vite/esbuild) put them directly on the namespace. We handle both.
  */
-import * as SpectralCore from '@stoplight/spectral-core';
+import * as _SpectralCore from '@stoplight/spectral-core';
+
+const SpectralCore = (_SpectralCore as unknown as { default?: typeof _SpectralCore }).default ?? _SpectralCore;
 
 export const {
   Document,
