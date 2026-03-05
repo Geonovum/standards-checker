@@ -22,6 +22,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       # - run: pnpm test run
-      - run: pnpm -r publish --provenance --no-git-checks
+      - run: pnpm --filter @geonovum/standards-checker publish --provenance --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: pnpm --filter @geonovum/standards-checker-ui publish --provenance --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
