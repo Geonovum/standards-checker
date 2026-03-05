@@ -4,6 +4,9 @@
   "type": "module",
   "license": "EUPL-1.2",
   "description": "Standards checker UI components for web-based validation tools",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
     "src/index.css",

@@ -4,6 +4,9 @@
   "type": "module",
   "license": "EUPL-1.2",
   "description": "Standards checker engine with Spectral-based validation, CLI and API support",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],
