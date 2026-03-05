@@ -22,7 +22,7 @@ function resolveDeps(): Record<string, unknown> {
       options: Record<string, unknown>,
     ) {
       if (!source || source.startsWith('.') || source.startsWith('/') || source.startsWith('\0')) return null;
-      if (!importer || !importer.includes('/standards-checker')) return null;
+      if (!importer || !importer.includes('node_modules/')) return null;
       // Let Vite's default resolver try first — this ensures packages the consumer
       // has installed (react, react-router-dom, etc.) resolve to a single copy.
       const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
