@@ -11,11 +11,11 @@ This repository is a **pnpm workspace** containing two publishable packages:
 
 ## Checker apps built on this framework
 
-| App                                                                               | Description                                                                      |
-| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [ogc-checker](https://github.com/Geonovum/ogc-checker)                            | Validates JSON-FG documents and OGC API endpoints (Features, Processes, Records) |
-| [oas-checker](https://github.com/developer-overheid-nl/oas-checker)               | Validates OpenAPI specifications against ADR 2.0, ADR 2.1, and OAS rulesets      |
-| [publiccode-checker](https://github.com/developer-overheid-nl/publiccode-checker) | Validates publiccode.yml files (not yet migrated to this framework)              |
+| App                                                                      | Description                                                                      |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| [ogc-checker](https://github.com/Geonovum/ogc-checker)                   | Validates JSON-FG documents and OGC API endpoints (Features, Processes, Records) |
+| [oas-checker](https://github.com/developer-overheid-nl/don-tools)        | Validates OpenAPI specifications against ADR 2.0, ADR 2.1, and OAS rulesets      |
+| [publiccode-checker](https://github.com/developer-overheid-nl/don-tools) | Validates publiccode.yml files                                                   |
 
 ---
 
@@ -42,19 +42,21 @@ cat spec.json | ogc-checker validate --ruleset json-fg
 | ------------------- | ----------------------------------------- | ------------ |
 | `--ruleset <name>`  | Ruleset to run (listed in `--help`)       | _(required)_ |
 | `--input <file\|->` | Input file, URL, or `-` for stdin         | `-`          |
-| `--format <fmt>`    | Output: `table`, `json`, `sarif`, `junit` | `table`      |
+| `--format <fmt>`    | Output: `table`, `json`                   | `table`      |
 | `--fail-on <level>` | Exit code policy: `none`, `warn`, `error` | `error`      |
 
 Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected error.
 
 ### Web UI
 
-```tsx
-import { createRouter } from '@geonovum/standards-checker-ui';
+```ts
+import { mount } from '@geonovum/standards-checker-ui';
 import '@geonovum/standards-checker-ui/index.css';
 import specs from './specs';
 
-const router = createRouter(specs);
+mount(document.getElementById('root')!, specs, {
+  title: 'My Checker',
+});
 ```
 
 See the [UI package README](packages/ui/) for the full integration guide.
@@ -70,7 +72,7 @@ Typical project layout:
 ```
 my-checker/
 ├── src/
-│   ├── main.tsx            # Web app entry point
+│   ├── main.ts             # Web app entry point (calls mount())
 │   ├── cli.ts              # CLI entry point (calls createCli)
 │   ├── index.ts            # Ruleset plugin index
 │   └── specs/
