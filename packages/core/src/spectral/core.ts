@@ -6,7 +6,7 @@
  * Uses default import + destructured re-export because @stoplight/spectral-core
  * is CJS and `export *` from CJS doesn't expose named exports properly in ESM bundlers.
  */
-import SpectralCore from '@stoplight/spectral-core';
+import * as SpectralCore from '@stoplight/spectral-core';
 
 export const {
   Document,
