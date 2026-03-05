@@ -14,7 +14,7 @@ This repository is a **pnpm workspace** containing two publishable packages:
 | App                                                                               | Description                                                                      |
 | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [ogc-checker](https://github.com/Geonovum/ogc-checker)                            | Validates JSON-FG documents and OGC API endpoints (Features, Processes, Records) |
-| [oas-checker](https://github.com/Geonovum/oas-checker)                            | Validates OpenAPI specifications against ADR 2.0, ADR 2.1, and OAS rulesets      |
+| [oas-checker](https://github.com/developer-overheid-nl/oas-checker)               | Validates OpenAPI specifications against ADR 2.0, ADR 2.1, and OAS rulesets      |
 | [publiccode-checker](https://github.com/developer-overheid-nl/publiccode-checker) | Validates publiccode.yml files (not yet migrated to this framework)              |
 
 ---
