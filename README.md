@@ -1,240 +1,149 @@
 # @geonovum/standards-checker
 
-CLI and core library to validate API specifications using **Spectral** rulesets — with an optional, embeddable web UI.
+A validation framework for checking documents and APIs against specifications using [Spectral](https://github.com/stoplightio/spectral) rulesets. Provides a CLI toolkit, a programmatic engine, and an embeddable web UI.
 
-* ✅ Validate OpenAPI/JSON documents against one or more rulesets
-* ✅ Use it as a CLI **or** as a library (UI router + linters)
-* ✅ Pipe from `stdin`, choose output formats, and fail builds on errors
+This repository is a **pnpm workspace** containing two publishable packages:
+
+| Package                                          | npm                                                                                                                                 | Description                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| [`@geonovum/standards-checker`](packages/core/)  | [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker)](https://www.npmjs.com/package/@geonovum/standards-checker)       | Core validation engine, Spectral functions, and CLI toolkit |
+| [`@geonovum/standards-checker-ui`](packages/ui/) | [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker-ui)](https://www.npmjs.com/package/@geonovum/standards-checker-ui) | React components for building checker web apps              |
+
+## Checker apps built on this framework
+
+| App                                                                               | Description                                                                      |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [ogc-checker](https://github.com/Geonovum/ogc-checker)                            | Validates JSON-FG documents and OGC API endpoints (Features, Processes, Records) |
+| [oas-checker](https://github.com/Geonovum/oas-checker)                            | Validates OpenAPI specifications against ADR 2.0, ADR 2.1, and OAS rulesets      |
+| [publiccode-checker](https://github.com/developer-overheid-nl/publiccode-checker) | Validates publiccode.yml files (not yet migrated to this framework)              |
 
 ---
 
-## Installation
+## Quick start
 
 ### CLI
 
-```bash
-# project-local
-npm i -D @geonovum/standards-checker
+Each checker app ships its own CLI with baked-in rulesets:
 
-# or global
-npm i -g @geonovum/standards-checker
+```bash
+ogc-checker validate --ruleset json-fg --input ./data/spec.json
+oas-checker validate --ruleset adr-20 --input ./openapi.json
 ```
 
-### Web UI (library)
-
-Add the UI and hook it up to your ruleset “specs”.
-
----
-
-## Quick start (CLI)
-
-Validate a JSON/OpenAPI file with a specific rule:
+Or via stdin:
 
 ```bash
-npx standards-checker validate \
-  --ruleset-index ../ogc-checker/dist/index.js \
-  --ruleset json-fg \
-  --json ./data/spec.json
-```
-
-Via **stdin**:
-
-```bash
-cat ./data/spec.json | npx standards-checker validate \
-  --ruleset-index ../ogc-checker/dist/index.js \
-  --ruleset json-fg \
-  --json -
+cat spec.json | ogc-checker validate --ruleset json-fg
 ```
 
 ### CLI flags
 
-* `--ruleset-index <path>`: path to a built ruleset index (required unless `--ruleset-dir` is used)
-* `--ruleset-dir <path>`: directory that contains an `index.{js,mjs,cjs}` (auto-detected)
-* `--ruleset <name>`: the rule/ruleset key to run (e.g. `json-fg`)
-* `--json <file|->`: the JSON/OpenAPI document to validate, or `-` for stdin
-* `--format <table|json|sarif|junit>`: output format (default: `table`)
-* `--fail-on <none|warn|error>`: exit code policy (default: `error`; exit 1 on errors)
+| Flag                | Description                               | Default      |
+| ------------------- | ----------------------------------------- | ------------ |
+| `--ruleset <name>`  | Ruleset to run (listed in `--help`)       | _(required)_ |
+| `--input <file\|->` | Input file, URL, or `-` for stdin         | `-`          |
+| `--format <fmt>`    | Output: `table`, `json`, `sarif`, `junit` | `table`      |
+| `--fail-on <level>` | Exit code policy: `none`, `warn`, `error` | `error`      |
 
-Exit codes:
+Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected error.
 
-* `0` = success (no errors beyond threshold)
-* `1` = failed per `--fail-on` policy
-* `>1` = unexpected error
-
----
-
-## Building your own ruleset project
-
-In your own repo (e.g. [ogc-checker]), produce a build artifact `dist/index.js` that **default-exports** your rulesets:
-
-```js
-// dist/index.js
-export default {
-  'json-fg': {
-    id: 'json-fg',
-    version: '1.0.0',
-    rules: [
-      /* your declarative Spectral rules */
-    ],
-    funcs: {
-      /* optional custom functions */
-    },
-  },
-  // more rulesets...
-};
-```
-
-You can then pass that index to the CLI via `--ruleset-index` or point `--ruleset-dir` at the folder containing `index.js`.
-
----
-
-## Using the Web UI (library)
-
-Integrate the UI by exposing your specs and mounting a router.
-
-**1) Define `Spec`s** — connect each ruleset to a Spectral linter.
-
-```ts
-// specs/json-fg.ts
-import { Spec, spectralLinter } from '@geonovum/standards-checker';
-import rulesets from './rulesets';
-import example from './examples/feature.json';
-
-const linterName = (confClass: string) => confClass.replace('http://www.opengis.net/spec/', '');
-
-export const jsonFgSpec: Spec = {
-  name: 'JSON-FG',
-  slug: 'json-fg',
-  example: JSON.stringify(example, undefined, 2),
-  linters: Object.entries(rulesets).map(([confClass, ruleset]) => ({
-    name: linterName(confClass),
-    linter: spectralLinter(linterName(confClass), ruleset),
-  })),
-};
-```
-
-**2) Gather specs and build a router**
+### Web UI
 
 ```tsx
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import { createRouter } from '@geonovum/standards-checker';
+import { createRouter } from '@geonovum/standards-checker-ui';
+import '@geonovum/standards-checker-ui/index.css';
 import specs from './specs';
-import '@geonovum/standards-checker/ui/index.css';
 
 const router = createRouter(specs);
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
-);
 ```
 
-To override the default UI copy, pass strings as the second argument:
-
-```tsx
-const router = createRouter(specs, {
-  strings: {
-    noViolations: 'Geen fouten gevonden.',
-    showInEditor: 'Toon in editor',
-    documentation: 'Documentatie',
-  },
-});
-```
-
-A complete example of this flow lives in the **ogc-checker** repository.
-
-### UI text overrides
-
-Override any of these keys from `DEFAULT_UI_STRINGS`:
-
-| Key | Description |
-| --- | ----------- |
-| `checking` | Message shown while validation runs |
-| `noMatchingRulesets` | Message when no linters are available for the spec |
-| `noViolations` | Success message when a linter finds no diagnostics |
-| `lintingErrorsSummary` | Summary shown when diagnostics exist (`{count}` placeholder is replaced with the number of issues) |
-| `showInEditor` | Label for the “jump to location” button in the diagnostics list |
-| `documentation` | Label for the documentation link |
-
-Default values are available via `DEFAULT_UI_STRINGS`.
+See the [UI package README](packages/ui/) for the full integration guide.
 
 ---
 
-## Output formats
+## Building a checker app
 
-* `table` (human-readable)
-* `json` (machine-readable results)
-* `sarif` (for code scanning integrations)
-* `junit` (for CI test reporting)
+A checker app follows a standard structure. See the [core package README](packages/core/) for how to define rulesets and create a CLI, and the [UI package README](packages/ui/) for how to wire up the web interface.
 
-Example `json` (shape simplified):
+Typical project layout:
 
-```json
-{
-  "rule": "json-fg",
-  "summary": { "errors": 2, "warnings": 1 },
-  "results": [
-    { "code": "my-rule", "severity": "error", "path": ["paths","/items","get"], "message": "..." }
-  ]
-}
+```
+my-checker/
+├── src/
+│   ├── main.tsx            # Web app entry point
+│   ├── cli.ts              # CLI entry point (calls createCli)
+│   ├── index.ts            # Ruleset plugin index
+│   └── specs/
+│       └── my-spec/
+│           ├── spec.ts     # Spec definition (name, slug, linters)
+│           ├── rulesets/
+│           │   ├── index.ts
+│           │   └── core.ts # Spectral RulesetDefinition
+│           ├── examples/   # Sample fixtures
+│           └── functions/  # Custom Spectral functions
+├── vite.config.ts
+└── package.json
 ```
 
 ---
 
-## Best practices
+## Development
 
-* **Pin ruleset versions** (e.g., `version: "1.2.0"`) to avoid surprises.
-* **Fail fast in CI** with `--fail-on error`.
-* **Use `stdin`** when the spec is produced by a previous pipeline step.
+### Prerequisites
 
----
+- Node.js 24+
+- pnpm 10+
 
-## Troubleshooting
+### Setup
 
-**“Named export 'oas3_0' not found … '@stoplight/spectral-formats' is a CommonJS module”**
-
-Use a default import with destructuring (ESM ↔ CJS interop):
-
-```ts
-// instead of: import { oas3_0 } from '@stoplight/spectral-formats'
-import spectralFormats from '@stoplight/spectral-formats';
-const { oas3_0 } = spectralFormats;
+```bash
+pnpm install
+pnpm build
 ```
 
-Or use Node’s `createRequire` inside ESM:
+### Commands
 
-```ts
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { oas3_0 } = require('@stoplight/spectral-formats');
+| Command         | Description                          |
+| --------------- | ------------------------------------ |
+| `pnpm build`    | Build both packages                  |
+| `pnpm dev`      | Watch mode for both packages         |
+| `pnpm test`     | Run tests in all packages            |
+| `pnpm lint`     | Check for lint and formatting issues |
+| `pnpm lint:fix` | Auto-fix lint and formatting issues  |
+
+### Local development with a checker app
+
+```bash
+# Terminal 1: build + watch both packages
+cd standards-checker
+pnpm dev
+
+# Terminal 2: link and run the app
+cd ogc-checker
+pnpm link ../standards-checker/packages/core ../standards-checker/packages/ui
+pnpm dev
 ```
 
-If using TypeScript, enabling `"esModuleInterop": true` and/or `"allowSyntheticDefaultImports": true` helps.
+Unlink when done:
 
----
+```bash
+pnpm unlink @geonovum/standards-checker @geonovum/standards-checker-ui
+pnpm install
+```
 
-## Requirements
+### Publishing
 
-* Node.js **18+** (ESM-compatible setup)
-* For TypeScript users: a modern TS config (ESNext modules recommended)
+Packages are published to npm automatically when a version tag is pushed:
 
----
+```bash
+git tag v1.0.0
+git push --tags
+```
 
-## Contributing
-
-Issues and PRs are welcome. Keep PRs focused and include tests where relevant.
+This triggers the CI workflow that builds, tests, and publishes both packages with provenance.
 
 ---
 
 ## License
 
-See `LICENSE` in this repository.
-
----
-
-## Acknowledgements
-
-Built on top of the excellent **Spectral** linter and the OpenAPI ecosystem.
+[EUPL-1.2](LICENSE)
