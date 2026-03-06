@@ -155,6 +155,59 @@ describe('UriInput', () => {
     expect(router.state.location.search).toBe('');
   });
 
+  it('fetches when url search param changes', async () => {
+    const json = JSON.stringify({ first: true });
+    const json2 = JSON.stringify({ second: true });
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(json, { status: 200 }))
+      .mockResolvedValueOnce(new Response(json2, { status: 200 }));
+
+    const router = renderWithRouter('?url=https://example.com/first.json');
+
+    await waitFor(() => {
+      expect(useChecker.getState().content).toContain('"first"');
+    });
+
+    router.navigate('/test-spec?url=https://example.com/second.json');
+
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith('https://example.com/second.json');
+      expect(useChecker.getState().content).toContain('"second"');
+    });
+  });
+
+  it('does not loop when submitting a different url after initial load with url param', async () => {
+    const jsonA = JSON.stringify({ a: true });
+    const jsonB = JSON.stringify({ b: true });
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(jsonA, { status: 200 }))
+      .mockResolvedValueOnce(new Response(jsonB, { status: 200 }));
+
+    renderWithRouter('?url=https://example.com/a.json');
+
+    // Wait for initial fetch to complete
+    await waitFor(() => {
+      expect(useChecker.getState().content).toContain('"a"');
+    });
+
+    // Clear input, type new URL, and submit
+    const input = screen.getByPlaceholderText(/enter url/i);
+    await userEvent.clear(input);
+    await userEvent.type(input, 'https://example.com/b.json');
+    await userEvent.click(screen.getByRole('button', { name: /load/i }));
+
+    // Should fetch B and stabilize
+    await waitFor(() => {
+      expect(useChecker.getState().content).toContain('"b"');
+    });
+
+    // Should have fetched exactly twice: A then B (no loop)
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(fetchSpy).toHaveBeenNthCalledWith(1, 'https://example.com/a.json');
+    expect(fetchSpy).toHaveBeenNthCalledWith(2, 'https://example.com/b.json');
+  });
+
   it('disables button while checking', () => {
     useChecker.setState({ checking: true });
 
