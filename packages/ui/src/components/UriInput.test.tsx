@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useChecker } from '../store';
 import type { Spec } from '../types';
@@ -14,11 +14,12 @@ const spec: Spec = {
 };
 
 function renderWithRouter(urlSearchParams = '') {
-  return render(
-    <MemoryRouter initialEntries={[`/test-spec${urlSearchParams}`]}>
-      <UriInput spec={spec} />
-    </MemoryRouter>,
-  );
+  const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput spec={spec} /> }], {
+    initialEntries: [`/test-spec${urlSearchParams}`],
+  });
+
+  render(<RouterProvider router={router} />);
+  return router;
 }
 
 beforeEach(() => {
@@ -115,15 +116,43 @@ describe('UriInput', () => {
       }),
     };
 
-    render(
-      <MemoryRouter initialEntries={['/test-spec?url=https://example.com/mapped.json']}>
-        <UriInput spec={mappedSpec} />
-      </MemoryRouter>,
-    );
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput spec={mappedSpec} /> }], {
+      initialEntries: ['/test-spec?url=https://example.com/mapped.json'],
+    });
+    render(<RouterProvider router={router} />);
 
     await waitFor(() => {
       expect(useChecker.getState().content).toContain('"mapped"');
     });
+  });
+
+  it('updates url search param after successful fetch', async () => {
+    const json = JSON.stringify({ hello: 'world' });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(json, { status: 200 }));
+
+    const router = renderWithRouter();
+
+    await userEvent.type(screen.getByPlaceholderText(/enter url/i), 'https://example.com/doc.json');
+    await userEvent.click(screen.getByRole('button', { name: /load/i }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?url=https%3A%2F%2Fexample.com%2Fdoc.json');
+    });
+  });
+
+  it('does not update url search param for invalid urls', async () => {
+    const json = JSON.stringify({ hello: 'world' });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(json, { status: 200 }));
+
+    const router = renderWithRouter();
+
+    await userEvent.type(screen.getByPlaceholderText(/enter url/i), 'not-a-url');
+    await userEvent.click(screen.getByRole('button', { name: /load/i }));
+
+    await waitFor(() => {
+      expect(useChecker.getState().content).toContain('"hello"');
+    });
+    expect(router.state.location.search).toBe('');
   });
 
   it('disables button while checking', () => {

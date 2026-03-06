@@ -11,7 +11,7 @@ interface Props {
 }
 
 const UriInput: FC<Props> = ({ spec }) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [uri, setUri] = useState(searchParams.get('url') ?? '');
   const [fetching, setFetching] = useState(false);
   const initialUrl = useRef(searchParams.get('url'));
@@ -35,6 +35,13 @@ const UriInput: FC<Props> = ({ spec }) => {
           setFetching(false);
           setContent(formatDocument(input.content));
           setLinters(input.linters ?? spec.linters);
+
+          try {
+            new URL(url);
+            setSearchParams({ url }, { replace: true });
+          } catch {
+            // Invalid URL — don't update search params
+          }
         })
         .catch(error => {
           setFetching(false);
@@ -46,7 +53,7 @@ const UriInput: FC<Props> = ({ spec }) => {
           }
         });
     },
-    [spec, setContent, setLinters, setError],
+    [spec, setContent, setLinters, setError, setSearchParams],
   );
 
   useEffect(() => {
