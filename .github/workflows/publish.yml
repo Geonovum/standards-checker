@@ -34,6 +34,7 @@ jobs:
           fi
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - run: pnpm lint
       - run: pnpm test run
       - run: |
           VERSION=$(node -p "require('./packages/core/package.json').version")
