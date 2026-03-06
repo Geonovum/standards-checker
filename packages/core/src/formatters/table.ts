@@ -2,10 +2,10 @@ import type { RulesetPlugin, ValidationDiagnostic, ValidationResult } from '../t
 
 const renderPath = (path: (string | number)[]): string => {
   if (!path || path.length === 0) {
-    return '(root)';
+    return '[]';
   }
 
-  return path.map(segment => (typeof segment === 'number' ? `[${segment}]` : segment.replace(/\./g, '\\.'))).join('.');
+  return JSON.stringify(path);
 };
 
 export const renderTable = (plugin: RulesetPlugin, result: ValidationResult): string => {
@@ -26,17 +26,15 @@ export const renderTable = (plugin: RulesetPlugin, result: ValidationResult): st
   ];
 
   if (result.diagnostics.length === 0) {
-    return summaryLines.concat('No issues found.').join('\n');
+    return summaryLines.concat('No diagnostics.').join('\n');
   }
 
   const lines: string[] = [...summaryLines, ''];
 
   result.diagnostics.forEach((diagnostic: ValidationDiagnostic, index: number) => {
-    const location = diagnostic.range ? `${diagnostic.range.start.line + 1}:${diagnostic.range.start.character + 1}` : 'n/a';
-
-    lines.push(`${index + 1}. ${diagnostic.severity.toUpperCase()} ${diagnostic.code}`);
+    lines.push(`${index + 1}. ${diagnostic.severity} ${diagnostic.code}`);
     lines.push(`   message: ${diagnostic.message}`);
-    lines.push(`   path: ${renderPath(diagnostic.path)} @ ${location}`);
+    lines.push(`   path: ${renderPath(diagnostic.path)}`);
 
     if (diagnostic.source) {
       lines.push(`   source: ${diagnostic.source}`);
