@@ -1,5 +1,6 @@
 import { pick } from 'ramda';
-import { FC, FormEventHandler, useState } from 'react';
+import { FC, SubmitEventHandler, useCallback, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useChecker } from '../store';
 import { Spec, SpecInput } from '../types';
@@ -10,38 +11,51 @@ interface Props {
 }
 
 const UriInput: FC<Props> = ({ spec }) => {
-  const [uri, setUri] = useState('');
+  const [searchParams] = useSearchParams();
+  const [uri, setUri] = useState(searchParams.get('url') ?? '');
   const [fetching, setFetching] = useState(false);
+  const initialUrl = useRef(searchParams.get('url'));
 
   const { setContent, setLinters, setError, checking } = useChecker(
     useShallow(state => pick(['setContent', 'setLinters', 'setError', 'checking'], state)),
   );
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
+  const fetchUri = useCallback(
+    (url: string) => {
+      setFetching(true);
+
+      fetch(url)
+        .then(response => handleResponse(response, url))
+        .then(responseText =>
+          spec.responseMapper //
+            ? spec.responseMapper(responseText)
+            : Promise.resolve({ content: responseText }),
+        )
+        .then((input: SpecInput) => {
+          setFetching(false);
+          setContent(formatDocument(input.content));
+          setLinters(input.linters ?? spec.linters);
+        })
+        .catch(error => {
+          setFetching(false);
+
+          if (error instanceof TypeError) {
+            setError(`Possible network or CORS failure: "${error.message}". Check your browser console for more details.`);
+          } else {
+            setError(`Error: "${error.message}"`);
+          }
+        });
+    },
+    [spec, setContent, setLinters, setError],
+  );
+
+  useEffect(() => {
+    if (initialUrl.current) fetchUri(initialUrl.current);
+  }, [fetchUri]);
+
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
-    setFetching(true);
-
-    fetch(uri)
-      .then(response => handleResponse(response, uri))
-      .then(responseText =>
-        spec.responseMapper //
-          ? spec.responseMapper(responseText)
-          : Promise.resolve({ content: responseText }),
-      )
-      .then((input: SpecInput) => {
-        setFetching(false);
-        setContent(formatDocument(input.content));
-        setLinters(input.linters ?? spec.linters);
-      })
-      .catch(error => {
-        setFetching(false);
-
-        if (error instanceof TypeError) {
-          setError(`Possible network or CORS failure: "${error.message}". Check your browser console for more details.`);
-        } else {
-          setError(`Error: "${error.message}"`);
-        }
-      });
+    fetchUri(uri);
   };
 
   return (

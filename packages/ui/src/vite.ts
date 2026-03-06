@@ -1,6 +1,6 @@
-import { createRequire } from 'module';
-import react from '@vitejs/plugin-react';
 import yaml from '@modyfi/vite-plugin-yaml';
+import react from '@vitejs/plugin-react';
+import { createRequire } from 'module';
 
 const _require = createRequire(import.meta.url);
 
@@ -11,6 +11,9 @@ const _require = createRequire(import.meta.url);
  * app can't resolve these directly. This plugin resolves them from the UI
  * package's own node_modules, letting Vite's default resolver try first so that
  * shared packages (react, react-dom, etc.) resolve to a single copy.
+ *
+ * This also handles the linked development case where the UI package is
+ * symlinked from outside the consumer's node_modules.
  */
 function resolveDeps(): Record<string, unknown> {
   return {
@@ -22,7 +25,7 @@ function resolveDeps(): Record<string, unknown> {
       options: Record<string, unknown>,
     ) {
       if (!source || source.startsWith('.') || source.startsWith('/') || source.startsWith('\0')) return null;
-      if (!importer || !importer.includes('node_modules/')) return null;
+      if (!importer) return null;
       // Let Vite's default resolver try first — this ensures packages the consumer
       // has installed (react, react-router-dom, etc.) resolve to a single copy.
       const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });

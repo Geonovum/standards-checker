@@ -4,10 +4,10 @@ A validation framework for checking documents and APIs against specifications us
 
 This repository is a **pnpm workspace** containing two publishable packages:
 
-| Package                                          | npm                                                                                                                                 | Description                                                 |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| [`@geonovum/standards-checker`](packages/core/)  | [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker)](https://www.npmjs.com/package/@geonovum/standards-checker)       | Core validation engine, Spectral functions, and CLI toolkit |
-| [`@geonovum/standards-checker-ui`](packages/ui/) | [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker-ui)](https://www.npmjs.com/package/@geonovum/standards-checker-ui) | React components for building checker web apps              |
+| Package                                          | npm                                                                                                                                 | Description                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [`@geonovum/standards-checker`](packages/core/)  | [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker)](https://www.npmjs.com/package/@geonovum/standards-checker)       | Core validation engine and CLI toolkit         |
+| [`@geonovum/standards-checker-ui`](packages/ui/) | [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker-ui)](https://www.npmjs.com/package/@geonovum/standards-checker-ui) | React components for building checker web apps |
 
 ## Checker apps built on this framework
 
