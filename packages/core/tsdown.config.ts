@@ -5,5 +5,6 @@ export default defineConfig({
   unbundle: true,
   format: 'esm',
   dts: true,
+  outExtensions: () => ({ js: '.js', dts: '.d.ts' }),
   clean: true,
 });

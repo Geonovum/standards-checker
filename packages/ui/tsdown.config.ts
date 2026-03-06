@@ -5,6 +5,9 @@ export default defineConfig({
   unbundle: true,
   format: 'esm',
   dts: true,
+  outExtensions: () => ({ js: '.js', dts: '.d.ts' }),
   clean: true,
-  external: ['react', 'react-dom', 'react/jsx-runtime'],
+  deps: {
+    neverBundle: ['react', 'react-dom', 'react/jsx-runtime'],
+  },
 });

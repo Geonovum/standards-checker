@@ -1,6 +1,6 @@
 {
   "name": "@geonovum/standards-checker",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "type": "module",
   "license": "EUPL-1.2",
   "description": "Standards checker engine with Spectral-based validation, CLI and API support",
@@ -60,7 +60,7 @@
     "@types/json-schema-merge-allof": "^0.6.5",
     "@types/node": "^24.0.0",
     "@types/ramda": "^0.31.1",
-    "tsdown": "^0.15.9",
+    "tsdown": "^0.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
   }
