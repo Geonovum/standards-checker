@@ -36,7 +36,8 @@
   },
   "scripts": {
     "build": "tsc --noEmit && tsdown",
-    "dev": "tsdown --watch"
+    "dev": "tsdown --watch",
+    "test": "vitest"
   },
   "dependencies": {
     "@stoplight/spectral-core": "^1.21.0",
