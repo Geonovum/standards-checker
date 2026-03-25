@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  nimma@0.2.3:
-    hash: 05a72e348ecd46b06c901bf34b826597ce94d615fd38bbd7055e01652447f456
-    path: patches/nimma@0.2.3.patch
-
 importers:
 
   .:
@@ -3362,7 +3357,7 @@ snapshots:
       lodash: 4.17.23
       lodash.topath: 4.5.2
       minimatch: 3.1.2
-      nimma: 0.2.3(patch_hash=05a72e348ecd46b06c901bf34b826597ce94d615fd38bbd7055e01652447f456)
+      nimma: 0.2.3
       pony-cause: 1.1.1
       simple-eval: 1.0.1
       tslib: 2.8.1
@@ -4605,7 +4600,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  nimma@0.2.3(patch_hash=05a72e348ecd46b06c901bf34b826597ce94d615fd38bbd7055e01652447f456):
+  nimma@0.2.3:
     dependencies:
       '@jsep-plugin/regex': 1.0.4(jsep@1.4.0)
       '@jsep-plugin/ternary': 1.1.4(jsep@1.4.0)
