@@ -51,6 +51,11 @@ function resolveDeps(): Record<string, unknown> {
 export const sharedConfig: Record<string, unknown> = {
   plugins: [react(), yaml(), resolveDeps()],
   build: {
+    // Use esbuild for minification instead of Vite 8's default OXC minifier.
+    // OXC converts string literals to template literals (backticks), which breaks
+    // nimma's Fallback codegen that embeds Function.toString() output inside a
+    // TemplateLiteral AST node — the inner backticks break the outer template.
+    minify: 'esbuild',
     outDir: 'docs',
     chunkSizeWarningLimit: 2500,
     rollupOptions: {
