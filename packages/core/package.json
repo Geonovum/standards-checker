@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@types/json-schema-merge-allof": "^0.6.5",
-    "@types/node": "^25.3.5",
+    "@types/node": "^25.5.0",
     "@types/ramda": "^0.31.1",
     "tsdown": "^0.21.0",
     "typescript": "^5.9.3",
