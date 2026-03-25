@@ -14,6 +14,9 @@
     "onlyBuiltDependencies": [
       "esbuild"
     ],
+    "patchedDependencies": {
+      "nimma@0.2.3": "patches/nimma@0.2.3.patch"
+    },
     "peerDependencyRules": {
       "allowedVersions": {
         "eslint-plugin-react-hooks>eslint": ">=10"
