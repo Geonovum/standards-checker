@@ -67,4 +67,32 @@
   .diagnostic-info .btn {
     @apply inline-flex items-center px-2 py-1 border rounded-sm cursor-pointer text-xs bg-white hover:bg-slate-200 border-slate-300 text-slate-800;
   }
+
+  .diagnostic-hint {
+    @apply bg-slate-50 border-slate-200 text-slate-800;
+  }
+
+  .diagnostic-hint .btn {
+    @apply inline-flex items-center px-2 py-1 border rounded-sm cursor-pointer text-xs bg-white hover:bg-slate-200 border-slate-300 text-slate-800;
+  }
+
+  .severity-group {
+    @apply px-3 py-1.5 rounded-sm text-sm font-semibold mb-1 text-white;
+  }
+
+  .severity-group-error {
+    @apply bg-red-400;
+  }
+
+  .severity-group-warning {
+    @apply bg-orange-400;
+  }
+
+  .severity-group-info {
+    @apply bg-blue-400;
+  }
+
+  .severity-group-hint {
+    @apply bg-blue-400;
+  }
 }

@@ -22,7 +22,7 @@ describe('renderTable', () => {
     expect(output).toContain('No diagnostics.');
   });
 
-  it('renders diagnostics with path as array, without range', () => {
+  it('renders diagnostics grouped by severity, with path as array, without range', () => {
     const output = renderTable(
       plugin,
       makeResult({
@@ -39,7 +39,8 @@ describe('renderTable', () => {
       }),
     );
 
-    expect(output).toContain('1. error /req/core/schema-valid');
+    expect(output).toContain('Errors (1)');
+    expect(output).toContain('1. /req/core/schema-valid');
     expect(output).toContain('message: Missing required field');
     expect(output).toContain('path: ["features",0,"properties","name"]');
     expect(output).not.toContain('range');
@@ -82,11 +83,12 @@ describe('renderTable', () => {
       }),
     );
 
+    expect(output).toContain('Info (1)');
     expect(output).toContain('source: custom-source');
     expect(output).toContain('docs: https://example.com/docs');
   });
 
-  it('counts severities correctly', () => {
+  it('counts severities correctly and groups diagnostics', () => {
     const range = { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } };
     const output = renderTable(
       plugin,
@@ -101,5 +103,16 @@ describe('renderTable', () => {
     );
 
     expect(output).toContain('Diagnostics: 4 (errors 2, warnings 1, info 0, hints 1)');
+    expect(output).toContain('Errors (2)');
+    expect(output).toContain('Warnings (1)');
+    expect(output).toContain('Hints (1)');
+    expect(output).not.toContain('Info (');
+
+    // Verify grouping order: errors before warnings before hints
+    const errorsIndex = output.indexOf('Errors (2)');
+    const warningsIndex = output.indexOf('Warnings (1)');
+    const hintsIndex = output.indexOf('Hints (1)');
+    expect(errorsIndex).toBeLessThan(warningsIndex);
+    expect(warningsIndex).toBeLessThan(hintsIndex);
   });
 });
