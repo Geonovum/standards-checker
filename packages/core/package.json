@@ -60,7 +60,7 @@
     "@types/json-schema-merge-allof": "^0.6.5",
     "@types/node": "^25.5.0",
     "@types/ramda": "^0.31.1",
-    "tsdown": "^0.21.5",
+    "tsdown": "^0.21.6",
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   }
