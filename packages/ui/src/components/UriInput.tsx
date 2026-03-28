@@ -38,17 +38,18 @@ const UriInput: FC<Props> = ({ spec }) => {
     }
   }
 
-  const { setContent, setLinters, setError, checking } = useChecker(
-    useShallow(state => pick(['setContent', 'setLinters', 'setError', 'checking'], state)),
+  const { setContent, setContentFromUrl, setLinters, setError, checking } = useChecker(
+    useShallow(state => pick(['setContent', 'setContentFromUrl', 'setLinters', 'setError', 'checking'], state)),
   );
 
   const onFetched = useCallback(
     (url: string, input: SpecInput) => {
       setContent(formatDocument(input.content));
+      setContentFromUrl(true);
       setLinters(input.linters ?? spec.linters);
       setFetchedUrl(url);
     },
-    [spec.linters, setContent, setLinters],
+    [spec.linters, setContent, setContentFromUrl, setLinters],
   );
 
   // Sync search params with fetchedUrl (separate from fetch to avoid re-render loop)
