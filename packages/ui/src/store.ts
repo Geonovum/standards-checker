@@ -4,6 +4,8 @@ import type { SpecLinter } from './types';
 interface CheckerState {
   content: string;
   setContent: (content: string) => void;
+  contentFromUrl: boolean;
+  setContentFromUrl: (fromUrl: boolean) => void;
   linters: SpecLinter[];
   setLinters: (linters: SpecLinter[]) => void;
   checking: boolean;
@@ -15,6 +17,8 @@ interface CheckerState {
 export const useChecker = create<CheckerState>(set => ({
   content: '{}',
   setContent: content => set({ content }),
+  contentFromUrl: false,
+  setContentFromUrl: contentFromUrl => set({ contentFromUrl }),
   linters: [],
   setLinters: linters => set({ linters }),
   checking: false,
