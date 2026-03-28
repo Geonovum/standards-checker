@@ -1,4 +1,5 @@
 import { json, jsonParseLinter } from '@codemirror/lang-json';
+import { yaml } from '@codemirror/lang-yaml';
 import { forEachDiagnostic, linter, lintGutter, setDiagnosticsEffect } from '@codemirror/lint';
 import type { Extension, ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import ReactCodeMirror, { EditorSelection } from '@uiw/react-codemirror';
@@ -6,13 +7,13 @@ import clsx from 'clsx';
 import { AlertCircle, SquareArrowOutUpRight } from 'lucide-react';
 import { isEmpty, pick } from 'ramda';
 import type { FC } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChecker } from '../store';
 import { DEFAULT_UI_STRINGS, type Diagnostic, type Spec, type UiStrings } from '../types';
-import { groupBySource } from '../util';
+import { formatDocument, groupBySource, isJsonContent } from '../util';
 
-const EXTENSIONS: Extension[] = [json(), linter(jsonParseLinter()), lintGutter()];
+const EXTENSIONS: Extension[] = [lintGutter()];
 
 interface Props {
   spec: Spec;
@@ -27,6 +28,12 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
   const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
   const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
+  const isJson = isJsonContent(content);
+
+  const languageExtensions = useMemo(
+    () => (isJson ? [json(), linter(jsonParseLinter())] : [yaml()]),
+    [isJson],
+  );
 
   useEffect(() => {
     setContent(spec.example);
@@ -39,7 +46,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
         <ReactCodeMirror
           ref={codeMirrorRef}
           value={content}
-          extensions={[...EXTENSIONS, ...linters.map(l => l.linter)]}
+          extensions={[...EXTENSIONS, ...languageExtensions, ...linters.map(l => l.linter)]}
           onUpdate={viewUpdate => {
             viewUpdate.transactions.forEach(transaction => {
               transaction.effects.forEach(effect => {
@@ -53,7 +60,10 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
             });
 
             if (viewUpdate.docChanged) {
-              setContent(viewUpdate.state.doc.toString());
+              const isPaste = viewUpdate.transactions.some(tr => tr.isUserEvent('input.paste'));
+              const newContent = viewUpdate.state.doc.toString();
+              setContent(isPaste ? formatDocument(newContent) : newContent);
+              setDiagnostics({});
               setChecking(true);
               setError(undefined);
             }
