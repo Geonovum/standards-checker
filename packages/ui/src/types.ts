@@ -31,18 +31,26 @@ export interface UiStrings {
   checking: string;
   noMatchingRulesets: string;
   noViolations: string;
-  lintingErrorsSummary: string;
+  lintingSummary: string;
   showInEditor: string;
   documentation: string;
+  severityError: string;
+  severityWarning: string;
+  severityInfo: string;
+  severityHint: string;
 }
 
 export const DEFAULT_UI_STRINGS: UiStrings = {
   checking: 'Checking...',
   noMatchingRulesets: 'No matching rulesets found.',
   noViolations: 'No violations found.',
-  lintingErrorsSummary: 'Found {count} linting error(s).',
+  lintingSummary: 'Found {total} issue(s): {errors} error(s), {warnings} warning(s), {hints} hint(s), {info} info.',
   showInEditor: 'Show in editor',
   documentation: 'Documentation',
+  severityError: 'Errors',
+  severityWarning: 'Warnings',
+  severityInfo: 'Info',
+  severityHint: 'Hints',
 };
 
 export interface UiConfig {
