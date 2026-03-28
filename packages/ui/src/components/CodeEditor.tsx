@@ -13,7 +13,7 @@ import { useChecker } from '../store';
 import { DEFAULT_UI_STRINGS, type Diagnostic, type Spec, type UiStrings } from '../types';
 import { formatDocument, groupBySource, isJsonContent } from '../util';
 
-const BASE_EXTENSIONS: Extension[] = [lintGutter()];
+const EXTENSIONS: Extension[] = [lintGutter()];
 
 interface Props {
   spec: Spec;
@@ -46,7 +46,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
         <ReactCodeMirror
           ref={codeMirrorRef}
           value={content}
-          extensions={[...BASE_EXTENSIONS, ...languageExtensions, ...linters.map(l => l.linter)]}
+          extensions={[...EXTENSIONS, ...languageExtensions, ...linters.map(l => l.linter)]}
           onUpdate={viewUpdate => {
             viewUpdate.transactions.forEach(transaction => {
               transaction.effects.forEach(effect => {
