@@ -13,6 +13,7 @@ export { default as App } from './App';
 export { default as createRouter } from './router';
 export { mount } from './mount';
 export { default as CodeEditor } from './components/CodeEditor';
+export { default as FormatToggle } from './components/FormatToggle';
 export { default as SpecSelector } from './components/SpecSelector';
 export { default as UriInput } from './components/UriInput';
 export { default as GitHubIcon } from './components/GitHubIcon';

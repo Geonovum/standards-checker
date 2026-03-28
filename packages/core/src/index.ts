@@ -28,6 +28,7 @@ export {
   groupBySource,
   handleResponse,
   handleResponseJson,
+  isJsonContent,
   formatDocument,
   errorMessage,
   errorStr,

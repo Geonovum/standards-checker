@@ -34,7 +34,16 @@ export const handleResponseJson = (response: Response, uri: string) => {
   return response.json();
 };
 
+export const isJsonContent = (content: string): boolean => {
+  const trimmed = content.trimStart();
+  return trimmed.startsWith('{') || trimmed.startsWith('[');
+};
+
 export const formatDocument = (content: string): string => {
+  if (!isJsonContent(content)) {
+    return content;
+  }
+
   try {
     const doc = JSON.parse(content);
     return JSON.stringify(doc, undefined, 2);
