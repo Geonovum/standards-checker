@@ -17,11 +17,7 @@ const SEVERITY_LABELS: Record<string, string> = {
   hint: 'Hints',
 };
 
-const renderDiagnosticGroup = (
-  severity: string,
-  diagnostics: ValidationDiagnostic[],
-  startIndex: number,
-): string[] => {
+const renderDiagnosticGroup = (severity: string, diagnostics: ValidationDiagnostic[], startIndex: number): string[] => {
   if (diagnostics.length === 0) return [];
 
   const lines: string[] = [];

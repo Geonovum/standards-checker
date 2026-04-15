@@ -89,8 +89,8 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
               .replace('{total}', linterDiagnostics.length.toString())
               .replace('{errors}', counts.error.toString())
               .replace('{warnings}', counts.warning.toString())
-              .replace('{hints}', (counts.hint).toString())
-              .replace('{info}', (counts.info).toString());
+              .replace('{hints}', counts.hint.toString())
+              .replace('{info}', counts.info.toString());
 
             return (
               <div key={linter.name}>
@@ -103,12 +103,14 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
 
                   return (
                     <div key={severity} className="mb-4">
-                      <h3 className={clsx('severity-group', {
-                        'severity-group-error': severity === 'error',
-                        'severity-group-warning': severity === 'warning',
-                        'severity-group-info': severity === 'info',
-                        'severity-group-hint': severity === 'hint',
-                      })}>
+                      <h3
+                        className={clsx('severity-group', {
+                          'severity-group-error': severity === 'error',
+                          'severity-group-warning': severity === 'warning',
+                          'severity-group-info': severity === 'info',
+                          'severity-group-hint': severity === 'hint',
+                        })}
+                      >
                         {strings[`severity${severity.charAt(0).toUpperCase()}${severity.slice(1)}` as keyof UiStrings]} ({group.length})
                       </h3>
                       <ul>
