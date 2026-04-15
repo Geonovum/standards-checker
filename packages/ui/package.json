@@ -61,7 +61,7 @@
     "ramda": "^0.32.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.14.0",
+    "react-router-dom": "^7.14.1",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.0",
     "zustand": "^5.0.12"
