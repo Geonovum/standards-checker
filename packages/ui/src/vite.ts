@@ -1,6 +1,7 @@
 import yaml from '@modyfi/vite-plugin-yaml';
 import react from '@vitejs/plugin-react';
 import { createRequire } from 'module';
+import { defineConfig, mergeConfig, type ViteUserConfigExport } from 'vitest/config';
 
 const _require = createRequire(import.meta.url);
 
@@ -15,7 +16,7 @@ const _require = createRequire(import.meta.url);
  * This also handles the linked development case where the UI package is
  * symlinked from outside the consumer's node_modules.
  */
-function resolveDeps(): Record<string, unknown> {
+function resolveDeps() {
   return {
     name: 'resolve-deps',
     async resolveId(
@@ -40,15 +41,7 @@ function resolveDeps(): Record<string, unknown> {
   };
 }
 
-/**
- * Shared Vite configuration for standards-checker apps.
- *
- * Usage in your vite.config.ts:
- *   import { sharedConfig } from '@geonovum/standards-checker-ui/vite';
- *   import { defineConfig, mergeConfig } from 'vitest/config';
- *   export default defineConfig(mergeConfig(sharedConfig, { base: '/my-app/' }));
- */
-export const sharedConfig: Record<string, unknown> = {
+const sharedConfig = defineConfig({
   plugins: [react(), yaml(), resolveDeps()],
   build: {
     // Use esbuild for minification instead of Vite 8's default OXC minifier.
@@ -66,7 +59,7 @@ export const sharedConfig: Record<string, unknown> = {
           if (id.includes('/codemirror/') || id.includes('/@uiw/')) return 'codemirror';
         },
       },
-      onLog(level: string, log: { message?: string }, defaultHandler: (level: string, log: unknown) => void) {
+      onLog(level, log, defaultHandler) {
         if (log.message?.includes('has been externalized for browser compatibility')) return;
         defaultHandler(level, log);
       },
@@ -79,4 +72,15 @@ export const sharedConfig: Record<string, unknown> = {
     environment: 'node',
     setupFiles: ['src/vitest-matchers.ts'],
   },
-};
+});
+
+/**
+ * Create a Vite configuration for a standards-checker app.
+ *
+ * Usage in your vite.config.ts:
+ *   import { createConfig } from '@geonovum/standards-checker-ui/vite';
+ *   export default createConfig({ base: '/my-app/' });
+ */
+export function createConfig(overrides: Record<string, unknown>): ViteUserConfigExport {
+  return defineConfig(mergeConfig(sharedConfig, overrides));
+}
