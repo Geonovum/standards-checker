@@ -20,8 +20,8 @@ interface Props {
 }
 
 const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
-  const { content, setContent, linters, setLinters, checking, setChecking, error, setError } = useChecker(
-    useShallow(state => pick(['content', 'setContent', 'linters', 'setLinters', 'checking', 'setChecking', 'error', 'setError'], state)),
+  const { content, setContent, contentFromUrl, linters, setLinters, checking, setChecking, error, setError } = useChecker(
+    useShallow(state => pick(['content', 'setContent', 'contentFromUrl', 'linters', 'setLinters', 'checking', 'setChecking', 'error', 'setError'], state)),
   );
 
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
@@ -29,9 +29,11 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
   const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
 
   useEffect(() => {
-    setContent(spec.example);
+    if (!contentFromUrl) {
+      setContent(spec.example);
+    }
     setLinters(spec.linters);
-  }, [spec, setContent, setLinters]);
+  }, [spec, contentFromUrl, setContent, setLinters]);
 
   return (
     <div className="flex h-full">
