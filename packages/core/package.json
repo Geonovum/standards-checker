@@ -43,7 +43,7 @@
     "@stoplight/better-ajv-errors": "^1.0.3",
     "@stoplight/json-ref-readers": "^1.2.2",
     "@stoplight/path": "^2.0.1",
-    "@stoplight/spectral-core": "^1.21.0",
+    "@stoplight/spectral-core": "^1.22.0",
     "@stoplight/spectral-formats": "^1.8.2",
     "@stoplight/spectral-functions": "^1.10.1",
     "@stoplight/spectral-parsers": "^1.0.5",
@@ -58,10 +58,10 @@
   },
   "devDependencies": {
     "@types/json-schema-merge-allof": "^0.6.5",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.6.0",
     "@types/ramda": "^0.31.1",
-    "tsdown": "^0.21.6",
+    "tsdown": "^0.21.8",
     "typescript": "^6.0.2",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.4"
   }
 }
