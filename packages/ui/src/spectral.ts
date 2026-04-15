@@ -1,10 +1,9 @@
 import { linter } from '@codemirror/lint';
-import * as SpectralCore from '@stoplight/spectral-core';
 import type { RulesetDefinition } from '@stoplight/spectral-core';
+import * as SpectralCore from '@stoplight/spectral-core';
 import * as Parsers from '@stoplight/spectral-parsers';
 import { DiagnosticSeverity } from '@stoplight/types';
-import type { Text } from '@uiw/react-codemirror';
-import type { Extension } from '@uiw/react-codemirror';
+import type { Extension, Text } from '@uiw/react-codemirror';
 import type { Severity } from './types';
 
 type SpectralCoreModule = typeof import('@stoplight/spectral-core');
@@ -75,7 +74,12 @@ function buildYamlPathLines(content: string): Map<string, YamlPathEntry> {
  * against the YAML key structure. The range spans from the key line to the end
  * of its value (the last line before the next sibling or parent key).
  */
-function findYamlPosition(doc: Text, path: (string | number)[], pathLines: Map<string, YamlPathEntry>, lines: string[]): { from: number; to: number } {
+function findYamlPosition(
+  doc: Text,
+  path: (string | number)[],
+  pathLines: Map<string, YamlPathEntry>,
+  lines: string[],
+): { from: number; to: number } {
   const keys = path.map(p => String(p));
 
   for (let len = keys.length; len > 0; len--) {
@@ -114,32 +118,30 @@ export const spectralLinter = (name: string, ruleset: RulesetDefinition): Extens
     const violations = await spectral.run(document);
 
     if (isJson) {
-      return violations
-        .map(violation => ({
-          source: name,
-          from: doc.line(violation.range.start.line + 1).from + violation.range.start.character,
-          to: doc.line(violation.range.end.line + 1).from + violation.range.end.character,
-          severity: mapSeverity(violation.severity),
-          message: `[${violation.code}] ${violation.message}`,
-          documentationUrl: violation.documentationUrl,
-        }));
+      return violations.map(violation => ({
+        source: name,
+        from: doc.line(violation.range.start.line + 1).from + violation.range.start.character,
+        to: doc.line(violation.range.end.line + 1).from + violation.range.end.character,
+        severity: mapSeverity(violation.severity),
+        message: `[${violation.code}] ${violation.message}`,
+        documentationUrl: violation.documentationUrl,
+      }));
     }
 
     // For YAML: use path-based position mapping (Spectral's YAML positions are unreliable)
     const lines = editorContent.split('\n');
     const pathLines = buildYamlPathLines(editorContent);
 
-    return violations
-      .map(violation => {
-        const pos = findYamlPosition(doc, violation.path, pathLines, lines);
-        return {
-          source: name,
-          from: pos.from,
-          to: pos.to,
-          severity: mapSeverity(violation.severity),
-          message: `[${violation.code}] ${violation.message}`,
-          documentationUrl: violation.documentationUrl,
-        };
-      });
+    return violations.map(violation => {
+      const pos = findYamlPosition(doc, violation.path, pathLines, lines);
+      return {
+        source: name,
+        from: pos.from,
+        to: pos.to,
+        severity: mapSeverity(violation.severity),
+        message: `[${violation.code}] ${violation.message}`,
+        documentationUrl: violation.documentationUrl,
+      };
+    });
   });
 };

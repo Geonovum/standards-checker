@@ -33,11 +33,7 @@ const FormatToggle: FC<Props> = ({ className }) => {
 
   return (
     <div className={className}>
-      <button
-        type="button"
-        className="px-2.5 py-1.5 text-sm font-semibold cursor-pointer"
-        onClick={handleToggle}
-      >
+      <button type="button" className="px-2.5 py-1.5 text-sm font-semibold cursor-pointer" onClick={handleToggle}>
         {isJson ? 'YAML' : 'JSON'}
       </button>
     </div>

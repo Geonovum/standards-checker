@@ -30,10 +30,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
   const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
   const isJson = isJsonContent(content);
 
-  const languageExtensions = useMemo(
-    () => (isJson ? [json(), linter(jsonParseLinter())] : [yaml()]),
-    [isJson],
-  );
+  const languageExtensions = useMemo(() => (isJson ? [json(), linter(jsonParseLinter())] : [yaml()]), [isJson]);
 
   useEffect(() => {
     setContent(spec.example);
