@@ -10,14 +10,30 @@ Part of the [standards-checker](../../) workspace. Depends on [`@geonovum/standa
 npm install @geonovum/standards-checker-ui
 ```
 
-Peer dependencies: `react ^19`, `react-dom ^19`.
+Peer dependencies: `@geonovum/standards-checker ^1.0.0`.
 
 ## Exports
 
-| Entry point                                | Description                                                 |
-| ------------------------------------------ | ----------------------------------------------------------- |
-| `@geonovum/standards-checker-ui`           | All UI exports: components, router, store, types, utilities |
-| `@geonovum/standards-checker-ui/index.css` | Tailwind-based stylesheet (must be imported in your app)    |
+| Entry point                                    | Description                                                 |
+| ---------------------------------------------- | ----------------------------------------------------------- |
+| `@geonovum/standards-checker-ui`               | All UI exports: components, router, store, types, utilities |
+| `@geonovum/standards-checker-ui/index.css`     | Tailwind-based stylesheet (must be imported in your app)    |
+| `@geonovum/standards-checker-ui/vite`          | Shared Vite config factory (`createConfig`)                 |
+| `@geonovum/standards-checker-ui/eslint.config` | Shared ESLint flat config                                   |
+
+## Vite & Vitest
+
+The UI package provides `vite` and `vitest` binaries, so checker apps don't need these as direct
+dependencies. It also exports a `createConfig` function for your `vite.config.ts`:
+
+```ts
+import { createConfig } from '@geonovum/standards-checker-ui/vite';
+
+export default createConfig({ base: '/my-checker/' });
+```
+
+This includes React and YAML plugins, chunk splitting, deduplication, vitest setup, and the
+`resolveDeps` plugin for linked development.
 
 ## Quick start
 
