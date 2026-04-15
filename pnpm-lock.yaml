@@ -171,9 +171,6 @@ importers:
       vite:
         specifier: ^8.0.0
         version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)
-      vitest:
-        specifier: ^4.1.0
-        version: 4.1.4(@types/node@25.6.0)(jsdom@29.0.2)(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7))
       zustand:
         specifier: ^5.0.12
         version: 5.0.12(@types/react@19.2.14)(immer@9.0.21)(react@19.2.4)
@@ -211,6 +208,9 @@ importers:
       typescript:
         specifier: ^6.0.2
         version: 6.0.2
+      vitest:
+        specifier: ^4.1.0
+        version: 4.1.4(@types/node@25.6.0)(jsdom@29.0.2)(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7))
 
 packages:
 

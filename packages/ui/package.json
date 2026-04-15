@@ -1,6 +1,6 @@
 {
   "name": "@geonovum/standards-checker-ui",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "module",
   "license": "EUPL-1.2",
   "description": "Standards checker UI components for web-based validation tools",
@@ -10,12 +10,12 @@
   "files": [
     "dist",
     "bin",
+    "client.d.ts",
     "src/index.css",
     "eslint.base.js"
   ],
   "bin": {
-    "vite": "./bin/vite.mjs",
-    "vitest": "./bin/vitest.mjs"
+    "vite": "./bin/vite.mjs"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -29,6 +29,7 @@
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.js"
     },
+    "./client": "./client.d.ts",
     "./eslint.config": "./eslint.base.js"
   },
   "scripts": {
@@ -62,7 +63,6 @@
     "react-router-dom": "^7.14.0",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.0",
-    "vitest": "^4.1.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
@@ -76,6 +76,7 @@
     "@types/react-dom": "^19.2.3",
     "jsdom": "^29.0.2",
     "tsdown": "^0.21.8",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.0"
   }
 }
