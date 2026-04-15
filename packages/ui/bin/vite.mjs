@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
+import { realpathSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const require = createRequire(import.meta.url);
+const require = createRequire(realpathSync(fileURLToPath(import.meta.url)));
 const viteEntry = require.resolve('vite');
 const viteRoot = viteEntry.match(/^(.+[/\\]vite)[/\\]/)[1];
 const bin = join(viteRoot, 'bin', 'vite.js');
