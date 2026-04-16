@@ -45,7 +45,7 @@
     "@stoplight/path": "^2.0.1",
     "@stoplight/spectral-core": "^1.22.0",
     "@stoplight/spectral-formats": "^1.8.2",
-    "@stoplight/spectral-functions": "^1.10.1",
+    "@stoplight/spectral-functions": "^1.10.2",
     "@stoplight/spectral-parsers": "^1.0.5",
     "@stoplight/spectral-ref-resolver": "^1.0.5",
     "@stoplight/types": "^14.1.1",
