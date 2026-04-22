@@ -11,4 +11,7 @@ export default defineConfig({
   dts: true,
   outExtensions: () => ({ js: '.js', dts: '.d.ts' }),
   clean: true,
+  // Compile Tailwind CSS after tsdown's own clean+build so it lives in dist
+  // alongside the JS output. Runs on every watch rebuild too.
+  onSuccess: 'tailwindcss -i src/ui/index.css -o dist/index.css --minify',
 });

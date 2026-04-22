@@ -7,12 +7,13 @@
  * bundlers (Vite/esbuild) put them directly on the namespace. We handle both.
  */
 import type { RulesetDefinition } from '@stoplight/spectral-core';
-import * as _oasModule from '@stoplight/spectral-rulesets/dist/oas';
+import oasModule from '@stoplight/spectral-rulesets/dist/oas';
 import * as _oasFunctions from '@stoplight/spectral-rulesets/dist/oas/functions';
 
-const oasModule = (_oasModule as unknown as { default?: RulesetDefinition }).default ?? (_oasModule as unknown as RulesetDefinition);
+export const oas: RulesetDefinition =
+  (oasModule as unknown as { default?: RulesetDefinition }).default ?? (oasModule as unknown as RulesetDefinition);
 
-export const oas: RulesetDefinition = oasModule;
+const oasFunctions = (_oasFunctions as unknown as { default?: typeof _oasFunctions }).default ?? _oasFunctions;
 
 export const {
   oasDiscriminator,
@@ -29,4 +30,4 @@ export const {
   oasUnusedComponent,
   refSiblings,
   typedEnum,
-} = _oasFunctions;
+} = oasFunctions;

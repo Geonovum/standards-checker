@@ -68,6 +68,7 @@ One package, many subpaths:
 | `@geonovum/standards-checker/spectral/core`      | Re-export of `@stoplight/spectral-core`                 |
 | `@geonovum/standards-checker/spectral/functions` | Re-export of `@stoplight/spectral-functions`            |
 | `@geonovum/standards-checker/spectral/parsers`   | Re-export of `@stoplight/spectral-parsers`              |
+| `@geonovum/standards-checker/spectral/rulesets`  | Re-export of `@stoplight/spectral-rulesets` (OAS)       |
 | `@geonovum/standards-checker/eslint.config`      | Shared ESLint flat config                               |
 | `@geonovum/standards-checker/prettier`           | Shared Prettier config (use via `"prettier":` field)    |
 | `@geonovum/standards-checker/tsconfig.app.json`  | Base TS config for app source                           |
@@ -75,7 +76,7 @@ One package, many subpaths:
 | `@geonovum/standards-checker/index.css`          | Pre-built CSS (Tailwind compiled at build time)         |
 | `@geonovum/standards-checker/client`             | `*.css` module declaration for TS                       |
 
-Bins shipped with the package (no need for consumers to install these directly): `vite`, `vitest`, `sc-build-cli`.
+Bin shipped with the package: `build-cli` (wraps `tsdown` with the standard CLI-build flags). `vite` and `vitest` are auto-installed as peer deps so consumer scripts can call them directly.
 
 ---
 
@@ -89,7 +90,7 @@ Minimum consumer `package.json`:
   "scripts": {
     "dev": "vite --open",
     "build": "tsc -b && pnpm run build:cli && vite build",
-    "build:cli": "sc-build-cli src/cli.ts",
+    "build:cli": "build-cli src/cli.ts",
     "lint": "eslint .",
     "test": "vitest",
   },
@@ -199,7 +200,7 @@ pnpm link ../standards-checker
 # (pnpm link does not auto-install peers; a regular `pnpm install` does once
 # they're recorded in your lockfile).
 pnpm add react react-dom react-router-dom
-pnpm add -D vitest esbuild
+pnpm add -D vite vitest esbuild
 pnpm dev
 ```
 
