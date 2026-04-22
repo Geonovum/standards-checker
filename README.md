@@ -109,6 +109,7 @@ Minimum consumer `package.json`:
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "typescript": "^6.0.0",
+    "vite": "^8.0.0",
     "vitest": "^4.0.0",
   },
 }
