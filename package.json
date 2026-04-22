@@ -1,6 +1,6 @@
 {
   "name": "@geonovum/standards-checker",
-  "version": "1.1.0-beta.3",
+  "version": "1.1.0-beta.4",
   "type": "module",
   "license": "EUPL-1.2",
   "description": "Standards checker engine with Spectral-based validation, React UI, CLI toolkit and shared Vite/ESLint/Prettier/TS configs",
@@ -15,6 +15,7 @@
     "dist",
     "bin",
     "client.d.ts",
+    "vitest.d.ts",
     "eslint.config.js",
     "prettier.config.js",
     "tsconfig.app.json",
@@ -42,23 +43,20 @@
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.js"
     },
-    "./spectral/core": {
-      "types": "./dist/spectral/core.d.ts",
-      "import": "./dist/spectral/core.js"
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "import": "./dist/vitest.js"
     },
-    "./spectral/functions": {
-      "types": "./dist/spectral/functions.d.ts",
-      "import": "./dist/spectral/functions.js"
+    "./vitest-matchers": {
+      "types": "./dist/vitest-matchers.d.ts",
+      "import": "./dist/vitest-matchers.js"
     },
-    "./spectral/parsers": {
-      "types": "./dist/spectral/parsers.d.ts",
-      "import": "./dist/spectral/parsers.js"
-    },
-    "./spectral/rulesets": {
-      "types": "./dist/spectral/rulesets.d.ts",
-      "import": "./dist/spectral/rulesets.js"
+    "./spectral/*": {
+      "types": "./dist/spectral/*.d.ts",
+      "import": "./dist/spectral/*.js"
     },
     "./client": "./client.d.ts",
+    "./vitest-client": "./vitest.d.ts",
     "./index.css": "./dist/index.css",
     "./eslint.config": "./eslint.config.js",
     "./prettier": "./prettier.config.js",

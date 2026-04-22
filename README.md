@@ -59,24 +59,27 @@ mount(document.getElementById('root')!, specs, {
 
 One package, many subpaths:
 
-| Subpath                                          | What it is                                              |
-| ------------------------------------------------ | ------------------------------------------------------- |
-| `@geonovum/standards-checker`                    | Core validation engine, types, and utilities            |
-| `@geonovum/standards-checker/ui`                 | React components, router, `mount()`                     |
-| `@geonovum/standards-checker/cli`                | `createCli` toolkit for building a CLI entry point      |
-| `@geonovum/standards-checker/vite`               | Shared Vite config factory (React + YAML)               |
-| `@geonovum/standards-checker/spectral/core`      | Re-export of `@stoplight/spectral-core`                 |
-| `@geonovum/standards-checker/spectral/functions` | Re-export of `@stoplight/spectral-functions`            |
-| `@geonovum/standards-checker/spectral/parsers`   | Re-export of `@stoplight/spectral-parsers`              |
-| `@geonovum/standards-checker/spectral/rulesets`  | Re-export of `@stoplight/spectral-rulesets` (OAS)       |
-| `@geonovum/standards-checker/eslint.config`      | Shared ESLint flat config                               |
-| `@geonovum/standards-checker/prettier`           | Shared Prettier config (use via `"prettier":` field)    |
-| `@geonovum/standards-checker/tsconfig.app.json`  | Base TS config for app source                           |
-| `@geonovum/standards-checker/tsconfig.node.json` | Base TS config for Node-side scripts (`vite.config.ts`) |
-| `@geonovum/standards-checker/index.css`          | Pre-built CSS (Tailwind compiled at build time)         |
-| `@geonovum/standards-checker/client`             | `*.css` module declaration for TS                       |
+| Subpath                                          | What it is                                                                               |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `@geonovum/standards-checker`                    | Core validation engine, types, and utilities                                             |
+| `@geonovum/standards-checker/ui`                 | React components, router, `mount()`                                                      |
+| `@geonovum/standards-checker/cli`                | `createCli` toolkit for building a CLI entry point                                       |
+| `@geonovum/standards-checker/vite`               | Shared Vite config factory (`createConfig`) — React + YAML                               |
+| `@geonovum/standards-checker/vitest`             | Shared Vitest config (`createVitestConfig` + default export)                             |
+| `@geonovum/standards-checker/vitest-matchers`    | Setup file registering the `toContainViolation` custom matcher                           |
+| `@geonovum/standards-checker/spectral/core`      | Re-export of `@stoplight/spectral-core`                                                  |
+| `@geonovum/standards-checker/spectral/functions` | Re-export of `@stoplight/spectral-functions`                                             |
+| `@geonovum/standards-checker/spectral/parsers`   | Re-export of `@stoplight/spectral-parsers`                                               |
+| `@geonovum/standards-checker/spectral/rulesets`  | Re-export of `@stoplight/spectral-rulesets` (`oas`, `asyncapi`, `arazzo`, OAS functions) |
+| `@geonovum/standards-checker/eslint.config`      | Shared ESLint flat config                                                                |
+| `@geonovum/standards-checker/prettier`           | Shared Prettier config (use via `"prettier":` field)                                     |
+| `@geonovum/standards-checker/tsconfig.app.json`  | Base TS config for app source                                                            |
+| `@geonovum/standards-checker/tsconfig.node.json` | Base TS config for Node-side scripts (`vite.config.ts`)                                  |
+| `@geonovum/standards-checker/client`             | `*.css` module declaration for TS                                                        |
+| `@geonovum/standards-checker/vitest-client`      | Vitest matcher type augmentation (`toContainViolation`)                                  |
+| `@geonovum/standards-checker/index.css`          | Pre-built CSS (Tailwind compiled at build time)                                          |
 
-Bin shipped with the package: `build-cli` (wraps `tsdown` with the standard CLI-build flags). `vite` and `vitest` are auto-installed as peer deps so consumer scripts can call them directly.
+Bin shipped with the package: `build-cli` — wraps `tsdown` with the standard CLI-build flags. `vite` and `vitest` are peer deps that live in the consumer's tree; scripts invoke their native bins directly.
 
 ---
 
@@ -97,16 +100,21 @@ Minimum consumer `package.json`:
   "prettier": "@geonovum/standards-checker/prettier",
   "dependencies": {
     "@geonovum/standards-checker": "^1.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0",
   },
   "devDependencies": {
+    "esbuild": "^0.28.0",
     "eslint": "^10.0.0",
     "prettier": "^3.0.0",
     "typescript": "^6.0.0",
+    "vitest": "^4.0.0",
   },
 }
 ```
 
-With `.npmrc` containing `auto-install-peers=true`, pnpm auto-installs the peer React family + vitest + esbuild on `pnpm install`. The package ships **pre-built CSS** (`@geonovum/standards-checker/index.css`) so consumers never install Tailwind.
+The package ships **pre-built CSS** (`@geonovum/standards-checker/index.css`), so consumers don't install Tailwind, PostCSS, or any CSS plugins.
 
 Minimum consumer config files:
 
@@ -127,9 +135,16 @@ export { default } from '@geonovum/standards-checker/eslint.config';
 ```
 
 ```ts
-// vitest.config.ts (only needed if using custom matchers)
-import { defineConfig } from 'vitest/config';
-export default defineConfig({ test: { environment: 'node', setupFiles: ['./src/vitest-matchers.ts'] } });
+// vitest.config.ts
+export { default } from '@geonovum/standards-checker/vitest';
+```
+
+The shipped Vitest config registers the `toContainViolation` matcher via its setup file. To override any option, use the `createVitestConfig` factory:
+
+```ts
+// vitest.config.ts
+import { createVitestConfig } from '@geonovum/standards-checker/vitest';
+export default createVitestConfig({ test: { environment: 'jsdom' } });
 ```
 
 Typical project layout:
@@ -146,11 +161,11 @@ my-checker/
 │           ├── rulesets/
 │           ├── examples/
 │           └── functions/
-├── .npmrc                  # auto-install-peers=true
 ├── tsconfig.app.json
 ├── tsconfig.node.json
 ├── eslint.config.js
 ├── vite.config.ts
+├── vitest.config.ts
 └── package.json
 ```
 
@@ -172,56 +187,51 @@ pnpm build
 
 ### Commands
 
-| Command         | Description                          |
-| --------------- | ------------------------------------ |
-| `pnpm build`    | Type-check + bundle via tsdown       |
-| `pnpm dev`      | Watch mode                           |
-| `pnpm test`     | Run vitest                           |
-| `pnpm lint`     | Check for lint and formatting issues |
-| `pnpm lint:fix` | Auto-fix lint and formatting issues  |
+| Command         | Description                                                            |
+| --------------- | ---------------------------------------------------------------------- |
+| `pnpm build`    | Type-check + bundle via tsdown + Tailwind CLI (via tsdown `onSuccess`) |
+| `pnpm dev`      | Watch mode (tsdown --watch)                                            |
+| `pnpm test`     | Run vitest                                                             |
+| `pnpm lint`     | Check for lint and formatting issues                                   |
+| `pnpm lint:fix` | Auto-fix lint and formatting issues                                    |
 
 ### Local development with a checker app
 
-The package is unbundled: each source file becomes its own dist file with bare
-imports preserved. Vite's resolver follows symlinks' realpath when importing
-from the linked package, which lets it find this package's own `node_modules`
-and resolve transitive deps automatically — no custom Vite plugin needed.
+The package is unbundled: each source file becomes its own dist file with bare imports preserved. Vite's resolver follows symlinks' realpath when importing from the linked package, which lets it find this package's own `node_modules` and resolve transitive deps automatically — no custom Vite plugin needed.
+
+The cleanest pattern is a pnpm override in the consumer's `pnpm-workspace.yaml`:
+
+```yaml
+# consumer/pnpm-workspace.yaml
+overrides:
+  '@geonovum/standards-checker': link:../standards-checker
+```
+
+Then:
 
 ```bash
 # Terminal 1: watch mode
 cd standards-checker
 pnpm dev
 
-# Terminal 2: link and run the checker app
+# Terminal 2: run the checker app
 cd ../ogc-checker
-pnpm link ../standards-checker
-
-# One-time after first link: install the peers the linked package declares
-# (pnpm link does not auto-install peers; a regular `pnpm install` does once
-# they're recorded in your lockfile).
-pnpm add react react-dom react-router-dom
-pnpm add -D vite vitest esbuild
+pnpm install
 pnpm dev
 ```
 
-After the peer deps are in your lockfile, `pnpm link` on subsequent dev
-sessions Just Works.
-
-Unlink when done:
-
-```bash
-pnpm unlink @geonovum/standards-checker
-pnpm install
-```
+`pnpm link` does not auto-install the linked package's peers, so the consumer keeps the peer deps (React family, vitest, esbuild) listed in its own `package.json` — otherwise local dev would fail to resolve them.
 
 ### Publishing
 
 Packages are published to npm automatically when a version tag is pushed:
 
 ```bash
-git tag v1.0.0
+git tag v1.1.0
 git push --tags
 ```
+
+The `publish.yml` workflow verifies `package.json` version matches the tag, runs the build + lint + tests, and publishes with provenance.
 
 ---
 

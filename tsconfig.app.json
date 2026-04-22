@@ -16,6 +16,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "types": ["@geonovum/standards-checker/client"]
+    "types": ["@geonovum/standards-checker/client", "@geonovum/standards-checker/vitest-client"]
   }
 }
