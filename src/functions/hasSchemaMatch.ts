@@ -1,16 +1,11 @@
 import { resolveHttp } from '@stoplight/json-ref-readers';
 import { extname } from '@stoplight/path';
 import type { RulesetFunction } from '@stoplight/spectral-core';
-import * as Parsers from '@stoplight/spectral-parsers';
 import { Resolver } from '@stoplight/spectral-ref-resolver';
 import { APPLICATION_JSON_TYPE } from '../constants';
+import { Json, Yaml } from '../encodings';
 import type { OpenAPIV3_0 } from '../openapi-types';
 import { errorMessage, matchSchema } from '../util';
-
-type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
-
-const parsers = (Parsers as unknown as { default?: SpectralParsersModule }).default ?? (Parsers as unknown as SpectralParsersModule);
-const { Json, Yaml } = parsers;
 
 export interface Options {
   schema?: OpenAPIV3_0.SchemaObject;

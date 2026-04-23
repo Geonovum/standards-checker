@@ -1,32 +1,23 @@
-import * as SpectralCore from '@stoplight/spectral-core';
 import type { RulesetDefinition } from '@stoplight/spectral-core';
-import * as Parsers from '@stoplight/spectral-parsers';
 import * as SpectralFormats from '@stoplight/spectral-formats';
+import { Document, Spectral, detectEncoding } from './encodings';
+import { formatOutput } from './formatters';
 import type {
   FailLevel,
+  RulesetPlugin,
   RunContext,
   RunFormat,
   RunOptions,
   RunResult,
-  RulesetPlugin,
   ValidationDiagnostic,
   ValidationResult,
 } from './types';
 import { mapSeverity } from './types';
-import { formatOutput } from './formatters';
 
-type SpectralCoreModule = typeof import('@stoplight/spectral-core');
-type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
 type SpectralFormatsModule = typeof import('@stoplight/spectral-formats');
 
-const spectralCore =
-  (SpectralCore as unknown as { default?: SpectralCoreModule }).default ?? (SpectralCore as unknown as SpectralCoreModule);
-const parsers = (Parsers as unknown as { default?: SpectralParsersModule }).default ?? (Parsers as unknown as SpectralParsersModule);
 const spectralFormats = ((SpectralFormats as unknown as { default?: SpectralFormatsModule }).default ??
   (SpectralFormats as unknown as SpectralFormatsModule)) as Record<string, unknown>;
-
-const { Document, Spectral } = spectralCore;
-const { Json } = parsers;
 
 interface NormalizedRulesets {
   map: Record<string, RulesetDefinition>;
@@ -206,7 +197,8 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
     workingDocument = await plugin.preprocess(document, context);
   }
 
-  const jsonContent = typeof workingDocument === 'string' ? workingDocument : JSON.stringify(workingDocument, null, 2);
+  const content = typeof workingDocument === 'string' ? workingDocument : JSON.stringify(workingDocument, null, 2);
+  const encoding = detectEncoding(content);
 
   const diagnostics: ValidationDiagnostic[] = [];
 
@@ -214,7 +206,7 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
     const spectral = new Spectral();
     spectral.setRuleset(withPluginFunctions(normalized.map[rulesetId], plugin));
 
-    const doc = new Document(jsonContent, Json);
+    const doc = new Document(content, encoding.parser);
     const violations = await spectral.run(doc);
 
     diagnostics.push(
@@ -235,7 +227,7 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
   let result: ValidationResult = {
     valid,
     diagnostics,
-    content: jsonContent,
+    content,
     rulesets: normalized.ids,
   };
 

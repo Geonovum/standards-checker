@@ -1,12 +1,12 @@
-import type { Diagnostic } from './types';
 import {
   formatDocument,
-  groupBy as sharedGroupBy,
-  groupBySource as sharedGroupBySource,
   handleResponse,
   handleResponseJson,
+  groupBy as sharedGroupBy,
+  groupBySource as sharedGroupBySource,
 } from '../util';
+import type { Diagnostic } from './types';
 
 export const groupBy = sharedGroupBy;
 export const groupBySource = (diagnostics: Diagnostic[]) => sharedGroupBySource(diagnostics);
-export { handleResponse, handleResponseJson, formatDocument };
+export { formatDocument, handleResponse, handleResponseJson };

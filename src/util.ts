@@ -2,6 +2,7 @@ import type { IFunctionResult, RulesetFunctionContext } from '@stoplight/spectra
 import mergeAllOf from 'json-schema-merge-allof';
 import nimma from 'nimma';
 import { last, omit } from 'ramda';
+import { detectEncoding } from './encodings';
 import type { OpenAPIV3_0 } from './openapi-types';
 
 // General utilities
@@ -34,14 +35,8 @@ export const handleResponseJson = (response: Response, uri: string) => {
   return response.json();
 };
 
-export const formatDocument = (content: string): string => {
-  try {
-    const doc = JSON.parse(content);
-    return JSON.stringify(doc, undefined, 2);
-  } catch {
-    throw new Error('JSON document could not be parsed.');
-  }
-};
+// Returns the input unchanged for encodings without a canonical form (YAML).
+export const formatDocument = (content: string): string => detectEncoding(content).canonicalize?.(content) ?? content;
 
 // Spectral utility functions
 

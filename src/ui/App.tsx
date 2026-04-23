@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
-import type { Spec, UiStrings } from './types';
 import CodeEditor from './components/CodeEditor';
 import GitHubIcon from './components/GitHubIcon';
 import SpecSelector from './components/SpecSelector';
 import UriInput from './components/UriInput';
+import type { Spec, UiStrings } from './types';
 
 interface Props {
   spec: Spec;
