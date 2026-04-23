@@ -3,9 +3,9 @@ import { extname } from '@stoplight/path';
 import type { RulesetFunction } from '@stoplight/spectral-core';
 import * as Parsers from '@stoplight/spectral-parsers';
 import { Resolver } from '@stoplight/spectral-ref-resolver';
-import { errorMessage, matchSchema } from '../util';
-import type { OpenAPIV3_0 } from '../openapi-types';
 import { APPLICATION_JSON_TYPE } from '../constants';
+import type { OpenAPIV3_0 } from '../openapi-types';
+import { errorMessage, matchSchema } from '../util';
 
 type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
 
@@ -17,6 +17,8 @@ export interface Options {
   schemaUri?: string;
   mediaType?: string;
 }
+
+const RESOLVE_TIMEOUT_MS = 5_000;
 
 const resolver = new Resolver({
   resolvers: {
@@ -33,6 +35,40 @@ const resolver = new Resolver({
     });
   },
 });
+
+// Dedupe by URI: concurrent calls for the same schemaUri share one fetch + resolve.
+// A failed/timed-out resolve is evicted so a later call can retry.
+const refSchemaCache = new Map<string, Promise<OpenAPIV3_0.SchemaObject>>();
+
+const fetchAndResolveSchema = async (schemaUri: string): Promise<OpenAPIV3_0.SchemaObject> => {
+  const response = await fetch(schemaUri);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${schemaUri}: HTTP ${response.status}`);
+  }
+  const responseText = await response.text();
+  const parsed = Yaml.parse(responseText).data as OpenAPIV3_0.SchemaObject;
+
+  const resolveResult = await Promise.race([
+    resolver.resolve(parsed, { baseUri: schemaUri }),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Timed out resolving $refs in ${schemaUri} after ${RESOLVE_TIMEOUT_MS}ms`)), RESOLVE_TIMEOUT_MS),
+    ),
+  ]);
+
+  return (resolveResult as { result: unknown }).result as OpenAPIV3_0.SchemaObject;
+};
+
+const getRefSchema = (schemaUri: string): Promise<OpenAPIV3_0.SchemaObject> => {
+  let pending = refSchemaCache.get(schemaUri);
+  if (!pending) {
+    pending = fetchAndResolveSchema(schemaUri).catch(err => {
+      refSchemaCache.delete(schemaUri);
+      throw err;
+    });
+    refSchemaCache.set(schemaUri, pending);
+  }
+  return pending;
+};
 
 const hasSchemaMatch: RulesetFunction<OpenAPIV3_0.ResponseObject | OpenAPIV3_0.RequestBodyObject, Options> = async (
   input,
@@ -59,14 +95,12 @@ const hasSchemaMatch: RulesetFunction<OpenAPIV3_0.ResponseObject | OpenAPIV3_0.R
   let refSchema = options.schema;
 
   if (options.schemaUri) {
-    refSchema = await fetch(options.schemaUri)
-      .then(response => response.text())
-      .then(responseText => Yaml.parse(responseText).data)
-      .then(responseSchema =>
-        resolver
-          .resolve(responseSchema, { baseUri: options.schemaUri })
-          .then((result: { result: unknown }) => result.result as OpenAPIV3_0.SchemaObject),
-      );
+    try {
+      refSchema = await getRefSchema(options.schemaUri);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return errorMessage(`Could not load reference schema: ${message}`, [...context.path, 'content', mediaType]);
+    }
   }
 
   if (!refSchema) {
