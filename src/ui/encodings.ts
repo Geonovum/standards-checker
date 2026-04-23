@@ -24,6 +24,8 @@ interface YamlPathEntry {
   indent: number;
 }
 
+// Block-style only: flow mappings (`{a: 1}`), multi-line scalars (`|`, `>`), and
+// quoted keys containing `:` fall through to the first-line fallback in yamlRangeMapper.
 const buildYamlPathLines = (content: string): Map<string, YamlPathEntry> => {
   const lines = content.split('\n');
   const result = new Map<string, YamlPathEntry>();

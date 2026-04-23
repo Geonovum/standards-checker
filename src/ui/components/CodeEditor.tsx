@@ -29,7 +29,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
   const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
   const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
-  const encodingId = detectEncoding(content).id;
+  const encodingId = useMemo(() => detectEncoding(content).id, [content]);
 
   const languageExtensions = useMemo(() => getLanguageExtensions(encodingId), [encodingId]);
 
@@ -62,6 +62,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
             if (viewUpdate.docChanged) {
               const isPaste = viewUpdate.transactions.some(tr => tr.isUserEvent('input.paste'));
               const newContent = viewUpdate.state.doc.toString();
+              // formatDocument only canonicalizes JSON; YAML pastes are preserved as-is.
               setContent(isPaste ? formatDocument(newContent) : newContent);
               setDiagnostics({});
               setChecking(true);

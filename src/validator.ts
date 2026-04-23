@@ -76,4 +76,13 @@ export async function validateUrl(options: ValidateUrlOptions): Promise<Validati
   }
 }
 
-export { formatDocument as formatJson } from './util';
+export { formatDocument } from './util';
+
+export function formatJson(content: string): string {
+  try {
+    const parsed = JSON.parse(content);
+    return JSON.stringify(parsed, null, 2);
+  } catch (error) {
+    throw new Error(`Invalid JSON: ${error instanceof Error ? error.message : String(error)}`, { cause: error });
+  }
+}
