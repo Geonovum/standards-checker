@@ -3,8 +3,8 @@ import { Command } from 'commander';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
-import type { RulesetPlugin, RulesetPluginIndex } from '../types';
 import { run } from '../run';
+import type { RulesetPlugin, RulesetPluginIndex } from '../types';
 
 export interface CliConfig {
   name: string;
@@ -71,7 +71,9 @@ const selectPlugin = (index: RulesetPluginIndex, rule: string): RulesetPlugin =>
   return plugin;
 };
 
-async function readInput(specifier: string): Promise<unknown> {
+const ACCEPT_HEADER = 'application/json, application/yaml;q=0.9, text/yaml;q=0.9, */*;q=0.1';
+
+async function readInput(specifier: string): Promise<string> {
   if (!specifier || specifier === '-') {
     const chunks: Buffer[] = [];
 
@@ -82,15 +84,15 @@ async function readInput(specifier: string): Promise<unknown> {
     const content = Buffer.concat(chunks).toString('utf8').trim();
 
     if (!content) {
-      throw new Error('Empty stdin (no JSON received).');
+      throw new Error('Empty stdin (no content received).');
     }
 
-    return parseMaybeJson(content, 'stdin');
+    return content;
   }
 
   if (isHttpUrl(specifier)) {
     const response = await fetch(specifier, {
-      headers: { Accept: 'application/json' },
+      headers: { Accept: ACCEPT_HEADER },
     });
 
     if (!response.ok) {
@@ -103,17 +105,16 @@ async function readInput(specifier: string): Promise<unknown> {
       throw new Error(`Empty response from URL: ${specifier}`);
     }
 
-    return parseMaybeJson(body, specifier);
+    return body;
   }
 
   const filePath = resolve(process.cwd(), specifier);
 
   if (!existsSync(filePath)) {
-    throw new Error(`JSON file not found: ${filePath}`);
+    throw new Error(`Input file not found: ${filePath}`);
   }
 
-  const buffer = readFileSync(filePath, 'utf8');
-  return parseMaybeJson(buffer, filePath);
+  return readFileSync(filePath, 'utf8');
 }
 
 async function invokeEngine(document: unknown, plugin: RulesetPlugin, options: ValidateOptions) {
@@ -124,14 +125,3 @@ async function invokeEngine(document: unknown, plugin: RulesetPlugin, options: V
 }
 
 const isHttpUrl = (value: string): boolean => /^https?:\/\//i.test(value);
-
-const parseMaybeJson = (value: string, source?: string): unknown => {
-  try {
-    return JSON.parse(value);
-  } catch {
-    if (source && !value.trim()) {
-      throw new Error(`JSON file is empty: ${source}`);
-    }
-    return value;
-  }
-};

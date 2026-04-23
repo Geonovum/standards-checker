@@ -1,6 +1,4 @@
-import { json, jsonParseLinter } from '@codemirror/lang-json';
-import { yaml } from '@codemirror/lang-yaml';
-import { forEachDiagnostic, linter, lintGutter, setDiagnosticsEffect } from '@codemirror/lint';
+import { forEachDiagnostic, lintGutter, setDiagnosticsEffect } from '@codemirror/lint';
 import type { Extension, ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import ReactCodeMirror, { EditorSelection } from '@uiw/react-codemirror';
 import clsx from 'clsx';
@@ -9,9 +7,12 @@ import { isEmpty, pick } from 'ramda';
 import type { FC } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { detectEncoding } from '../../encodings';
+import { getLanguageExtensions } from '../encodings';
 import { useChecker } from '../store';
 import { DEFAULT_UI_STRINGS, type Diagnostic, type Spec, type UiStrings } from '../types';
-import { formatDocument, groupBySource, isJsonContent } from '../util';
+import { formatDocument, groupBySource } from '../util';
+import FormatToggle from './FormatToggle';
 
 const EXTENSIONS: Extension[] = [lintGutter()];
 
@@ -28,9 +29,9 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
   const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
   const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
-  const isJson = isJsonContent(content);
+  const encodingId = detectEncoding(content).id;
 
-  const languageExtensions = useMemo(() => (isJson ? [json(), linter(jsonParseLinter())] : [yaml()]), [isJson]);
+  const languageExtensions = useMemo(() => getLanguageExtensions(encodingId), [encodingId]);
 
   useEffect(() => {
     setContent(spec.example);
@@ -39,10 +40,12 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
 
   return (
     <div className="flex h-full">
-      <div className="w-[50%] min-w-[400px] overflow-auto">
+      <div className="relative w-[50%] min-w-[400px] overflow-hidden">
         <ReactCodeMirror
           ref={codeMirrorRef}
           value={content}
+          height="100%"
+          style={{ height: '100%' }}
           extensions={[...EXTENSIONS, ...languageExtensions, ...linters.map(l => l.linter)]}
           onUpdate={viewUpdate => {
             viewUpdate.transactions.forEach(transaction => {
@@ -66,6 +69,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
             }
           }}
         />
+        <FormatToggle className="absolute top-2 right-3 z-10" />
       </div>
       <div className="flex-1 overflow-auto p-4 bg-sky-50 text-sm">
         {checking && <p>{strings.checking}</p>}

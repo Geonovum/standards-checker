@@ -1,11 +1,10 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
-import type { Spec, UiStrings } from './types';
 import CodeEditor from './components/CodeEditor';
-import FormatToggle from './components/FormatToggle';
 import GitHubIcon from './components/GitHubIcon';
 import SpecSelector from './components/SpecSelector';
 import UriInput from './components/UriInput';
+import type { Spec, UiStrings } from './types';
 
 interface Props {
   spec: Spec;
@@ -25,7 +24,6 @@ const App: FC<Props> = ({ spec, specs, title, githubUrl, strings }) => (
       </div>
       <UriInput spec={spec} />
       <div className="flex items-center">
-        <FormatToggle className="mr-4" />
         <SpecSelector specs={specs} className="mr-4" />
         {githubUrl && (
           <a href={githubUrl} target="_blank">

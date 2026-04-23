@@ -2,6 +2,7 @@ import type { IFunctionResult, RulesetFunctionContext } from '@stoplight/spectra
 import mergeAllOf from 'json-schema-merge-allof';
 import nimma from 'nimma';
 import { last, omit } from 'ramda';
+import { detectEncoding } from './encodings';
 import type { OpenAPIV3_0 } from './openapi-types';
 
 // General utilities
@@ -34,23 +35,7 @@ export const handleResponseJson = (response: Response, uri: string) => {
   return response.json();
 };
 
-export const isJsonContent = (content: string): boolean => {
-  const trimmed = content.trimStart();
-  return trimmed.startsWith('{') || trimmed.startsWith('[');
-};
-
-export const formatDocument = (content: string): string => {
-  if (!isJsonContent(content)) {
-    return content;
-  }
-
-  try {
-    const doc = JSON.parse(content);
-    return JSON.stringify(doc, undefined, 2);
-  } catch {
-    throw new Error('JSON document could not be parsed.');
-  }
-};
+export const formatDocument = (content: string): string => detectEncoding(content).canonicalize?.(content) ?? content;
 
 // Spectral utility functions
 

@@ -1,19 +1,9 @@
-import jsYaml from 'js-yaml';
+import clsx from 'clsx';
 import { pick } from 'ramda';
 import type { FC } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { ENCODINGS, convertContent, detectEncoding, type Encoding } from '../../encodings';
 import { useChecker } from '../store';
-import { isJsonContent } from '../util';
-
-const toYaml = (content: string): string => {
-  const doc = JSON.parse(content);
-  return jsYaml.dump(doc, { lineWidth: -1, noRefs: true });
-};
-
-const toJson = (content: string): string => {
-  const doc = jsYaml.load(content);
-  return JSON.stringify(doc, undefined, 2);
-};
 
 interface Props {
   className?: string;
@@ -21,21 +11,45 @@ interface Props {
 
 const FormatToggle: FC<Props> = ({ className }) => {
   const { content, setContent } = useChecker(useShallow(state => pick(['content', 'setContent'], state)));
-  const isJson = isJsonContent(content);
+  const active = detectEncoding(content);
 
-  const handleToggle = () => {
+  const switchTo = (target: Encoding) => {
+    if (target.id === active.id) return;
     try {
-      setContent(isJson ? toYaml(content) : toJson(content));
+      setContent(convertContent(active, target, content));
     } catch {
-      // Content is not valid JSON/YAML — ignore
+      // Source content isn't valid under the active encoding — leave it alone.
     }
   };
 
   return (
-    <div className={className}>
-      <button type="button" className="px-2.5 py-1.5 text-sm font-semibold cursor-pointer" onClick={handleToggle}>
-        {isJson ? 'YAML' : 'JSON'}
-      </button>
+    <div
+      role="radiogroup"
+      aria-label="Input format"
+      className={clsx(
+        'inline-flex rounded-md bg-white p-0.5 font-mono text-xs font-semibold tracking-wider uppercase shadow-sm ring-1 ring-slate-200',
+        className,
+      )}
+    >
+      {ENCODINGS.map(encoding => {
+        const isActive = encoding.id === active.id;
+        return (
+          <button
+            key={encoding.id}
+            type="button"
+            role="radio"
+            aria-checked={isActive}
+            onClick={() => switchTo(encoding)}
+            className={clsx(
+              'rounded px-2 py-0.5 transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60',
+              isActive ? 'bg-slate-100 text-slate-700 cursor-default' : 'bg-transparent text-slate-400 hover:text-slate-700 cursor-pointer',
+            )}
+          >
+            {encoding.label}
+          </button>
+        );
+      })}
     </div>
   );
 };
