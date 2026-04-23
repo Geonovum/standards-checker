@@ -198,30 +198,24 @@ pnpm build
 
 ### Local development with a checker app
 
-The package is unbundled: each source file becomes its own dist file with bare imports preserved. Vite's resolver follows symlinks' realpath when importing from the linked package, which lets it find this package's own `node_modules` and resolve transitive deps automatically — no custom Vite plugin needed.
+The package is unbundled: each source file becomes its own dist file with bare imports preserved. Vite's resolver follows symlinks' realpath through the installed package, which lets it find this package's own `node_modules` and resolve transitive deps automatically — no custom Vite plugin needed.
 
-The cleanest pattern is a pnpm override in the consumer's `pnpm-workspace.yaml`:
-
-```yaml
-# consumer/pnpm-workspace.yaml
-overrides:
-  '@geonovum/standards-checker': link:../standards-checker
-```
-
-Then:
+To iterate on standards-checker against a consumer app, use `pnpm link`:
 
 ```bash
 # Terminal 1: watch mode
 cd standards-checker
 pnpm dev
 
-# Terminal 2: run the checker app
+# Terminal 2: link the local checkout, then run the checker app
 cd ../ogc-checker
-pnpm install
+pnpm link ../standards-checker
 pnpm dev
 ```
 
-`pnpm link` does not auto-install the linked package's peers, so the consumer keeps the peer deps (React family, vitest, esbuild) listed in its own `package.json` — otherwise local dev would fail to resolve them.
+Undo with `pnpm unlink @geonovum/standards-checker && pnpm install`. A subsequent `pnpm install` in the consumer can overwrite the symlink with a registry install — re-run `pnpm link ../standards-checker` if that happens.
+
+The peer deps (React family, vite, vitest, esbuild) are already listed in each consumer's `package.json` because the consumer uses them directly (React imports, vite/vitest/esbuild bins), so peer resolution across the link works without extra steps.
 
 ### Publishing
 
