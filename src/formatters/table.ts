@@ -1,4 +1,5 @@
 import type { RulesetPlugin, ValidationDiagnostic, ValidationResult } from '../types';
+import { groupBy } from '../util';
 
 const renderPath = (path: (string | number)[]): string => {
   if (!path || path.length === 0) {
@@ -63,7 +64,7 @@ export const renderTable = (plugin: RulesetPlugin, result: ValidationResult): st
 
   const lines: string[] = [...summaryLines, ''];
 
-  const grouped = Object.groupBy(result.diagnostics, d => d.severity);
+  const grouped = groupBy(result.diagnostics, d => d.severity);
   let index = 0;
 
   for (const severity of SEVERITY_ORDER) {

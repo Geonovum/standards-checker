@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useChecker } from '../store';
 import { DEFAULT_UI_STRINGS, type Diagnostic, type Severity, type Spec, type UiStrings } from '../types';
-import { groupBySource } from '../util';
+import { groupBy, groupBySource } from '../util';
 
 const SEVERITY_ORDER: Severity[] = ['error', 'warning', 'info', 'hint'];
 const EXTENSIONS: Extension[] = [json(), linter(jsonParseLinter()), lintGutter()];
@@ -80,7 +80,7 @@ const CodeEditor: FC<Props> = ({ spec, strings: stringOverrides }) => {
               );
             }
 
-            const grouped = Object.groupBy(linterDiagnostics, d => d.severity);
+            const grouped = groupBy(linterDiagnostics, d => d.severity);
             const counts = { error: 0, warning: 0, info: 0, hint: 0 };
             for (const d of linterDiagnostics) counts[d.severity as Severity] += 1;
 
