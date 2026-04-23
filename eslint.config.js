@@ -1,21 +1,27 @@
-import base from './packages/ui/eslint.base.js';
+import js from '@eslint/js';
+import prettier from 'eslint-plugin-prettier/recommended';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default [
-  ...base,
+export default tseslint.config(
+  { ignores: ['dist', 'docs'] },
   {
-    files: ['packages/ui/**/*.{ts,tsx}'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended, prettier],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      parserOptions: {
-        tsconfigRootDir: import.meta.dirname + '/packages/ui',
-      },
+      ecmaVersion: 2024,
+      globals: globals.browser,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
-  {
-    files: ['packages/core/**/*.{ts,tsx}'],
-    languageOptions: {
-      parserOptions: {
-        tsconfigRootDir: import.meta.dirname + '/packages/core',
-      },
-    },
-  },
-];
+);
