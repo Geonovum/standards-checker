@@ -43,12 +43,15 @@ export const yamlEncoding: Encoding = {
   stringify: value => jsYaml.dump(value, { lineWidth: -1, noRefs: true }),
 };
 
+// Order matters: JSON must precede YAML. JSON is a strict YAML subset, so JSON
+// content also parses cleanly as YAML — the first match wins in detectEncoding.
 export const ENCODINGS: readonly Encoding[] = [jsonEncoding, yamlEncoding];
 
 export const detectEncoding = (content: string, encodings: readonly Encoding[] = ENCODINGS): Encoding => {
-  if (content.trim() === '') return encodings[0];
+  const stripped = content.charCodeAt(0) === 0xfeff ? content.slice(1) : content;
+  if (stripped.trim() === '') return encodings[0];
   for (const encoding of encodings) {
-    if (tryParse(encoding, content)) return encoding;
+    if (tryParse(encoding, stripped)) return encoding;
   }
   return encodings[0];
 };

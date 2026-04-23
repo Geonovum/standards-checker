@@ -24,8 +24,14 @@ interface YamlPathEntry {
   indent: number;
 }
 
-// Block-style only: flow mappings (`{a: 1}`), multi-line scalars (`|`, `>`), and
-// quoted keys containing `:` fall through to the first-line fallback in yamlRangeMapper.
+// Approximate YAML path resolver — block-style only. Known limitations that
+// fall back to a shorter prefix or the first-line fallback in yamlRangeMapper:
+//   - flow-style mappings (`{a: 1}`) and sequences (`[1, 2]`)
+//   - multi-line scalars (`|`, `>`)
+//   - values that contain `:` are mis-tokenised by the regex below
+//   - array indices in violation paths (Spectral emits numeric path segments
+//     for sequence items; this map is keyed on string property names only,
+//     so the lookup falls back to the parent mapping line)
 const buildYamlPathLines = (content: string): Map<string, YamlPathEntry> => {
   const lines = content.split('\n');
   const result = new Map<string, YamlPathEntry>();

@@ -35,6 +35,7 @@ export const handleResponseJson = (response: Response, uri: string) => {
   return response.json();
 };
 
+// Returns the input unchanged for encodings without a canonical form (YAML).
 export const formatDocument = (content: string): string => detectEncoding(content).canonicalize?.(content) ?? content;
 
 // Spectral utility functions

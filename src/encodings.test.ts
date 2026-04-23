@@ -30,6 +30,11 @@ describe('detectEncoding', () => {
     expect(detectEncoding('   \n  {"a":1}  ').id).toBe('json');
   });
 
+  it('strips a leading UTF-8 BOM before classifying', () => {
+    expect(detectEncoding('﻿{"a":1}').id).toBe('json');
+    expect(detectEncoding('﻿a: 1\n').id).toBe('yaml');
+  });
+
   it('falls back to the first registered encoding for empty input', () => {
     expect(detectEncoding('').id).toBe(ENCODINGS[0].id);
   });
