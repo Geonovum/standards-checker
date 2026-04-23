@@ -1,4 +1,5 @@
 import type { RulesetPlugin, ValidationDiagnostic, ValidationResult } from '../types';
+import { groupBy } from '../util';
 
 const renderPath = (path: (string | number)[]): string => {
   if (!path || path.length === 0) {
@@ -6,6 +7,38 @@ const renderPath = (path: (string | number)[]): string => {
   }
 
   return JSON.stringify(path);
+};
+
+const SEVERITY_ORDER = ['error', 'warning', 'info', 'hint'] as const;
+
+const SEVERITY_LABELS: Record<string, string> = {
+  error: 'Errors',
+  warning: 'Warnings',
+  info: 'Info',
+  hint: 'Hints',
+};
+
+const renderDiagnosticGroup = (severity: string, diagnostics: ValidationDiagnostic[], startIndex: number): string[] => {
+  if (diagnostics.length === 0) return [];
+
+  const lines: string[] = [];
+  lines.push(`${SEVERITY_LABELS[severity]} (${diagnostics.length})`);
+
+  diagnostics.forEach((diagnostic, i) => {
+    lines.push(`  ${startIndex + i + 1}. ${diagnostic.code}`);
+    lines.push(`     message: ${diagnostic.message}`);
+    lines.push(`     path: ${renderPath(diagnostic.path)}`);
+
+    if (diagnostic.source) {
+      lines.push(`     source: ${diagnostic.source}`);
+    }
+
+    if (diagnostic.documentationUrl) {
+      lines.push(`     docs: ${diagnostic.documentationUrl}`);
+    }
+  });
+
+  return lines;
 };
 
 export const renderTable = (plugin: RulesetPlugin, result: ValidationResult): string => {
@@ -31,19 +64,18 @@ export const renderTable = (plugin: RulesetPlugin, result: ValidationResult): st
 
   const lines: string[] = [...summaryLines, ''];
 
-  result.diagnostics.forEach((diagnostic: ValidationDiagnostic, index: number) => {
-    lines.push(`${index + 1}. ${diagnostic.severity} ${diagnostic.code}`);
-    lines.push(`   message: ${diagnostic.message}`);
-    lines.push(`   path: ${renderPath(diagnostic.path)}`);
+  const grouped = groupBy(result.diagnostics, d => d.severity);
+  let index = 0;
 
-    if (diagnostic.source) {
-      lines.push(`   source: ${diagnostic.source}`);
+  for (const severity of SEVERITY_ORDER) {
+    const group = grouped[severity] ?? [];
+    const groupLines = renderDiagnosticGroup(severity, group, index);
+
+    if (groupLines.length > 0) {
+      lines.push(...groupLines, '');
+      index += group.length;
     }
+  }
 
-    if (diagnostic.documentationUrl) {
-      lines.push(`   docs: ${diagnostic.documentationUrl}`);
-    }
-  });
-
-  return lines.join('\n');
+  return lines.join('\n').trimEnd();
 };
