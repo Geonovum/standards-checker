@@ -60,8 +60,25 @@ export const errorStr = (error: string, path: string[]) =>
  * @param refSchema The reference schema
  * @returns An array of error messages
  */
-export const matchSchema = (schema: OpenAPIV3_0.SchemaObject, refSchema: OpenAPIV3_0.SchemaObject, path: string[] = []): string[] => {
+export const matchSchema = (
+  schema: OpenAPIV3_0.SchemaObject,
+  refSchema: OpenAPIV3_0.SchemaObject,
+  path: string[] = [],
+  visited: WeakMap<object, WeakSet<object>> = new WeakMap(),
+): string[] => {
   const errors: string[] = [];
+
+  if (typeof schema === 'object' && schema !== null && typeof refSchema === 'object' && refSchema !== null) {
+    let seen = visited.get(schema);
+    if (seen?.has(refSchema)) {
+      return errors;
+    }
+    if (!seen) {
+      seen = new WeakSet();
+      visited.set(schema, seen);
+    }
+    seen.add(refSchema);
+  }
 
   if (schema.oneOf) {
     return schema.oneOf.flatMap((oneOf: OpenAPIV3_0.SchemaObject) =>
@@ -72,6 +89,7 @@ export const matchSchema = (schema: OpenAPIV3_0.SchemaObject, refSchema: OpenAPI
         } as OpenAPIV3_0.SchemaObject,
         refSchema,
         path,
+        visited,
       ),
     );
   }
@@ -81,6 +99,8 @@ export const matchSchema = (schema: OpenAPIV3_0.SchemaObject, refSchema: OpenAPI
     return matchSchema(
       schema.allOf ? (mergeAllOf(schema.allOf) as OpenAPIV3_0.SchemaObject) : schema,
       refSchema.allOf ? (mergeAllOf(refSchema.allOf) as OpenAPIV3_0.SchemaObject) : refSchema,
+      path,
+      visited,
     );
   }
 
@@ -111,13 +131,13 @@ export const matchSchema = (schema: OpenAPIV3_0.SchemaObject, refSchema: OpenAPI
       }
 
       if (propSchema) {
-        matchSchema(propSchema, refPropSchema, [...path, propName]).forEach(error => errors.push(error));
+        matchSchema(propSchema, refPropSchema, [...path, propName], visited).forEach(error => errors.push(error));
       }
     });
   }
 
   if (refSchema.type === 'array' && schema.type === 'array') {
-    matchSchema(schema.items, refSchema.items, path).forEach(error => errors.push(error));
+    matchSchema(schema.items, refSchema.items, path, visited).forEach(error => errors.push(error));
   }
 
   return errors;
