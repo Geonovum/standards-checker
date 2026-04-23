@@ -1,15 +1,147 @@
 {
-  "private": true,
-  "license": "EUPL-1.2",
+  "name": "@geonovum/standards-checker",
+  "version": "1.1.1",
   "type": "module",
-  "packageManager": "pnpm@10.30.3",
+  "license": "EUPL-1.2",
+  "description": "Standards checker engine with Spectral-based validation, React UI, CLI toolkit and shared Vite/ESLint/Prettier/TS configs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Geonovum/standards-checker"
+  },
+  "engines": {
+    "node": ">=20.17"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "client.d.ts",
+    "vitest.d.ts",
+    "eslint.config.js",
+    "prettier.config.js",
+    "tsconfig.app.json",
+    "tsconfig.node.json"
+  ],
+  "bin": {
+    "build-cli": "./bin/build-cli.mjs"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "import": "./dist/ui/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "import": "./dist/vitest.js"
+    },
+    "./vitest-matchers": {
+      "types": "./dist/vitest-matchers.d.ts",
+      "import": "./dist/vitest-matchers.js"
+    },
+    "./spectral/*": {
+      "types": "./dist/spectral/*.d.ts",
+      "import": "./dist/spectral/*.js"
+    },
+    "./client": "./client.d.ts",
+    "./vitest-client": "./vitest.d.ts",
+    "./index.css": "./dist/index.css",
+    "./eslint.config": "./eslint.config.js",
+    "./prettier": "./prettier.config.js",
+    "./tsconfig.app.json": "./tsconfig.app.json",
+    "./tsconfig.node.json": "./tsconfig.node.json"
+  },
   "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r test",
-    "dev": "pnpm -r --parallel dev",
+    "build": "tsc --noEmit && tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "peerDependencies": {
+    "esbuild": "^0.28.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-router-dom": "^7.0.0",
+    "vite": "^8.0.0",
+    "vitest": "^4.0.0"
+  },
+  "dependencies": {
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-yaml": "^6.1.3",
+    "@codemirror/lint": "^6.9.5",
+    "@eslint/js": "^10.0.1",
+    "@modyfi/vite-plugin-yaml": "^1.1.1",
+    "@stoplight/better-ajv-errors": "^1.0.3",
+    "@stoplight/json-ref-readers": "^1.2.2",
+    "@stoplight/path": "^2.0.1",
+    "@stoplight/spectral-core": "^1.22.0",
+    "@stoplight/spectral-formats": "^1.8.2",
+    "@stoplight/spectral-functions": "^1.10.2",
+    "@stoplight/spectral-parsers": "^1.0.5",
+    "@stoplight/spectral-ref-resolver": "^1.0.5",
+    "@stoplight/spectral-rulesets": "^1.22.1",
+    "@stoplight/types": "^14.1.1",
+    "@uiw/react-codemirror": "^4.25.9",
+    "@vitejs/plugin-react": "^6.0.1",
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "clsx": "^2.1.1",
+    "commander": "^14.0.3",
+    "esbuild": "^0.28.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "js-yaml": "^4.1.1",
+    "json-schema-merge-allof": "^0.8.1",
+    "lucide-react": "^1.8.0",
+    "nimma": "^0.7.2",
+    "prettier": "^3.8.3",
+    "ramda": "^0.32.0",
+    "tsdown": "^0.21.9",
+    "typescript-eslint": "^8.58.2",
+    "vitest": "^4.1.5",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/json-schema-merge-allof": "^0.6.5",
+    "@types/node": "^25.6.0",
+    "@types/ramda": "^0.31.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^10.2.1",
+    "jsdom": "^29.0.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.1",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.9"
+  },
+  "packageManager": "pnpm@10.33.0",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
@@ -19,16 +151,5 @@
         "eslint-plugin-react-hooks>eslint": ">=10"
       }
     }
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint": "^10.2.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.4.0",
-    "prettier": "^3.8.2",
-    "typescript-eslint": "^8.58.2"
   }
 }

@@ -6,7 +6,7 @@ import {
   groupBySource as sharedGroupBySource,
   handleResponse,
   handleResponseJson,
-} from '@geonovum/standards-checker';
+} from '../util';
 
 export const groupBy = sharedGroupBy;
 export const groupBySource = (diagnostics: Diagnostic[]) => sharedGroupBySource(diagnostics);

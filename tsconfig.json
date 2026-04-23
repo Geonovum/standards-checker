@@ -1,4 +1,8 @@
 {
-  "files": [],
-  "references": [{ "path": "packages/core" }, { "path": "packages/ui" }]
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["src", "client.d.ts", "vitest.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }
