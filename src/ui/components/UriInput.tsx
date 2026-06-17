@@ -8,6 +8,7 @@ import { formatDocument, handleResponse } from '../util';
 
 interface Props {
   spec: Spec;
+  className?: string;
 }
 
 function fetchDocument(url: string, spec: Spec) {
@@ -20,7 +21,7 @@ function fetchDocument(url: string, spec: Spec) {
     );
 }
 
-const UriInput: FC<Props> = ({ spec }) => {
+const UriInput: FC<Props> = ({ spec, className }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const paramUrl = searchParams.get('url') ?? '';
   const [inputUrl, setInputUrl] = useState(paramUrl);
@@ -87,16 +88,16 @@ const UriInput: FC<Props> = ({ spec }) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className={className}>
+      <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
         <input
           type="text"
-          className="w-96 px-1.5"
+          className="flex-1 min-w-0 px-1.5"
           placeholder="Enter URL to load a document from remote location..."
           value={inputUrl}
           onChange={event => setInputUrl(event.target.value)}
         />
-        <button type="submit" className="ml-2 px-2.5 py-1.5 text-sm font-semibold cursor-pointer" disabled={fetching || checking}>
+        <button type="submit" className="shrink-0 px-2.5 py-1.5 text-sm font-semibold cursor-pointer" disabled={fetching || checking}>
           Load
         </button>
       </form>
