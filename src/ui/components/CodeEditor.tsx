@@ -118,9 +118,9 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
         {!error &&
           !loading &&
           conformanceClasses.map(conformanceClass => {
-            const conformanceClassDiagnostics = diagnostics[conformanceClass.name];
+            const ccDiagnostics = diagnostics[conformanceClass.name];
 
-            if (!conformanceClassDiagnostics) {
+            if (!ccDiagnostics) {
               return (
                 <div key={conformanceClass.name}>
                   <div className="mb-4 p-4 bg-green-600 text-white rounded-sm shadow-lg">
@@ -130,13 +130,13 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
               );
             }
 
-            const grouped = groupBy(conformanceClassDiagnostics, d => d.severity);
+            const grouped = groupBy(ccDiagnostics, d => d.severity);
             const counts = { error: 0, warning: 0, info: 0, hint: 0 };
-            for (const d of conformanceClassDiagnostics) counts[d.severity as Severity] += 1;
+            for (const d of ccDiagnostics) counts[d.severity as Severity] += 1;
 
             const hasErrors = counts.error > 0;
             const summary = strings.lintingSummary
-              .replace('{total}', conformanceClassDiagnostics.length.toString())
+              .replace('{total}', ccDiagnostics.length.toString())
               .replace('{errors}', counts.error.toString())
               .replace('{warnings}', counts.warning.toString())
               .replace('{hints}', counts.hint.toString())
