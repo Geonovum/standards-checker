@@ -2,26 +2,27 @@ import { pick } from 'ramda';
 import { FC, SubmitEventHandler, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
+import type { VersionInput } from '../../standards';
+import type { ResolvedVersion } from '../resolve';
 import { useChecker } from '../store';
-import { Spec, SpecInput } from '../types';
 import { formatDocument, handleResponse } from '../util';
 
 interface Props {
-  spec: Spec;
+  resolved: ResolvedVersion;
   className?: string;
 }
 
-function fetchDocument(url: string, spec: Spec) {
+function fetchDocument(url: string, resolved: ResolvedVersion) {
   return fetch(url)
     .then(response => handleResponse(response, url))
     .then(responseText =>
-      spec.responseMapper //
-        ? spec.responseMapper(responseText)
+      resolved.version.responseMapper //
+        ? resolved.version.responseMapper(responseText)
         : Promise.resolve({ content: responseText }),
     );
 }
 
-const UriInput: FC<Props> = ({ spec, className }) => {
+const UriInput: FC<Props> = ({ resolved, className }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const paramUrl = searchParams.get('url') ?? '';
   const [inputUrl, setInputUrl] = useState(paramUrl);
@@ -30,12 +31,19 @@ const UriInput: FC<Props> = ({ spec, className }) => {
   const [prevParamUrl, setPrevParamUrl] = useState(paramUrl);
   const fetching = pendingUrl !== null && pendingUrl !== fetchedUrl;
 
-  // React to external search param changes (e.g. address bar edit, back/forward)
+  // React to external search param changes (e.g. address bar edit, back/forward,
+  // or the `url` being dropped by a standard switch / title reset).
   if (paramUrl !== prevParamUrl) {
     setPrevParamUrl(paramUrl);
     if (paramUrl && paramUrl !== fetchedUrl) {
       setInputUrl(paramUrl);
       setPendingUrl(paramUrl);
+    } else if (!paramUrl) {
+      // The `url` param was removed externally: forget the loaded document so the
+      // sync effect below won't re-add it, and clear the input box.
+      setInputUrl('');
+      setPendingUrl(null);
+      setFetchedUrl(null);
     }
   }
 
@@ -44,12 +52,12 @@ const UriInput: FC<Props> = ({ spec, className }) => {
   );
 
   const onFetched = useCallback(
-    (url: string, input: SpecInput) => {
+    (url: string, input: VersionInput) => {
       setContent(formatDocument(input.content));
-      setLinters(input.linters ?? spec.linters);
+      setLinters(input.rulesets ? resolved.toLinters(input.rulesets) : resolved.linters);
       setFetchedUrl(url);
     },
-    [spec.linters, setContent, setLinters],
+    [resolved, setContent, setLinters],
   );
 
   // Sync search params with fetchedUrl (separate from fetch to avoid re-render loop)
@@ -78,9 +86,9 @@ const UriInput: FC<Props> = ({ spec, className }) => {
 
   useEffect(() => {
     if (pendingUrl && pendingUrl !== fetchedUrl) {
-      fetchDocument(pendingUrl, spec).then(input => onFetched(pendingUrl, input), onFetchError);
+      fetchDocument(pendingUrl, resolved).then(input => onFetched(pendingUrl, input), onFetchError);
     }
-  }, [pendingUrl, fetchedUrl, spec, onFetched, onFetchError]);
+  }, [pendingUrl, fetchedUrl, resolved, onFetched, onFetchError]);
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = event => {
     event.preventDefault();

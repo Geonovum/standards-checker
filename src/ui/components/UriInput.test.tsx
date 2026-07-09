@@ -1,20 +1,20 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ResolvedVersion } from '../resolve';
 import { useChecker } from '../store';
-import type { Spec } from '../types';
 import UriInput from './UriInput';
 
-const spec: Spec = {
-  name: 'Test Spec',
-  slug: 'test-spec',
-  example: '{}',
+const resolved: ResolvedVersion = {
+  standard: { name: 'Test Standard', slug: 'test-standard', versions: [] },
+  version: { id: '1.0', label: '1.0', status: 'final', example: '{}', rulesets: {} },
   linters: [{ name: 'test-linter', linter: [] }],
+  toLinters: () => [],
 };
 
 function renderWithRouter(urlSearchParams = '') {
-  const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput spec={spec} /> }], {
+  const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={resolved} /> }], {
     initialEntries: [`/test-spec${urlSearchParams}`],
   });
 
@@ -109,20 +109,45 @@ describe('UriInput', () => {
     const json = JSON.stringify({ raw: true });
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(json, { status: 200 }));
 
-    const mappedSpec: Spec = {
-      ...spec,
-      responseMapper: async () => ({
-        content: JSON.stringify({ mapped: true }),
-      }),
+    const mappedResolved: ResolvedVersion = {
+      ...resolved,
+      version: {
+        ...resolved.version,
+        responseMapper: async () => ({ content: JSON.stringify({ mapped: true }) }),
+      },
     };
 
-    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput spec={mappedSpec} /> }], {
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={mappedResolved} /> }], {
       initialEntries: ['/test-spec?url=https://example.com/mapped.json'],
     });
     render(<RouterProvider router={router} />);
 
     await waitFor(() => {
       expect(useChecker.getState().content).toContain('"mapped"');
+    });
+  });
+
+  it('derives linters from returned rulesets via toLinters', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+
+    const toLinters = vi.fn(() => [{ name: 'derived', linter: [] }]);
+    const rulesetResolved: ResolvedVersion = {
+      ...resolved,
+      version: {
+        ...resolved.version,
+        responseMapper: async () => ({ content: '{}', rulesets: { 'conf-class': { rules: {} } as never } }),
+      },
+      toLinters,
+    };
+
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={rulesetResolved} /> }], {
+      initialEntries: ['/test-spec?url=https://example.com/rulesets.json'],
+    });
+    render(<RouterProvider router={router} />);
+
+    await waitFor(() => {
+      expect(toLinters).toHaveBeenCalledWith({ 'conf-class': expect.anything() });
+      expect(useChecker.getState().linters).toEqual([{ name: 'derived', linter: [] }]);
     });
   });
 
@@ -206,6 +231,23 @@ describe('UriInput', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(2);
     expect(fetchSpy).toHaveBeenNthCalledWith(1, 'https://example.com/a.json');
     expect(fetchSpy).toHaveBeenNthCalledWith(2, 'https://example.com/b.json');
+  });
+
+  it('clears the input and does not re-add the param when ?url= is removed', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ x: 1 }), { status: 200 }));
+    const router = renderWithRouter('?url=https://example.com/x.json');
+
+    await waitFor(() => expect(screen.getByPlaceholderText(/enter url/i)).toHaveValue('https://example.com/x.json'));
+
+    // Drop the search param, as a standard switch / title reset does.
+    await act(async () => {
+      await router.navigate('/test-spec');
+    });
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('');
+      expect(screen.getByPlaceholderText(/enter url/i)).toHaveValue('');
+    });
   });
 
   it('disables button while checking', () => {
