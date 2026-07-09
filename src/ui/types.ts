@@ -1,11 +1,11 @@
 import type { Extension } from '@uiw/react-codemirror';
 import type { Diagnostic as CodemirrorDiagnostic } from '@codemirror/lint';
 
-export type SpecLinter = {
+export type ConformanceClass = {
   name: string;
-  /** The conformance-class URI this linter checks; rendered as a clickable source link. */
+  /** The conformance-class URI; rendered as a clickable source link. */
   href?: string;
-  linter: Extension;
+  extension: Extension;
 };
 
 export type Severity = 'hint' | 'info' | 'warning' | 'error';

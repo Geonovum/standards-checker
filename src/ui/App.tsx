@@ -26,7 +26,7 @@ const App: FC<Props> = ({ resolved, standards, title, githubUrl, strings }) => {
   // - Same standard, version changed: reload the new example only when the
   //   editor is untouched; retain the user's edits when it is dirty.
   // Driven from the store so it survives remount, reconcile, and StrictMode's
-  // double-invoke. Linters always follow the addressed version.
+  // double-invoke. Checks always follow the addressed version.
   useEffect(() => {
     const state = useChecker.getState();
     const standardChanged = state.activeStandard !== resolved.standard.slug;
@@ -34,7 +34,7 @@ const App: FC<Props> = ({ resolved, standards, title, githubUrl, strings }) => {
     if (standardChanged || !dirty) {
       state.loadExample(resolved.version.example, resolved.standard.slug);
     }
-    state.setLinters(resolved.linters);
+    state.setConformanceClasses(resolved.conformanceClasses);
   }, [resolved]);
 
   // Clicking the site title returns to the app home (the first standard's default

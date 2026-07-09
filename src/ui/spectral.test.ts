@@ -3,7 +3,7 @@ import type { RulesetDefinition } from '@stoplight/spectral-core';
 import { truthy } from '@stoplight/spectral-functions';
 import { EditorState, EditorView } from '@uiw/react-codemirror';
 import { describe, expect, it } from 'vitest';
-import { spectralLinter } from './spectral';
+import { spectralChecker } from './spectral';
 
 const ruleset: RulesetDefinition = {
   rules: {
@@ -20,7 +20,7 @@ const runLinter = async (content: string): Promise<{ from: number; to: number; m
   const view = new EditorView({
     state: EditorState.create({
       doc: content,
-      extensions: [spectralLinter('test', ruleset)],
+      extensions: [spectralChecker('test', ruleset)],
     }),
     parent: document.body,
   });
@@ -36,7 +36,7 @@ const runLinter = async (content: string): Promise<{ from: number; to: number; m
   return diagnostics;
 };
 
-describe('spectralLinter', () => {
+describe('spectralChecker', () => {
   it('lints JSON content and reports a diagnostic for the missing-title rule', async () => {
     const diags = await runLinter('{\n  "description": "no title"\n}');
     expect(diags.some(d => d.message.includes('must-have-title'))).toBe(true);

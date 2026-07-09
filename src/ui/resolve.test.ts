@@ -22,11 +22,11 @@ const makeVersion = (overrides: Partial<StandardVersion> = {}): StandardVersion 
 });
 
 describe('resolveVersion', () => {
-  it('names each linter by the conformance URI and sets href to the same URI by default', () => {
+  it('names each conformance class by the conformance URI and sets href to the same URI by default', () => {
     const resolved = resolveVersion(standard, makeVersion({ rulesets: { 'http://example.com/conf/core': ruleset } }));
-    expect(resolved.linters).toHaveLength(1);
-    expect(resolved.linters[0].name).toBe('http://example.com/conf/core');
-    expect(resolved.linters[0].href).toBe('http://example.com/conf/core');
+    expect(resolved.conformanceClasses).toHaveLength(1);
+    expect(resolved.conformanceClasses[0].name).toBe('http://example.com/conf/core');
+    expect(resolved.conformanceClasses[0].href).toBe('http://example.com/conf/core');
   });
 
   it('applies sourceLabel to the display name but keeps href as the full URI', () => {
@@ -35,14 +35,14 @@ describe('resolveVersion', () => {
       standard,
       makeVersion({ rulesets: { [uri]: ruleset }, sourceLabel: u => u.replace('http://www.opengis.net/spec/', '') }),
     );
-    expect(resolved.linters[0].name).toBe('json-fg-1/1.0/conf/core');
-    expect(resolved.linters[0].href).toBe(uri);
+    expect(resolved.conformanceClasses[0].name).toBe('json-fg-1/1.0/conf/core');
+    expect(resolved.conformanceClasses[0].href).toBe(uri);
   });
 
-  it('toLinters re-derives linters (with href) for a ruleset subset', () => {
+  it('toConformanceClasses re-derives conformanceClasses (with href) for a ruleset subset', () => {
     const resolved = resolveVersion(standard, makeVersion());
-    const linters = resolved.toLinters({ 'http://x/conf/a': ruleset });
-    expect(linters).toHaveLength(1);
-    expect(linters[0].href).toBe('http://x/conf/a');
+    const conformanceClasses = resolved.toConformanceClasses({ 'http://x/conf/a': ruleset });
+    expect(conformanceClasses).toHaveLength(1);
+    expect(conformanceClasses[0].href).toBe('http://x/conf/a');
   });
 });

@@ -54,7 +54,7 @@ Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected e
 ```ts
 import { mount } from '@geonovum/standards-checker/ui';
 import '@geonovum/standards-checker/index.css';
-import standards from './specs';
+import standards from './standards';
 
 // `standards` is a `Standard[]` — each standard owns an ordered list of versions.
 mount(document.getElementById('root')!, standards, {
@@ -170,10 +170,10 @@ my-checker/
 ├── src/
 │   ├── main.ts             # Web app entry point (mount(root, standards, ...))
 │   ├── cli.ts              # CLI entry point (createCli({ name, standards }))
-│   └── specs/
+│   └── standards/
 │       ├── index.ts        # exports the Standard[] — used by BOTH main.ts and cli.ts
 │       └── my-standard/
-│           ├── spec.ts     # Standard definition (name, slug, versions[] with raw rulesets)
+│           ├── standard.ts # Standard definition (name, slug, versions[] with raw rulesets)
 │           ├── rulesets/
 │           ├── examples/
 │           └── functions/

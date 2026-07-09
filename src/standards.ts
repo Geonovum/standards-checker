@@ -32,7 +32,7 @@ export interface StandardVersion {
   example: string;
   /** RAW Spectral rulesets, keyed by conformance-class URI. */
   rulesets: Record<string, RulesetDefinition>;
-  /** UI linter-name transform; defaults to identity. */
+  /** Transforms a conformance-class URI into its display name; defaults to identity. */
   sourceLabel?: (confClassURI: string) => string;
   /** `?url=` mapper; returns raw rulesets. */
   responseMapper?: VersionResponseMapper;

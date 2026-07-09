@@ -1,8 +1,8 @@
 // Store and utilities
 export { useChecker } from './store';
-export { spectralLinter } from './spectral';
+export { spectralChecker } from './spectral';
 export type { Rulesets } from './spectral';
-export type { SpecLinter, Severity, Diagnostic, UiStrings, UiConfig } from './types';
+export type { ConformanceClass, Severity, Diagnostic, UiStrings, UiConfig } from './types';
 export { DEFAULT_UI_STRINGS } from './types';
 export type { Standard, StandardVersion, VersionStatus, VersionInput, VersionResponseMapper, LegacyHit } from '../standards';
 export { resolveDefaultVersion, findStandard, findVersion, buildLegacyIndex } from '../standards';

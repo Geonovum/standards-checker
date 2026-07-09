@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { SpecLinter } from './types';
+import type { ConformanceClass } from './types';
 
 interface CheckerState {
   content: string;
@@ -21,8 +21,8 @@ interface CheckerState {
    * `standardSlug`, so the document reads as untouched until the user edits it.
    */
   loadExample: (example: string, standardSlug: string) => void;
-  linters: SpecLinter[];
-  setLinters: (linters: SpecLinter[]) => void;
+  conformanceClasses: ConformanceClass[];
+  setConformanceClasses: (conformanceClasses: ConformanceClass[]) => void;
   checking: boolean;
   setChecking: (checking: boolean) => void;
   error?: string;
@@ -34,9 +34,9 @@ export const useChecker = create<CheckerState>(set => ({
   setContent: content => set({ content }),
   pristineExample: '{}',
   loadExample: (example, standardSlug) => set({ content: example, pristineExample: example, activeStandard: standardSlug }),
-  linters: [],
-  setLinters: linters => set({ linters }),
-  // Start in the checking state: the linter runs asynchronously on mount, so
+  conformanceClasses: [],
+  setConformanceClasses: conformanceClasses => set({ conformanceClasses }),
+  // Start in the checking state: validation runs asynchronously on mount, so
   // until its first result arrives there are no diagnostics yet — showing the
   // loading indicator (not the "no violations" bar) during that window.
   checking: true,

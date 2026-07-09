@@ -47,15 +47,17 @@ const UriInput: FC<Props> = ({ resolved, className }) => {
     }
   }
 
-  const { setContent, setLinters, setError } = useChecker(useShallow(state => pick(['setContent', 'setLinters', 'setError'], state)));
+  const { setContent, setConformanceClasses, setError } = useChecker(
+    useShallow(state => pick(['setContent', 'setConformanceClasses', 'setError'], state)),
+  );
 
   const onFetched = useCallback(
     (url: string, input: VersionInput) => {
       setContent(formatDocument(input.content));
-      setLinters(input.rulesets ? resolved.toLinters(input.rulesets) : resolved.linters);
+      setConformanceClasses(input.rulesets ? resolved.toConformanceClasses(input.rulesets) : resolved.conformanceClasses);
       setFetchedUrl(url);
     },
-    [resolved, setContent, setLinters],
+    [resolved, setContent, setConformanceClasses],
   );
 
   // Sync search params with fetchedUrl (separate from fetch to avoid re-render loop)
@@ -74,7 +76,7 @@ const UriInput: FC<Props> = ({ resolved, className }) => {
     (error: unknown) => {
       setPendingUrl(null);
       if (error instanceof TypeError) {
-        setError(`Possible network or CORS failure: "${error.message}". Check your browser console for more details.`);
+        setError(`Possible network or CORS failure: "${error.message}". ConformanceClass your browser console for more details.`);
       } else {
         setError(`Error: "${(error as Error).message}"`);
       }

@@ -10,29 +10,34 @@ import { useShallow } from 'zustand/react/shallow';
 import { detectEncoding } from '../../encodings';
 import { getLanguageExtensions } from '../encodings';
 import { useChecker } from '../store';
-import { DEFAULT_UI_STRINGS, type Diagnostic, type Severity, type SpecLinter, type UiStrings } from '../types';
+import { DEFAULT_UI_STRINGS, type Diagnostic, type Severity, type ConformanceClass, type UiStrings } from '../types';
 import { formatDocument, groupBy, groupBySource } from '../util';
 import FormatToggle from './FormatToggle';
 
 const SEVERITY_ORDER: Severity[] = ['error', 'warning', 'info', 'hint'];
 const EXTENSIONS: Extension[] = [lintGutter()];
 
-// Render the linter's conformance-class URI as a clickable source link (opens in
+// Render the conformance-class URI as a clickable source link (opens in
 // a new tab) when it is a URL; otherwise just show the name in brackets. The
 // brackets stay outside the link; the link itself is underlined (so it reads as
 // a link) and drops the underline on hover. A small horizontal margin keeps the
 // underline from colliding with the brackets.
-const renderSource = (linter: SpecLinter) =>
-  linter.href && /^https?:\/\//.test(linter.href) ? (
+const renderSource = (conformanceClass: ConformanceClass) =>
+  conformanceClass.href && /^https?:\/\//.test(conformanceClass.href) ? (
     <>
       [
-      <a href={linter.href} target="_blank" rel="noopener noreferrer" className="mx-0.5 underline underline-offset-2 hover:no-underline">
-        {linter.name}
+      <a
+        href={conformanceClass.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mx-0.5 underline underline-offset-2 hover:no-underline"
+      >
+        {conformanceClass.name}
       </a>
       ]
     </>
   ) : (
-    <>[{linter.name}]</>
+    <>[{conformanceClass.name}]</>
   );
 
 // A self-contained loading indicator shown while a validation is in flight: a
@@ -49,12 +54,12 @@ interface Props {
   strings?: Partial<UiStrings>;
 }
 
-// Content and linters come from the store; `App` owns setting them per
+// Content and conformance classes come from the store; `App` owns setting them per
 // standard/version (reload the example on a standard switch or an untouched
 // version switch; retain edited content across a version switch).
 const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
-  const { content, setContent, linters, checking, setChecking, error, setError } = useChecker(
-    useShallow(state => pick(['content', 'setContent', 'linters', 'checking', 'setChecking', 'error', 'setError'], state)),
+  const { content, setContent, conformanceClasses, checking, setChecking, error, setError } = useChecker(
+    useShallow(state => pick(['content', 'setContent', 'conformanceClasses', 'checking', 'setChecking', 'error', 'setError'], state)),
   );
 
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
@@ -65,8 +70,8 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
   const languageExtensions = useMemo(() => getLanguageExtensions(encodingId), [encodingId]);
 
   // A validation is in flight only when there's something to validate; with no
-  // linters there's nothing to wait for (falls through to "no matching rulesets").
-  const loading = checking && !isEmpty(linters);
+  // conformance classes there's nothing to wait for (falls through to "no matching rulesets").
+  const loading = checking && !isEmpty(conformanceClasses);
 
   return (
     <div className="flex h-full">
@@ -76,7 +81,7 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
           value={content}
           height="100%"
           style={{ height: '100%' }}
-          extensions={[...EXTENSIONS, ...languageExtensions, ...linters.map(l => l.linter)]}
+          extensions={[...EXTENSIONS, ...languageExtensions, ...conformanceClasses.map(l => l.extension)]}
           onUpdate={viewUpdate => {
             viewUpdate.transactions.forEach(transaction => {
               transaction.effects.forEach(effect => {
@@ -104,43 +109,43 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
       </div>
       <div className="flex-1 overflow-auto p-4 bg-sky-50 text-sm">
         {/* Priority: a fetch/parse error, then the in-flight validation (only
-            meaningful when there are linters), then "no matching rulesets",
-            then the per-linter results. `loading` guards against showing the
+            meaningful when there are conformanceClasses), then "no matching rulesets",
+            then the per-conformance-class results. `loading` guards against showing the
             green "no violations" bars before the first lint result arrives. */}
         {error && <div className="mb-4 p-4 bg-red-500 text-white rounded-sm shadow-lg">{error}</div>}
         {!error && loading && <LoadingIndicator label={strings.checking} />}
-        {!error && !loading && isEmpty(linters) && <p>{strings.noMatchingRulesets}</p>}
+        {!error && !loading && isEmpty(conformanceClasses) && <p>{strings.noMatchingRulesets}</p>}
         {!error &&
           !loading &&
-          linters.map(linter => {
-            const linterDiagnostics = diagnostics[linter.name];
+          conformanceClasses.map(conformanceClass => {
+            const conformanceClassDiagnostics = diagnostics[conformanceClass.name];
 
-            if (!linterDiagnostics) {
+            if (!conformanceClassDiagnostics) {
               return (
-                <div key={linter.name}>
+                <div key={conformanceClass.name}>
                   <div className="mb-4 p-4 bg-green-600 text-white rounded-sm shadow-lg">
-                    {renderSource(linter)} {strings.noViolations}
+                    {renderSource(conformanceClass)} {strings.noViolations}
                   </div>
                 </div>
               );
             }
 
-            const grouped = groupBy(linterDiagnostics, d => d.severity);
+            const grouped = groupBy(conformanceClassDiagnostics, d => d.severity);
             const counts = { error: 0, warning: 0, info: 0, hint: 0 };
-            for (const d of linterDiagnostics) counts[d.severity as Severity] += 1;
+            for (const d of conformanceClassDiagnostics) counts[d.severity as Severity] += 1;
 
             const hasErrors = counts.error > 0;
             const summary = strings.lintingSummary
-              .replace('{total}', linterDiagnostics.length.toString())
+              .replace('{total}', conformanceClassDiagnostics.length.toString())
               .replace('{errors}', counts.error.toString())
               .replace('{warnings}', counts.warning.toString())
               .replace('{hints}', counts.hint.toString())
               .replace('{info}', counts.info.toString());
 
             return (
-              <div key={linter.name}>
+              <div key={conformanceClass.name}>
                 <div className={clsx('mb-4 p-4 rounded-sm shadow-lg', hasErrors ? 'bg-red-500 text-white' : 'bg-orange-400 text-white')}>
-                  {renderSource(linter)} {summary}
+                  {renderSource(conformanceClass)} {summary}
                 </div>
                 {SEVERITY_ORDER.map(severity => {
                   const group = grouped[severity];

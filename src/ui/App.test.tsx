@@ -31,7 +31,7 @@ function renderAt(initialEntry: string) {
 }
 
 beforeEach(() => {
-  useChecker.setState({ content: '{}', pristineExample: '{}', linters: [], activeStandard: undefined });
+  useChecker.setState({ content: '{}', pristineExample: '{}', conformanceClasses: [], activeStandard: undefined });
 });
 
 afterEach(() => {

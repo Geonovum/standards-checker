@@ -9,7 +9,7 @@ export interface Rulesets {
   [confClass: string]: RulesetDefinition;
 }
 
-export const spectralLinter = (name: string, ruleset: RulesetDefinition): Extension => {
+export const spectralChecker = (name: string, ruleset: RulesetDefinition): Extension => {
   const spectral = new Spectral();
   spectral.setRuleset(ruleset);
 

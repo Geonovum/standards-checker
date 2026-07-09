@@ -9,8 +9,8 @@ import UriInput from './UriInput';
 const resolved: ResolvedVersion = {
   standard: { name: 'Test Standard', slug: 'test-standard', versions: [] },
   version: { id: '1.0', label: '1.0', status: 'final', example: '{}', rulesets: {} },
-  linters: [{ name: 'test-linter', linter: [] }],
-  toLinters: () => [],
+  conformanceClasses: [{ name: 'test-conformanceClass', extension: [] }],
+  toConformanceClasses: () => [],
 };
 
 function renderWithRouter(urlSearchParams = '') {
@@ -127,17 +127,17 @@ describe('UriInput', () => {
     });
   });
 
-  it('derives linters from returned rulesets via toLinters', async () => {
+  it('derives conformanceClasses from returned rulesets via toConformanceClasses', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
 
-    const toLinters = vi.fn(() => [{ name: 'derived', linter: [] }]);
+    const toConformanceClasses = vi.fn(() => [{ name: 'derived', extension: [] }]);
     const rulesetResolved: ResolvedVersion = {
       ...resolved,
       version: {
         ...resolved.version,
         responseMapper: async () => ({ content: '{}', rulesets: { 'conf-class': { rules: {} } as never } }),
       },
-      toLinters,
+      toConformanceClasses,
     };
 
     const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={rulesetResolved} /> }], {
@@ -146,8 +146,8 @@ describe('UriInput', () => {
     render(<RouterProvider router={router} />);
 
     await waitFor(() => {
-      expect(toLinters).toHaveBeenCalledWith({ 'conf-class': expect.anything() });
-      expect(useChecker.getState().linters).toEqual([{ name: 'derived', linter: [] }]);
+      expect(toConformanceClasses).toHaveBeenCalledWith({ 'conf-class': expect.anything() });
+      expect(useChecker.getState().conformanceClasses).toEqual([{ name: 'derived', extension: [] }]);
     });
   });
 
@@ -252,7 +252,7 @@ describe('UriInput', () => {
 
   it('does not disable the Load button while validation is in progress', () => {
     // The button is gated on an in-flight fetch only, not on `checking` — which
-    // now defaults true and can stay true for a version with no linters, so
+    // now defaults true and can stay true for a version with no conformance classes, so
     // gating on it would leave the button stuck disabled.
     useChecker.setState({ checking: true });
 
