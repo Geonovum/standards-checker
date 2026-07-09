@@ -88,4 +88,8 @@ describe('URL routing', () => {
       expect(router.state.location.search).toBe('?url=https://example.com/x.json');
     });
   });
+
+  it('throws a clear error when built with no standards', () => {
+    expect(() => buildRoutes([])).toThrow(/at least one standard/);
+  });
 });

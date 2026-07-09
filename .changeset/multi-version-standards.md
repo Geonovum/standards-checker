@@ -1,8 +1,15 @@
 ---
-"@geonovum/standards-checker": minor
+"@geonovum/standards-checker": major
 ---
 
 Introduce a first-class **Standard → Version** model, with the UI and CLI to drive it.
+
+**Breaking:** the `Spec` model is replaced. `mount(el, specs, …)` and `createCli({ plugins })`
+now take `mount(el, standards, …)` / `createCli({ standards })`; the `Spec`, `SpecInput`,
+`SpecLinter`, and `SpecResponseMapper` types, the `spectralLinter` export, and the `SpecSelector`
+component are removed (replaced by `Standard`/`StandardVersion`/`ConformanceClass`,
+`spectralChecker`, and `StandardSelector`/`VersionSelector`). Consumers must migrate their config
+to a `Standard[]`.
 
 A standard (e.g. "API Design Rules") is now version-less and owns an ordered list of
 versions, each bound to its own Spectral rulesets, example document, and status

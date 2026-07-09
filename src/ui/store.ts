@@ -33,7 +33,11 @@ export const useChecker = create<CheckerState>(set => ({
   content: '{}',
   setContent: content => set({ content }),
   pristineExample: '{}',
-  loadExample: (example, standardSlug) => set({ content: example, pristineExample: example, activeStandard: standardSlug }),
+  // Also clear any stale fetch error: a freshly loaded example supersedes it,
+  // and a reset that lands on identical content produces no editor `docChanged`
+  // (the only other place `error` is cleared) to clear it.
+  loadExample: (example, standardSlug) =>
+    set({ content: example, pristineExample: example, activeStandard: standardSlug, error: undefined }),
   conformanceClasses: [],
   setConformanceClasses: conformanceClasses => set({ conformanceClasses }),
   // Start in the checking state: validation runs asynchronously on mount, so

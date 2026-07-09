@@ -8,6 +8,12 @@ import type { UiConfig } from './types';
 // The route table: a root redirect, one canonical `/{slug}/{versionId}` route
 // per version, and a catch-all that maps legacy slugs to their new anchor.
 export const buildRoutes = (standards: Standard[], config: UiConfig = {}): RouteObject[] => {
+  // The redirects and this table dereference `standards[0]`; a clear throw beats a
+  // cryptic "cannot read slug of undefined" from deep inside a redirect render.
+  if (standards.length === 0) {
+    throw new Error('mount()/createRouter() requires at least one standard.');
+  }
+
   const { title, githubUrl, strings } = config;
 
   return [

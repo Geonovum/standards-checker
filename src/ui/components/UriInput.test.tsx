@@ -92,6 +92,9 @@ describe('UriInput', () => {
 
     await waitFor(() => {
       expect(useChecker.getState().error).toMatch(/CORS/);
+      // Guard the readable copy against an over-eager rename (it once read
+      // "ConformanceClass your browser console").
+      expect(useChecker.getState().error).toContain('Check your browser console for more details.');
     });
   });
 

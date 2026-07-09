@@ -76,7 +76,7 @@ const UriInput: FC<Props> = ({ resolved, className }) => {
     (error: unknown) => {
       setPendingUrl(null);
       if (error instanceof TypeError) {
-        setError(`Possible network or CORS failure: "${error.message}". ConformanceClass your browser console for more details.`);
+        setError(`Possible network or CORS failure: "${error.message}". Check your browser console for more details.`);
       } else {
         setError(`Error: "${(error as Error).message}"`);
       }

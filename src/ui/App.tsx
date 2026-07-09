@@ -35,6 +35,14 @@ const App: FC<Props> = ({ resolved, standards, title, githubUrl, strings }) => {
       state.loadExample(resolved.version.example, resolved.standard.slug);
     }
     state.setConformanceClasses(resolved.conformanceClasses);
+    // Re-enter the checking state for the newly addressed version and drop any
+    // stale fetch error. A dirty version switch keeps the editor content, so no
+    // editor `docChanged` fires to reset these — without it the new version's
+    // conformance classes would render against the previous run's diagnostics as
+    // false green "no violations" bars until its linters report. A version with
+    // no rulesets has nothing to check, so it falls straight through.
+    state.setChecking(resolved.conformanceClasses.length > 0);
+    state.setError(undefined);
   }, [resolved]);
 
   // Clicking the site title returns to the app home (the first standard's default
