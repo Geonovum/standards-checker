@@ -69,6 +69,13 @@ describe('URL routing', () => {
     await waitFor(() => expect(router.state.location.pathname).toBe('/adr/2.1'));
   });
 
+  it('redirects an unknown version under a known standard to its default, not a colliding legacy slug', async () => {
+    // `adr` is also werkversie's legacySlug, but a stale/mistyped version under
+    // it must land on the default (2.1), not on the werkversie draft.
+    const router = landOn('/adr/9.9');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/adr/2.1'));
+  });
+
   it('serves a canonical /{standard}/{version} URL as-is', async () => {
     const router = landOn('/adr/consultatie');
     await waitFor(() => expect(router.state.location.pathname).toBe('/adr/consultatie'));

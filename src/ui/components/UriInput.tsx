@@ -47,9 +47,7 @@ const UriInput: FC<Props> = ({ resolved, className }) => {
     }
   }
 
-  const { setContent, setLinters, setError, checking } = useChecker(
-    useShallow(state => pick(['setContent', 'setLinters', 'setError', 'checking'], state)),
-  );
+  const { setContent, setLinters, setError } = useChecker(useShallow(state => pick(['setContent', 'setLinters', 'setError'], state)));
 
   const onFetched = useCallback(
     (url: string, input: VersionInput) => {
@@ -85,9 +83,23 @@ const UriInput: FC<Props> = ({ resolved, className }) => {
   );
 
   useEffect(() => {
-    if (pendingUrl && pendingUrl !== fetchedUrl) {
-      fetchDocument(pendingUrl, resolved).then(input => onFetched(pendingUrl, input), onFetchError);
-    }
+    if (!pendingUrl || pendingUrl === fetchedUrl) return;
+    // Guard against a stale result applying after this effect re-runs (a
+    // version/standard switch changes `resolved`) or the component unmounts —
+    // otherwise a slow fetch would clobber the editor and re-add `?url=` after
+    // the user has already navigated or reset away.
+    let cancelled = false;
+    fetchDocument(pendingUrl, resolved).then(
+      input => {
+        if (!cancelled) onFetched(pendingUrl, input);
+      },
+      error => {
+        if (!cancelled) onFetchError(error);
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
   }, [pendingUrl, fetchedUrl, resolved, onFetched, onFetchError]);
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = event => {
@@ -105,7 +117,7 @@ const UriInput: FC<Props> = ({ resolved, className }) => {
           value={inputUrl}
           onChange={event => setInputUrl(event.target.value)}
         />
-        <button type="submit" className="shrink-0 px-2.5 py-1.5 text-sm font-semibold cursor-pointer" disabled={fetching || checking}>
+        <button type="submit" className="shrink-0 px-2.5 py-1.5 text-sm font-semibold cursor-pointer" disabled={fetching}>
           Load
         </button>
       </form>

@@ -23,7 +23,7 @@ function renderWithRouter(urlSearchParams = '') {
 }
 
 beforeEach(() => {
-  useChecker.setState({ checking: false, error: undefined });
+  useChecker.setState({ content: '{}', checking: false, error: undefined });
 });
 
 afterEach(() => {
@@ -250,11 +250,33 @@ describe('UriInput', () => {
     });
   });
 
-  it('disables button while checking', () => {
+  it('does not disable the Load button while validation is in progress', () => {
+    // The button is gated on an in-flight fetch only, not on `checking` — which
+    // now defaults true and can stay true for a version with no linters, so
+    // gating on it would leave the button stuck disabled.
     useChecker.setState({ checking: true });
 
     renderWithRouter();
 
-    expect(screen.getByRole('button', { name: /load/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /load/i })).not.toBeDisabled();
+  });
+
+  it('ignores an in-flight fetch result after the component unmounts', async () => {
+    let resolveFetch: (response: Response) => void = () => {};
+    vi.spyOn(globalThis, 'fetch').mockReturnValue(new Promise<Response>(res => (resolveFetch = res)));
+    useChecker.setState({ content: 'ORIGINAL' });
+
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={resolved} /> }], {
+      initialEntries: ['/test-spec?url=https://example.com/slow.json'],
+    });
+    const view = render(<RouterProvider router={router} />);
+
+    // The ?url= auto-fetch is in flight; unmount, then let it resolve.
+    view.unmount();
+    resolveFetch(new Response(JSON.stringify({ loaded: true }), { status: 200 }));
+    await new Promise(resolve => setTimeout(resolve, 20));
+
+    // The stale result must not have been applied to the store.
+    expect(useChecker.getState().content).toBe('ORIGINAL');
   });
 });

@@ -64,7 +64,17 @@ export const resolveDefaultVersion = (standard: Standard): StandardVersion => {
   }
 
   const finals = standard.versions.filter(version => version.status === 'final');
-  return finals.length ? finals[finals.length - 1] : standard.versions[standard.versions.length - 1];
+  const version = finals.length ? finals[finals.length - 1] : standard.versions[standard.versions.length - 1];
+
+  // Guard the empty-`versions` misconfiguration: without this the callers deref
+  // `undefined.id`/`.example`, and the redirect components would navigate to
+  // `/{slug}/undefined` — no route matches, so the catch-all recomputes the same
+  // target and spins an infinite redirect loop. A clear throw surfaces it instead.
+  if (!version) {
+    throw new Error(`Standard '${standard.slug}' has no versions to resolve a default from.`);
+  }
+
+  return version;
 };
 
 export const findStandard = (standards: Standard[], slug: string): Standard | undefined =>

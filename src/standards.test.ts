@@ -65,6 +65,11 @@ describe('resolveDefaultVersion', () => {
     const standard: Standard = { name: 'D', slug: 'd', versions: [version('a', 'draft'), version('b', 'draft')] };
     expect(resolveDefaultVersion(standard).id).toBe('b');
   });
+
+  it('throws a clear error for a standard with no versions', () => {
+    const standard: Standard = { name: 'Empty', slug: 'empty', versions: [] };
+    expect(() => resolveDefaultVersion(standard)).toThrow(/no versions/);
+  });
 });
 
 describe('buildLegacyIndex', () => {
