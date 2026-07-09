@@ -12,7 +12,7 @@ export interface CliConfig {
   standards: Standard[];
 }
 
-interface ValidateOptions {
+export interface ValidateOptions {
   standard?: string;
   version?: string;
   ruleset?: string;
@@ -21,7 +21,7 @@ interface ValidateOptions {
   failOn?: string;
 }
 
-interface Selection {
+export interface Selection {
   standard: Standard;
   version: StandardVersion;
 }
@@ -75,7 +75,8 @@ export const createCli = (config: CliConfig) => {
 // from the config), so old slugs keep resolving to the exact same
 // (standard, version). Otherwise `--standard` (+ optional `--version`) is used,
 // defaulting to the same version the UI would pick.
-const resolveSelection = (standards: Standard[], options: ValidateOptions): Selection => {
+// Exported for unit testing; not part of the intended public CLI surface.
+export const resolveSelection = (standards: Standard[], options: ValidateOptions): Selection => {
   if (options.ruleset) {
     // stderr keeps `--format json` stdout clean.
     console.error('Warning: --ruleset is deprecated; use --standard/--version');

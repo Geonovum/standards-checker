@@ -44,4 +44,12 @@ describe('CodeEditor result panel', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.getByText('No matching rulesets found.')).toBeInTheDocument();
   });
+
+  it('renders a non-URL conformance class as plain bracketed text, not a link', () => {
+    useChecker.setState({ checking: false, conformanceClasses: [{ name: 'plain-class', extension: [] }] });
+    const { container } = render(<CodeEditor />);
+
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(container.textContent).toContain('[plain-class]');
+  });
 });
