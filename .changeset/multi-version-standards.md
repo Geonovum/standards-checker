@@ -1,5 +1,5 @@
 ---
-"@geonovum/standards-checker": major
+"@geonovum/standards-checker": minor
 ---
 
 Introduce a first-class **Standard → Version** model, with the UI and CLI to drive it.

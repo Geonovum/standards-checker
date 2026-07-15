@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@geonovum/standards-checker": "1.2.0-beta.0"
+  },
+  "changesets": [
+    "multi-version-standards",
+    "pnpm-dedupe-check"
+  ]
+}
