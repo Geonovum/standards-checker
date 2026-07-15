@@ -4,12 +4,14 @@ A validation framework for checking documents and APIs against specifications us
 
 [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker)](https://www.npmjs.com/package/@geonovum/standards-checker)
 
+Release notes are in [`CHANGELOG.md`](CHANGELOG.md); see [Versioning & releasing](#versioning--releasing) for how it is produced.
+
 ## Checker apps built on this framework
 
 | App                                                                 | Description                                                                      |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [ogc-checker](https://github.com/Geonovum/ogc-checker)              | Validates JSON-FG documents and OGC API endpoints (Features, Processes, Records) |
-| [don-checker](https://github.com/developer-overheid-nl/don-checker) | Validates OpenAPI specs (ADR 2.0/2.1), publiccode.yml, and ADR consult docs      |
+| [don-checker](https://github.com/developer-overheid-nl/don-checker) | Validates OpenAPI specs (ADR 2.0.2/2.1.0) and publiccode.yml files               |
 
 ---
 
@@ -17,27 +19,33 @@ A validation framework for checking documents and APIs against specifications us
 
 ### CLI
 
-Each checker app ships its own CLI with baked-in rulesets:
+Each checker app ships its own CLI with baked-in standards and versions:
 
 ```bash
-ogc-checker validate --ruleset json-fg --input ./data/spec.json
-don-checker validate --ruleset adr-20 --input ./openapi.json
+ogc-checker validate --standard json-fg --input ./data/spec.json
+don-checker validate --standard adr --version 2.0.2 --input ./openapi.json
 ```
 
 Or via stdin:
 
 ```bash
-cat spec.json | ogc-checker validate --ruleset json-fg
+cat spec.json | ogc-checker validate --standard json-fg
 ```
+
+`--version` is optional and defaults to the latest final version. The old `--ruleset <slug>` flag
+still works as a **deprecated** alias — it warns on stderr and resolves the old slug to the same
+standard/version.
 
 ### CLI flags
 
-| Flag                | Description                               | Default      |
-| ------------------- | ----------------------------------------- | ------------ |
-| `--ruleset <name>`  | Ruleset to run (listed in `--help`)       | _(required)_ |
-| `--input <file\|->` | Input file, URL, or `-` for stdin         | `-`          |
-| `--format <fmt>`    | Output: `table`, `json`                   | `table`      |
-| `--fail-on <level>` | Exit code policy: `none`, `warn`, `error` | `error`      |
+| Flag                | Description                                       | Default      |
+| ------------------- | ------------------------------------------------- | ------------ |
+| `--standard <slug>` | Standard to validate against                      | _(required)_ |
+| `--version <id>`    | Version of the standard                           | latest final |
+| `--ruleset <slug>`  | **Deprecated** alias for `--standard`/`--version` | —            |
+| `--input <file\|->` | Input file, URL, or `-` for stdin                 | `-`          |
+| `--format <fmt>`    | Output: `table`, `json`                           | `table`      |
+| `--fail-on <level>` | Exit code policy: `none`, `warn`, `error`         | `error`      |
 
 Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected error.
 
@@ -46,12 +54,19 @@ Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected e
 ```ts
 import { mount } from '@geonovum/standards-checker/ui';
 import '@geonovum/standards-checker/index.css';
-import specs from './specs';
+import standards from './standards';
 
-mount(document.getElementById('root')!, specs, {
+// `standards` is a `Standard[]` — each standard owns an ordered list of versions.
+mount(document.getElementById('root')!, standards, {
   title: 'My Checker',
 });
 ```
+
+The user picks a version-less **standard** in the header; a dependent **version** dropdown then
+refreshes and auto-selects the default version (explicit `defaultVersion`, else the latest `final`).
+Switching version keeps the editor content and only re-lints; switching standard resets the editor
+to the new standard's example. The URL anchor is `/#/{standard}/{version}`; old single-slug links
+(and CLI `--ruleset` slugs) redirect to their new `{standard}/{version}` anchor.
 
 ---
 
@@ -153,12 +168,12 @@ Typical project layout:
 ```
 my-checker/
 ├── src/
-│   ├── main.ts             # Web app entry point (calls mount())
-│   ├── cli.ts              # CLI entry point (calls createCli)
-│   ├── index.ts            # Ruleset plugin index
-│   └── specs/
-│       └── my-spec/
-│           ├── spec.ts     # Spec definition (name, slug, linters)
+│   ├── main.ts             # Web app entry point (mount(root, standards, ...))
+│   ├── cli.ts              # CLI entry point (createCli({ name, standards }))
+│   └── standards/
+│       ├── index.ts        # exports the Standard[] — used by BOTH main.ts and cli.ts
+│       └── my-standard/
+│           ├── standard.ts # Standard definition (name, slug, versions[] with raw rulesets)
 │           ├── rulesets/
 │           ├── examples/
 │           └── functions/
@@ -217,16 +232,22 @@ Undo with `pnpm unlink @geonovum/standards-checker && pnpm install`. A subsequen
 
 The peer deps (React family, vite, vitest, esbuild) are already listed in each consumer's `package.json` because the consumer uses them directly (React imports, vite/vitest/esbuild bins), so peer resolution across the link works without extra steps.
 
-### Publishing
+### Versioning & releasing
 
-Packages are published to npm automatically when a version tag is pushed:
+Versioning, the changelog, and npm publishing are driven by [Changesets](https://changesets.dev/). Describing a change is decoupled from cutting a release:
 
-```bash
-git tag v1.1.0
-git push --tags
-```
+1. **Add a changeset with your change.** Run `pnpm changeset`, pick the bump (`major` / `minor` / `patch`), and write a one-line summary. This creates a `.changeset/<name>.md` file — commit it with your PR. Omit only for changes that don't affect the published package (CI, internal docs, tests).
 
-The `publish.yml` workflow verifies `package.json` version matches the tag, runs the build + lint + tests, and publishes with provenance.
+2. **Cut the release.** Run `pnpm version-packages` (alias for `changeset version`). It consumes the pending `.changeset/*.md` files, bumps `package.json` to the computed version (the highest pending bump wins), and prepends the summaries to `CHANGELOG.md`. Review and commit the result. Don't hand-edit the `version` field — Changesets owns it.
+
+3. **Publish.** Tag the released version and push; the `publish.yml` workflow verifies `package.json` matches the tag, runs build + lint + tests, and publishes to npm with provenance:
+
+   ```bash
+   git tag v1.2.0
+   git push --tags
+   ```
+
+   `pnpm release` (`pnpm build && changeset publish`) publishes locally if you need to bypass the workflow.
 
 ---
 

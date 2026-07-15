@@ -9,7 +9,7 @@ export interface Rulesets {
   [confClass: string]: RulesetDefinition;
 }
 
-export const spectralLinter = (name: string, ruleset: RulesetDefinition): Extension => {
+export const spectralChecker = (name: string, ruleset: RulesetDefinition): Extension => {
   const spectral = new Spectral();
   spectral.setRuleset(ruleset);
 
@@ -19,13 +19,22 @@ export const spectralLinter = (name: string, ruleset: RulesetDefinition): Extens
     const encoding = detectEncoding(content);
     const mapRange = getRangeMapper(encoding.id);
 
-    const violations = await spectral.run(new Document(content, encoding.parser));
-    return violations.map(violation => ({
-      source: name,
-      ...mapRange(doc, violation, content),
-      severity: mapSeverity(violation.severity),
-      message: `[${violation.code}] ${violation.message}`,
-      documentationUrl: violation.documentationUrl,
-    }));
+    try {
+      const violations = await spectral.run(new Document(content, encoding.parser));
+      return violations.map(violation => ({
+        source: name,
+        ...mapRange(doc, violation, content),
+        severity: mapSeverity(violation.severity),
+        message: `[${violation.code}] ${violation.message}`,
+        documentationUrl: violation.documentationUrl,
+      }));
+    } catch (error) {
+      // Never let a rejected run swallow the lint dispatch: @codemirror/lint only
+      // emits `setDiagnosticsEffect` (which clears the `checking` flag and its
+      // loading indicator) when the source resolves. Returning an empty result
+      // keeps the UI responsive instead of spinning forever on a checker failure.
+      console.error(`[${name}] validation failed:`, error);
+      return [];
+    }
   });
 };

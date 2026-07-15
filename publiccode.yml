@@ -1,0 +1,52 @@
+publiccodeYmlVersion: '0.5'
+name: Standards Checker
+url: https://github.com/Geonovum/standards-checker
+softwareType: library
+developmentStatus: stable
+
+platforms:
+  - web
+
+categories:
+  - application-development
+  - it-development
+  - compliance-management
+
+description:
+  en:
+    shortDescription: >-
+      A framework for building checkers that validate documents and APIs
+      against technical standards using Spectral rulesets.
+    longDescription: |
+      Standards Checker is the shared validation framework behind Geonovum's
+      checker applications. It uses Stoplight Spectral rulesets to validate
+      documents and API descriptions against technical standards, and packages
+      everything needed to build a checker: a programmatic validation engine, a
+      CLI toolkit for command-line validation, and an embeddable React user
+      interface with a CodeMirror editor that lints as you type.
+
+      The package also ships shared Vite, Vitest, ESLint, Prettier and
+      TypeScript configurations plus a pre-built Tailwind CSS bundle, so
+      consumer applications such as ogc-checker and don-checker stay small and
+      consistent. Standards and their versions are described once and reused by
+      both the web UI and the CLI.
+    features:
+      - Spectral-based validation engine with a programmatic API
+      - CLI toolkit for building command-line checkers
+      - Embeddable React UI with a CodeMirror editor
+      - Shared Vite, Vitest, ESLint, Prettier and TypeScript configs
+      - Pre-built Tailwind CSS bundle, no CSS tooling required downstream
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Geonovum
+
+maintenance:
+  type: internal
+  contacts:
+    - name: Geonovum
+
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en

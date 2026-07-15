@@ -1,20 +1,20 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ResolvedVersion } from '../resolve';
 import { useChecker } from '../store';
-import type { Spec } from '../types';
 import UriInput from './UriInput';
 
-const spec: Spec = {
-  name: 'Test Spec',
-  slug: 'test-spec',
-  example: '{}',
-  linters: [{ name: 'test-linter', linter: [] }],
+const resolved: ResolvedVersion = {
+  standard: { name: 'Test Standard', slug: 'test-standard', versions: [] },
+  version: { id: '1.0', label: '1.0', status: 'final', example: '{}', rulesets: {} },
+  conformanceClasses: [{ name: 'test-conformanceClass', extension: [] }],
+  toConformanceClasses: () => [],
 };
 
 function renderWithRouter(urlSearchParams = '') {
-  const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput spec={spec} /> }], {
+  const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={resolved} /> }], {
     initialEntries: [`/test-spec${urlSearchParams}`],
   });
 
@@ -23,7 +23,7 @@ function renderWithRouter(urlSearchParams = '') {
 }
 
 beforeEach(() => {
-  useChecker.setState({ checking: false, error: undefined });
+  useChecker.setState({ content: '{}', checking: false, error: undefined });
 });
 
 afterEach(() => {
@@ -92,6 +92,9 @@ describe('UriInput', () => {
 
     await waitFor(() => {
       expect(useChecker.getState().error).toMatch(/CORS/);
+      // Guard the readable copy against an over-eager rename (it once read
+      // "ConformanceClass your browser console").
+      expect(useChecker.getState().error).toContain('Check your browser console for more details.');
     });
   });
 
@@ -109,20 +112,45 @@ describe('UriInput', () => {
     const json = JSON.stringify({ raw: true });
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(json, { status: 200 }));
 
-    const mappedSpec: Spec = {
-      ...spec,
-      responseMapper: async () => ({
-        content: JSON.stringify({ mapped: true }),
-      }),
+    const mappedResolved: ResolvedVersion = {
+      ...resolved,
+      version: {
+        ...resolved.version,
+        responseMapper: async () => ({ content: JSON.stringify({ mapped: true }) }),
+      },
     };
 
-    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput spec={mappedSpec} /> }], {
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={mappedResolved} /> }], {
       initialEntries: ['/test-spec?url=https://example.com/mapped.json'],
     });
     render(<RouterProvider router={router} />);
 
     await waitFor(() => {
       expect(useChecker.getState().content).toContain('"mapped"');
+    });
+  });
+
+  it('derives conformanceClasses from returned rulesets via toConformanceClasses', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+
+    const toConformanceClasses = vi.fn(() => [{ name: 'derived', extension: [] }]);
+    const rulesetResolved: ResolvedVersion = {
+      ...resolved,
+      version: {
+        ...resolved.version,
+        responseMapper: async () => ({ content: '{}', rulesets: { 'conf-class': { rules: {} } as never } }),
+      },
+      toConformanceClasses,
+    };
+
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={rulesetResolved} /> }], {
+      initialEntries: ['/test-spec?url=https://example.com/rulesets.json'],
+    });
+    render(<RouterProvider router={router} />);
+
+    await waitFor(() => {
+      expect(toConformanceClasses).toHaveBeenCalledWith({ 'conf-class': expect.anything() });
+      expect(useChecker.getState().conformanceClasses).toEqual([{ name: 'derived', extension: [] }]);
     });
   });
 
@@ -208,11 +236,50 @@ describe('UriInput', () => {
     expect(fetchSpy).toHaveBeenNthCalledWith(2, 'https://example.com/b.json');
   });
 
-  it('disables button while checking', () => {
+  it('clears the input and does not re-add the param when ?url= is removed', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ x: 1 }), { status: 200 }));
+    const router = renderWithRouter('?url=https://example.com/x.json');
+
+    await waitFor(() => expect(screen.getByPlaceholderText(/enter url/i)).toHaveValue('https://example.com/x.json'));
+
+    // Drop the search param, as a standard switch / title reset does.
+    await act(async () => {
+      await router.navigate('/test-spec');
+    });
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('');
+      expect(screen.getByPlaceholderText(/enter url/i)).toHaveValue('');
+    });
+  });
+
+  it('does not disable the Load button while validation is in progress', () => {
+    // The button is gated on an in-flight fetch only, not on `checking` — which
+    // now defaults true and can stay true for a version with no conformance classes, so
+    // gating on it would leave the button stuck disabled.
     useChecker.setState({ checking: true });
 
     renderWithRouter();
 
-    expect(screen.getByRole('button', { name: /load/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /load/i })).not.toBeDisabled();
+  });
+
+  it('ignores an in-flight fetch result after the component unmounts', async () => {
+    let resolveFetch: (response: Response) => void = () => {};
+    vi.spyOn(globalThis, 'fetch').mockReturnValue(new Promise<Response>(res => (resolveFetch = res)));
+    useChecker.setState({ content: 'ORIGINAL' });
+
+    const router = createMemoryRouter([{ path: '/test-spec', element: <UriInput resolved={resolved} /> }], {
+      initialEntries: ['/test-spec?url=https://example.com/slow.json'],
+    });
+    const view = render(<RouterProvider router={router} />);
+
+    // The ?url= auto-fetch is in flight; unmount, then let it resolve.
+    view.unmount();
+    resolveFetch(new Response(JSON.stringify({ loaded: true }), { status: 200 }));
+    await new Promise(resolve => setTimeout(resolve, 20));
+
+    // The stale result must not have been applied to the store.
+    expect(useChecker.getState().content).toBe('ORIGINAL');
   });
 });

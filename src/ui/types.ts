@@ -1,25 +1,12 @@
 import type { Extension } from '@uiw/react-codemirror';
 import type { Diagnostic as CodemirrorDiagnostic } from '@codemirror/lint';
 
-export interface Spec {
+export type ConformanceClass = {
   name: string;
-  slug: string;
-  example: string;
-  linters: SpecLinter[];
-  responseMapper?: SpecResponseMapper;
-}
-
-export interface SpecInput {
-  content: string;
-  linters?: SpecLinter[];
-}
-
-export type SpecLinter = {
-  name: string;
-  linter: Extension;
+  /** The conformance-class URI; rendered as a clickable source link. */
+  href?: string;
+  extension: Extension;
 };
-
-export type SpecResponseMapper = (responseText: string) => Promise<SpecInput>;
 
 export type Severity = 'hint' | 'info' | 'warning' | 'error';
 
