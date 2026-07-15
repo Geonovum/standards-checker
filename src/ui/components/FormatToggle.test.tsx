@@ -33,6 +33,11 @@ describe('<FormatToggle />', () => {
     expect(screen.getByRole('radio', { name: 'YAML' })).toHaveAttribute('aria-checked', 'false');
   });
 
+  it('applies the given inline style (carries the scrollbar-aware inset from CodeEditor)', () => {
+    render(<FormatToggle style={{ right: 27 }} />);
+    expect(screen.getByRole('radiogroup')).toHaveStyle({ right: '27px' });
+  });
+
   it('keeps every pill clickable (no disabled state on the active one)', () => {
     render(<FormatToggle />);
     expect(screen.getByRole('radio', { name: 'JSON' })).not.toBeDisabled();
