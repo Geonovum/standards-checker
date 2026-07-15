@@ -5,6 +5,7 @@
     "@geonovum/standards-checker": "1.2.0-beta.0"
   },
   "changesets": [
+    "build-cli-raw-imports",
     "multi-version-standards",
     "pnpm-dedupe-check"
   ]
