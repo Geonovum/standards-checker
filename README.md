@@ -90,11 +90,15 @@ One package, many subpaths:
 | `@geonovum/standards-checker/prettier`           | Shared Prettier config (use via `"prettier":` field)                                     |
 | `@geonovum/standards-checker/tsconfig.app.json`  | Base TS config for app source                                                            |
 | `@geonovum/standards-checker/tsconfig.node.json` | Base TS config for Node-side scripts (`vite.config.ts`)                                  |
-| `@geonovum/standards-checker/client`             | `*.css` module declaration for TS                                                        |
+| `@geonovum/standards-checker/client`             | `*.css` and `*?raw` module declarations for TS                                           |
 | `@geonovum/standards-checker/vitest-client`      | Vitest matcher type augmentation (`toContainViolation`)                                  |
 | `@geonovum/standards-checker/index.css`          | Pre-built CSS (Tailwind compiled at build time)                                          |
 
-Bin shipped with the package: `build-cli` — wraps `tsdown` with the standard CLI-build flags. `vite` and `vitest` are peer deps that live in the consumer's tree; scripts invoke their native bins directly.
+Bin shipped with the package: `build-cli` — drives the `tsdown` JS API with the standard CLI-build
+options plus a plugin implementing Vite-style `?raw` raw-text imports (rolldown doesn't support the
+suffix natively). Usage is `build-cli <entry> [...entry]`; the build is fully standard — a consumer
+`tsdown.config.ts` is not loaded. `vite` and `vitest` are peer deps that live in the consumer's
+tree; scripts invoke their native bins directly.
 
 ---
 
