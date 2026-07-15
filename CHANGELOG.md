@@ -1,5 +1,11 @@
 # @geonovum/standards-checker
 
+## 1.2.0-beta.3
+
+### Patch Changes
+
+- 14634d0: Inset the JSON/YAML format toggle by the editor's vertical scrollbar width so it no longer overlaps the scrollbar track on platforms with classic (non-overlay) scrollbars. The measurement ships as a new `useScrollbarWidth(view)` hook exported from `@geonovum/standards-checker/ui`.
+
 ## 1.2.0-beta.2
 
 ### Minor Changes

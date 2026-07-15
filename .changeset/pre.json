@@ -6,6 +6,7 @@
   },
   "changesets": [
     "build-cli-raw-imports",
+    "format-toggle-scrollbar-inset",
     "multi-version-standards",
     "pnpm-dedupe-check"
   ]
