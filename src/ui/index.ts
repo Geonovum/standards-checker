@@ -9,6 +9,7 @@ export { resolveDefaultVersion, findStandard, findVersion, buildLegacyIndex } fr
 export type { ResolvedVersion } from './resolve';
 export { resolveVersion } from './resolve';
 export { groupBy, groupBySource, handleResponse, handleResponseJson, formatDocument } from './util';
+export { useScrollbarWidth } from './hooks';
 export { APPLICATION_JSON_TYPE, APPLICATION_GEO_JSON_TYPE, APPLICATION_OPENAPI_JSON_3_0_TYPE } from '../constants';
 export type { OpenAPIV3_0 } from '../openapi-types';
 

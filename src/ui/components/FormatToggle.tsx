@@ -1,15 +1,16 @@
 import clsx from 'clsx';
 import { pick } from 'ramda';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { ENCODINGS, convertContent, detectEncoding, type Encoding } from '../../encodings';
 import { useChecker } from '../store';
 
 interface Props {
   className?: string;
+  style?: CSSProperties;
 }
 
-const FormatToggle: FC<Props> = ({ className }) => {
+const FormatToggle: FC<Props> = ({ className, style }) => {
   const { content, setContent } = useChecker(useShallow(state => pick(['content', 'setContent'], state)));
   const active = detectEncoding(content);
 
@@ -26,6 +27,7 @@ const FormatToggle: FC<Props> = ({ className }) => {
     <div
       role="radiogroup"
       aria-label="Input format"
+      style={style}
       className={clsx(
         'inline-flex rounded-md bg-white p-0.5 font-mono text-xs font-semibold tracking-wider uppercase shadow-sm ring-1 ring-slate-200',
         className,

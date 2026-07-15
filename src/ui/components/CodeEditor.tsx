@@ -1,5 +1,5 @@
 import { forEachDiagnostic, lintGutter, setDiagnosticsEffect } from '@codemirror/lint';
-import type { Extension, ReactCodeMirrorRef } from '@uiw/react-codemirror';
+import type { EditorView, Extension, ReactCodeMirrorRef } from '@uiw/react-codemirror';
 import ReactCodeMirror, { EditorSelection } from '@uiw/react-codemirror';
 import clsx from 'clsx';
 import { AlertCircle, SquareArrowOutUpRight } from 'lucide-react';
@@ -9,6 +9,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { detectEncoding } from '../../encodings';
 import { getLanguageExtensions } from '../encodings';
+import { useScrollbarWidth } from '../hooks';
 import { useChecker } from '../store';
 import { DEFAULT_UI_STRINGS, type Diagnostic, type Severity, type ConformanceClass, type UiStrings } from '../types';
 import { formatDocument, groupBy, groupBySource } from '../util';
@@ -63,6 +64,11 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
   );
 
   const [diagnostics, setDiagnostics] = useState<{ [key: string]: Diagnostic[] }>({});
+  // The floating format toggle is inset by the editor's vertical scrollbar
+  // width so it keeps its gap to the content edge instead of overlapping the
+  // scrollbar track (overlay scrollbars measure 0 and leave the inset as-is).
+  const [view, setView] = useState<EditorView | undefined>(undefined);
+  const scrollbarWidth = useScrollbarWidth(view);
   const codeMirrorRef = useRef<ReactCodeMirrorRef>(null);
   const strings = { ...DEFAULT_UI_STRINGS, ...(stringOverrides ?? {}) };
   const encodingId = useMemo(() => detectEncoding(content).id, [content]);
@@ -82,6 +88,7 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
           height="100%"
           style={{ height: '100%' }}
           extensions={[...EXTENSIONS, ...languageExtensions, ...conformanceClasses.map(l => l.extension)]}
+          onCreateEditor={setView}
           onUpdate={viewUpdate => {
             viewUpdate.transactions.forEach(transaction => {
               transaction.effects.forEach(effect => {
@@ -105,7 +112,7 @@ const CodeEditor: FC<Props> = ({ strings: stringOverrides }) => {
             }
           }}
         />
-        <FormatToggle className="absolute top-2 right-3 z-10" />
+        <FormatToggle className="absolute top-2 z-10" style={{ right: scrollbarWidth + 12 }} />
       </div>
       <div className="flex-1 overflow-auto p-4 bg-sky-50 text-sm">
         {/* Priority: a fetch/parse error, then the in-flight validation (only
