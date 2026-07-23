@@ -1,7 +1,7 @@
 import * as SpectralCore from '@stoplight/spectral-core';
 import type { IParser } from '@stoplight/spectral-parsers';
 import * as Parsers from '@stoplight/spectral-parsers';
-import jsYaml from 'js-yaml';
+import { dump } from 'js-yaml';
 
 type SpectralCoreModule = typeof import('@stoplight/spectral-core');
 type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
@@ -40,7 +40,7 @@ export const yamlEncoding: Encoding = {
   id: 'yaml',
   label: 'YAML',
   parser: Yaml,
-  stringify: value => jsYaml.dump(value, { lineWidth: -1, noRefs: true }),
+  stringify: value => dump(value, { lineWidth: -1, noRefs: true }),
 };
 
 // Order matters: JSON must precede YAML. JSON is a strict YAML subset, so JSON
