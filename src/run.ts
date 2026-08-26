@@ -206,7 +206,10 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
     const spectral = new Spectral();
     spectral.setRuleset(withPluginFunctions(normalized.map[rulesetId], plugin));
 
-    const doc = new Document(content, encoding.parser);
+    // The third argument is what makes external `$ref`s resolvable: Spectral only
+    // sets a resolver base URI when the document carries a source, so without one
+    // a sibling `./schema.json` is opened relative to the process CWD.
+    const doc = new Document(content, encoding.parser, options.source);
     const violations = await spectral.run(doc);
 
     diagnostics.push(
@@ -217,7 +220,12 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
         path: violation.path,
         range: violation.range,
         documentationUrl: violation.documentationUrl,
-        source: violation.source ?? rulesetId,
+        // A resolved `$ref` can put a violation in a different file, so Spectral's
+        // own source is the document the diagnostic lives in. Ruleset attribution
+        // is a separate axis: with several conformance classes it says which one
+        // flagged it.
+        source: violation.source,
+        ruleset: rulesetId,
       })),
     );
   }
