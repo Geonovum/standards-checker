@@ -145,7 +145,7 @@
     "typescript": "^6.0.3",
     "vite": "^8.1.4"
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.34.5",
   "overrides": {
     "@asyncapi/specs": "6.11.1"
   },
