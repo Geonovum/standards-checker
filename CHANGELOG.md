@@ -1,5 +1,35 @@
 # @geonovum/standards-checker
 
+## 1.3.0
+
+### Minor Changes
+
+- fcf0e25: Drop Node 20 support: `engines.node` is now `>=22.18`. Node 20 reached end-of-life in April
+  2026, and tsdown (which powers `build-cli`) requires a TypeScript-capable Node runtime as of
+  0.22.14. Use Node 22 or 24 to build and run the CLI toolkit.
+- f16564e: Resolve external `$ref`s against the document's own location. The CLI read its input and threw away
+  where it came from, so `run()` built a Spectral `Document` without a source. Spectral only sets a
+  resolver base URI when the document has one, which meant a sibling `"$ref": "./schema.json"` was
+  opened relative to the process working directory and failed with `ENOENT` unless you happened to run
+  from the document's own folder. `readInput` now returns the absolute path (or, for `--input <url>`,
+  the final URL after redirects) alongside the content, and `run()` passes it through as the new
+  `RunOptions.source`. Absolute `http(s)` `$ref`s were unaffected and keep working; stdin has no
+  location and keeps resolving relative `$ref`s against the working directory.
+
+  Because rules now run against the resolved document, a violation can land in a referenced file, so
+  diagnostic attribution is split across two fields. `ValidationDiagnostic.source` takes Spectral's own
+  meaning (the file or URL the diagnostic lives in, absent when the input had no location) and the new
+  `ValidationDiagnostic.ruleset` carries the conformance class that flagged it. Previously `source`
+  held the conformance class as a fallback; JSON output consumers reading it that way should switch to
+  `ruleset`, and the `table` formatter prints both.
+
+### Patch Changes
+
+- 46835f4: Fix YAML stringify under js-yaml v5. js-yaml 5.x dropped its default export in
+  favor of named exports only, so `import jsYaml from 'js-yaml'` was `undefined`
+  and `jsYaml.dump(...)` threw. Switch `src/encodings.ts` to the named `dump`
+  import, which works on both v4 and v5.
+
 ## 1.2.0
 
 ### Minor Changes
