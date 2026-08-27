@@ -26,6 +26,12 @@ export interface Selection {
   version: StandardVersion;
 }
 
+export interface Input {
+  content: string;
+  /** Absolute path or URL the content came from; absent for stdin. */
+  source?: string;
+}
+
 export const createCli = (config: CliConfig) => {
   const { name, standards } = config;
 
@@ -43,8 +49,8 @@ export const createCli = (config: CliConfig) => {
       try {
         const { standard, version } = resolveSelection(standards, options);
         const plugin: RulesetPlugin = { id: `${standard.slug}@${version.id}`, rulesets: version.rulesets };
-        const document = await readInput(options.input ?? '-');
-        const runResult = await run(document, plugin, { format: options.format, failOn: options.failOn });
+        const { content, source } = await readInput(options.input ?? '-');
+        const runResult = await run(content, plugin, { format: options.format, failOn: options.failOn, source });
 
         if (runResult.output) {
           console.log(runResult.output);
@@ -120,7 +126,10 @@ export const resolveSelection = (standards: Standard[], options: ValidateOptions
 
 const ACCEPT_HEADER = 'application/json, application/yaml;q=0.9, text/yaml;q=0.9, */*;q=0.1';
 
-async function readInput(specifier: string): Promise<string> {
+// The source travels with the content because Spectral resolves external `$ref`s
+// against it. Stdin has no location, so it keeps the CWD-relative fallback.
+// Exported for unit testing; not part of the intended public CLI surface.
+export async function readInput(specifier: string): Promise<Input> {
   if (!specifier || specifier === '-') {
     const chunks: Buffer[] = [];
 
@@ -134,7 +143,7 @@ async function readInput(specifier: string): Promise<string> {
       throw new Error('Empty stdin (no content received).');
     }
 
-    return content;
+    return { content };
   }
 
   if (isHttpUrl(specifier)) {
@@ -152,7 +161,9 @@ async function readInput(specifier: string): Promise<string> {
       throw new Error(`Empty response from URL: ${specifier}`);
     }
 
-    return body;
+    // Redirects change the base URI, so relative `$ref`s resolve against where
+    // the body actually came from.
+    return { content: body, source: response.url || specifier };
   }
 
   const filePath = resolve(process.cwd(), specifier);
@@ -161,7 +172,7 @@ async function readInput(specifier: string): Promise<string> {
     throw new Error(`Input file not found: ${filePath}`);
   }
 
-  return readFileSync(filePath, 'utf8');
+  return { content: readFileSync(filePath, 'utf8'), source: filePath };
 }
 
 const isHttpUrl = (value: string): boolean => /^https?:\/\//i.test(value);

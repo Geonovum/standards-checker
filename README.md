@@ -49,6 +49,27 @@ standard/version.
 
 Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected error.
 
+### External `$ref`s
+
+Relative `$ref`s are resolved against the document's own location, so a schema next to the input
+file resolves no matter which directory you run from:
+
+```bash
+don-checker validate --standard adr --input media/openapi.json   # "$ref": "./ProblemJson.schema.json"
+```
+
+The same holds for `--input <url>` (relative `$ref`s are fetched relative to that URL, following
+redirects) and for absolute `http(s)` `$ref`s anywhere. Stdin has no location, so relative `$ref`s
+there resolve against the working directory.
+
+Rules apply to the resolved document, which means a violation can land in a referenced file. Each
+diagnostic therefore carries both:
+
+| Field     | Meaning                                                                     |
+| --------- | --------------------------------------------------------------------------- |
+| `ruleset` | Conformance class that flagged it                                            |
+| `source`  | File or URL it lives in — the referenced document, not necessarily the input |
+
 ### Web UI
 
 ```ts

@@ -65,7 +65,7 @@ describe('renderTable', () => {
     expect(output).toContain('path: []');
   });
 
-  it('includes source and documentation URL when present', () => {
+  it('includes ruleset, source and documentation URL when present', () => {
     const output = renderTable(
       plugin,
       makeResult({
@@ -76,7 +76,8 @@ describe('renderTable', () => {
             code: 'info-rule',
             path: ['a'],
             range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
-            source: 'custom-source',
+            source: '/tmp/spec.json',
+            ruleset: 'https://example.test/conf/core',
             documentationUrl: 'https://example.com/docs',
           },
         ],
@@ -84,8 +85,30 @@ describe('renderTable', () => {
     );
 
     expect(output).toContain('Info (1)');
-    expect(output).toContain('source: custom-source');
+    expect(output).toContain('ruleset: https://example.test/conf/core');
+    expect(output).toContain('source: /tmp/spec.json');
     expect(output).toContain('docs: https://example.com/docs');
+  });
+
+  it('omits the source line when the input had no location', () => {
+    const output = renderTable(
+      plugin,
+      makeResult({
+        diagnostics: [
+          {
+            severity: 'error',
+            message: 'From stdin',
+            code: 'some-rule',
+            path: [],
+            range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+            ruleset: 'https://example.test/conf/core',
+          },
+        ],
+      }),
+    );
+
+    expect(output).toContain('ruleset: https://example.test/conf/core');
+    expect(output).not.toContain('source:');
   });
 
   it('counts severities correctly and groups diagnostics', () => {

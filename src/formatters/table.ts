@@ -29,6 +29,12 @@ const renderDiagnosticGroup = (severity: string, diagnostics: ValidationDiagnost
     lines.push(`     message: ${diagnostic.message}`);
     lines.push(`     path: ${renderPath(diagnostic.path)}`);
 
+    if (diagnostic.ruleset) {
+      lines.push(`     ruleset: ${diagnostic.ruleset}`);
+    }
+
+    // Only present when the input had a location; a resolved `$ref` can point it
+    // at a different file than the one that was validated.
     if (diagnostic.source) {
       lines.push(`     source: ${diagnostic.source}`);
     }

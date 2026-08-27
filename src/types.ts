@@ -34,8 +34,14 @@ export interface ValidationDiagnostic {
   };
   /** Optional documentation URL */
   documentationUrl?: string;
-  /** Source ruleset name */
+  /**
+   * Document the diagnostic lives in: the input's path or URL, or the external
+   * file a resolved `$ref` pointed at. Absent when the input has no location
+   * (stdin, or content passed straight to `run()`).
+   */
   source?: string;
+  /** Ruleset (conformance class) that flagged the diagnostic */
+  ruleset?: string;
 }
 
 /**
@@ -107,6 +113,12 @@ export type FailLevel = 'none' | 'warn' | 'error';
 export interface RunOptions {
   format?: RunFormat | string;
   failOn?: FailLevel | string;
+  /**
+   * Where the document was read from (absolute path or URL). Spectral uses it as
+   * the base URI for external `$ref`s; without it a sibling `./schema.json`
+   * resolves against the process CWD instead of the document's own directory.
+   */
+  source?: string;
 }
 
 export interface RunResult {
