@@ -145,21 +145,8 @@
     "vite": "^8.1.4",
     "vitest": "^5.0.0"
   },
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@12.3.4",
   "overrides": {
     "@asyncapi/specs": "6.11.1"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ],
-    "overrides": {
-      "@asyncapi/specs": "6.11.1"
-    },
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "eslint-plugin-react-hooks>eslint": ">=10"
-      }
-    }
   }
 }
