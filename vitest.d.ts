@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import 'vitest';
 
-interface CustomMatchers<R = unknown> {
-  toContainViolation: (code: string, count?: number, message?: string | RegExp) => R;
-}
-
 declare module 'vitest' {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  interface Assertion<T = any> extends CustomMatchers<T> {}
-  interface AsymmetricMatchersContaining extends CustomMatchers {}
+  // `R` must repeat vitest's own `Matchers` parameter exactly, name, constraint and
+  // default alike. Anything else is a TS2428 mismatch that only `skipLibCheck` hides.
+  interface Matchers<R extends void | Promise<void> = void | Promise<void>> {
+    toContainViolation: (code: string, count?: number, message?: string | RegExp) => R;
+  }
 }
