@@ -118,7 +118,7 @@
     "nimma": "^0.7.2",
     "prettier": "^3.9.5",
     "ramda": "^0.32.0",
-    "tsdown": "^0.22.8",
+    "tsdown": "^0.23.0",
     "typescript-eslint": "^8.64.0",
     "zustand": "^5.0.14"
   },
