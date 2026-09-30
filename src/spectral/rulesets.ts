@@ -20,4 +20,4 @@ export {
   oasUnusedComponent,
   refSiblings,
   typedEnum,
-} from '@stoplight/spectral-rulesets/dist/oas/functions';
+} from '@stoplight/spectral-rulesets/dist/oas/functions/index.js';
