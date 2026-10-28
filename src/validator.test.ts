@@ -1,5 +1,5 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import { truthy } from '@stoplight/spectral-functions';
+import type { RulesetDefinition } from '@openlint/openlint-core';
+import { truthy } from '@openlint/openlint-functions';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { formatJson, validate, validateUrl } from './validator';
 

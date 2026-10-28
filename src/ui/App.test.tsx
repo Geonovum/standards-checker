@@ -1,5 +1,5 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import { truthy } from '@stoplight/spectral-functions';
+import type { RulesetDefinition } from '@openlint/openlint-core';
+import { truthy } from '@openlint/openlint-functions';
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';

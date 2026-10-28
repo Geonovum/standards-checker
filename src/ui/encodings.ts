@@ -1,7 +1,7 @@
 import { json, jsonParseLinter } from '@codemirror/lang-json';
 import { yaml } from '@codemirror/lang-yaml';
 import { linter } from '@codemirror/lint';
-import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
+import type { IOpenLintDiagnostic } from '@openlint/openlint-core';
 import type { Extension, Text } from '@uiw/react-codemirror';
 
 export interface ViolationRange {
@@ -11,10 +11,10 @@ export interface ViolationRange {
 
 export interface UiEncodingExtras {
   languageExtensions: Extension[];
-  mapViolationRange?(doc: Text, violation: ISpectralDiagnostic, content: string): ViolationRange;
+  mapViolationRange?(doc: Text, violation: IOpenLintDiagnostic, content: string): ViolationRange;
 }
 
-const DEFAULT_RANGE_MAPPER = (doc: Text, violation: ISpectralDiagnostic): ViolationRange => ({
+const DEFAULT_RANGE_MAPPER = (doc: Text, violation: IOpenLintDiagnostic): ViolationRange => ({
   from: doc.line(violation.range.start.line + 1).from + violation.range.start.character,
   to: doc.line(violation.range.end.line + 1).from + violation.range.end.character,
 });
@@ -29,7 +29,7 @@ interface YamlPathEntry {
 //   - flow-style mappings (`{a: 1}`) and sequences (`[1, 2]`)
 //   - multi-line scalars (`|`, `>`)
 //   - values that contain `:` are mis-tokenised by the regex below
-//   - array indices in violation paths (Spectral emits numeric path segments
+//   - array indices in violation paths (OpenLint emits numeric path segments
 //     for sequence items; this map is keyed on string property names only,
 //     so the lookup falls back to the parent mapping line)
 const buildYamlPathLines = (content: string): Map<string, YamlPathEntry> => {
@@ -55,7 +55,7 @@ const buildYamlPathLines = (content: string): Map<string, YamlPathEntry> => {
   return result;
 };
 
-const yamlRangeMapper = (doc: Text, violation: ISpectralDiagnostic, content: string): ViolationRange => {
+const yamlRangeMapper = (doc: Text, violation: IOpenLintDiagnostic, content: string): ViolationRange => {
   const lines = content.split('\n');
   const pathLines = buildYamlPathLines(content);
   const keys = violation.path.map(p => String(p));

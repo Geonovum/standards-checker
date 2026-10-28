@@ -1,4 +1,4 @@
-import type { IFunctionResult, RulesetFunctionContext } from '@stoplight/spectral-core';
+import type { IFunctionResult, RulesetFunctionContext } from '@openlint/openlint-core';
 import mergeAllOf from 'json-schema-merge-allof';
 import nimma from 'nimma';
 import { last, omit } from 'ramda';
@@ -38,7 +38,7 @@ export const handleResponseJson = (response: Response, uri: string) => {
 // Returns the input unchanged for encodings without a canonical form (YAML).
 export const formatDocument = (content: string): string => detectEncoding(content).canonicalize?.(content) ?? content;
 
-// Spectral utility functions
+// OpenLint utility functions
 
 export const errorMessage = (message: string, path?: (string | number)[]): IFunctionResult[] => [{ message, path }];
 

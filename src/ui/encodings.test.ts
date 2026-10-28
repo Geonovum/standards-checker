@@ -1,10 +1,10 @@
-import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
+import type { IOpenLintDiagnostic } from '@openlint/openlint-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { Text } from '@uiw/react-codemirror';
 import { describe, expect, it } from 'vitest';
 import { UI_ENCODING_EXTRAS, getLanguageExtensions, getRangeMapper } from './encodings';
 
-const violation = (overrides: Partial<ISpectralDiagnostic>): ISpectralDiagnostic => ({
+const violation = (overrides: Partial<IOpenLintDiagnostic>): IOpenLintDiagnostic => ({
   code: 'some-rule',
   message: 'x',
   severity: DiagnosticSeverity.Error,
@@ -29,7 +29,7 @@ describe('getLanguageExtensions', () => {
 });
 
 describe('getRangeMapper — json', () => {
-  it("uses Spectral's reported range verbatim", () => {
+  it("uses OpenLint's reported range verbatim", () => {
     const content = '{\n  "title": "missing"\n}';
     const doc = Text.of(content.split('\n'));
     const mapper = getRangeMapper('json');

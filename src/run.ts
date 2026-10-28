@@ -1,6 +1,6 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import * as SpectralFormats from '@stoplight/spectral-formats';
-import { Document, Spectral, detectEncoding } from './encodings';
+import type { RulesetDefinition } from '@openlint/openlint-core';
+import * as OpenLintFormats from '@openlint/openlint-formats';
+import { Document, OpenLint, detectEncoding } from './encodings';
 import { formatOutput } from './formatters';
 import type {
   FailLevel,
@@ -14,10 +14,10 @@ import type {
 } from './types';
 import { mapSeverity } from './types';
 
-type SpectralFormatsModule = typeof import('@stoplight/spectral-formats');
+type OpenLintFormatsModule = typeof import('@openlint/openlint-formats');
 
-const spectralFormats = ((SpectralFormats as unknown as { default?: SpectralFormatsModule }).default ??
-  (SpectralFormats as unknown as SpectralFormatsModule)) as Record<string, unknown>;
+const openLintFormats = ((OpenLintFormats as unknown as { default?: OpenLintFormatsModule }).default ??
+  (OpenLintFormats as unknown as OpenLintFormatsModule)) as Record<string, unknown>;
 
 interface NormalizedRulesets {
   map: Record<string, RulesetDefinition>;
@@ -84,8 +84,8 @@ const resolveFormat = (format: unknown) => {
     return format;
   }
 
-  if (typeof format === 'string' && isFormatFunction(spectralFormats[format])) {
-    return spectralFormats[format];
+  if (typeof format === 'string' && isFormatFunction(openLintFormats[format])) {
+    return openLintFormats[format];
   }
 
   return undefined;
@@ -203,14 +203,14 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
   const diagnostics: ValidationDiagnostic[] = [];
 
   for (const rulesetId of normalized.ids) {
-    const spectral = new Spectral();
-    spectral.setRuleset(withPluginFunctions(normalized.map[rulesetId], plugin));
+    const openLint = new OpenLint();
+    openLint.setRuleset(withPluginFunctions(normalized.map[rulesetId], plugin));
 
-    // The third argument is what makes external `$ref`s resolvable: Spectral only
+    // The third argument is what makes external `$ref`s resolvable: OpenLint only
     // sets a resolver base URI when the document carries a source, so without one
     // a sibling `./schema.json` is opened relative to the process CWD.
     const doc = new Document(content, encoding.parser, options.source);
-    const violations = await spectral.run(doc);
+    const violations = await openLint.run(doc);
 
     diagnostics.push(
       ...violations.map(violation => ({
@@ -220,7 +220,7 @@ export const run = async (document: unknown, plugin: RulesetPlugin, options: Run
         path: violation.path,
         range: violation.range,
         documentationUrl: violation.documentationUrl,
-        // A resolved `$ref` can put a violation in a different file, so Spectral's
+        // A resolved `$ref` can put a violation in a different file, so OpenLint's
         // own source is the document the diagnostic lives in. Ruleset attribution
         // is a separate axis: with several conformance classes it says which one
         // flagged it.

@@ -1,8 +1,8 @@
-import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
+import type { IOpenLintDiagnostic } from '@openlint/openlint-core';
 import { expect } from 'vitest';
 
 expect.extend({
-  toContainViolation(violations: ISpectralDiagnostic[], code: string, count: number = 1, message?: string | RegExp) {
+  toContainViolation(violations: IOpenLintDiagnostic[], code: string, count: number = 1, message?: string | RegExp) {
     expect(Array.isArray(violations)).toBe(true);
 
     const matches = violations.filter(violation => violation.code === code);

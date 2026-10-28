@@ -1,5 +1,5 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import { truthy } from '@stoplight/spectral-functions';
+import type { RulesetDefinition } from '@openlint/openlint-core';
+import { truthy } from '@openlint/openlint-functions';
 import { describe, expect, it } from 'vitest';
 import type { Standard, StandardVersion } from '../standards';
 import { resolveVersion } from './resolve';

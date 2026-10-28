@@ -16,10 +16,10 @@ description:
   en:
     shortDescription: >-
       A framework for building checkers that validate documents and APIs
-      against technical standards using Spectral rulesets.
+      against technical standards using OpenLint rulesets.
     longDescription: |
       Standards Checker is the shared validation framework behind Geonovum's
-      checker applications. It uses Stoplight Spectral rulesets to validate
+      checker applications. It uses OpenLint (Spectral-compatible) rulesets to validate
       documents and API descriptions against technical standards, and packages
       everything needed to build a checker: a programmatic validation engine, a
       CLI toolkit for command-line validation, and an embeddable React user
@@ -31,7 +31,7 @@ description:
       consistent. Standards and their versions are described once and reused by
       both the web UI and the CLI.
     features:
-      - Spectral-based validation engine with a programmatic API
+      - OpenLint-based validation engine with a programmatic API
       - CLI toolkit for building command-line checkers
       - Embeddable React UI with a CodeMirror editor
       - Shared Vite, Vitest, ESLint, Prettier and TypeScript configs

@@ -1,5 +1,5 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import { Document, Spectral, detectEncoding } from './encodings';
+import type { RulesetDefinition } from '@openlint/openlint-core';
+import { Document, OpenLint, detectEncoding } from './encodings';
 import type { ValidateOptions, ValidateUrlOptions, ValidationDiagnostic, ValidationResult } from './types';
 import { mapSeverity } from './types';
 
@@ -12,7 +12,7 @@ export async function validate(options: ValidateOptions): Promise<ValidationResu
     ? Object.fromEntries(Object.entries(rulesets).filter(([name]) => rulesetNames.includes(name)))
     : rulesets;
 
-  const spectral = new Spectral();
+  const openLint = new OpenLint();
 
   const mergedRuleset: RulesetDefinition = {
     rules: {},
@@ -24,10 +24,10 @@ export async function validate(options: ValidateOptions): Promise<ValidationResu
     }
   });
 
-  spectral.setRuleset(mergedRuleset);
+  openLint.setRuleset(mergedRuleset);
 
   const document = new Document(content, detectEncoding(content).parser);
-  const violations = await spectral.run(document);
+  const violations = await openLint.run(document);
 
   const diagnostics: ValidationDiagnostic[] = violations.map(violation => ({
     severity: mapSeverity(violation.severity),

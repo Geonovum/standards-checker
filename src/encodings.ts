@@ -1,16 +1,18 @@
-import * as SpectralCore from '@stoplight/spectral-core';
-import type { IParser } from '@stoplight/spectral-parsers';
-import * as Parsers from '@stoplight/spectral-parsers';
+import * as OpenLintCore from '@openlint/openlint-core';
+import type { IParser } from '@openlint/openlint-parsers';
+import * as Parsers from '@openlint/openlint-parsers';
 import { dump } from 'js-yaml';
 
-type SpectralCoreModule = typeof import('@stoplight/spectral-core');
-type SpectralParsersModule = typeof import('@stoplight/spectral-parsers');
+type OpenLintCoreModule = typeof import('@openlint/openlint-core');
+type OpenLintParsersModule = typeof import('@openlint/openlint-parsers');
 
-const spectralCore =
-  (SpectralCore as unknown as { default?: SpectralCoreModule }).default ?? (SpectralCore as unknown as SpectralCoreModule);
-const parsers = (Parsers as unknown as { default?: SpectralParsersModule }).default ?? (Parsers as unknown as SpectralParsersModule);
+const openLintCore =
+  (OpenLintCore as unknown as { default?: OpenLintCoreModule }).default ?? (OpenLintCore as unknown as OpenLintCoreModule);
+const parsers = (Parsers as unknown as { default?: OpenLintParsersModule }).default ?? (Parsers as unknown as OpenLintParsersModule);
 
-export const { Document, Spectral } = spectralCore;
+export const { Document, OpenLint } = openLintCore;
+/** @deprecated Use `OpenLint`. Removed in the next major. */
+export const Spectral = OpenLint;
 export const { Json, Yaml } = parsers;
 
 // IParser is invariant in its generic R, so the common supertype of IParser<JsonParserResult>

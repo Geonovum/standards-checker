@@ -1,6 +1,6 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
+import type { RulesetDefinition } from '@openlint/openlint-core';
 import type { Standard, StandardVersion } from '../standards';
-import { spectralChecker } from './spectral';
+import { openLintChecker } from './openlint';
 import type { ConformanceClass } from './types';
 
 /**
@@ -23,7 +23,7 @@ export const resolveVersion = (standard: Standard, version: StandardVersion): Re
   const toConformanceClasses = (rulesets: Record<string, RulesetDefinition>): ConformanceClass[] =>
     Object.entries(rulesets).map(([uri, def]) => {
       const name = label(uri);
-      return { name, href: uri, extension: spectralChecker(name, def) };
+      return { name, href: uri, extension: openLintChecker(name, def) };
     });
 
   return { standard, version, conformanceClasses: toConformanceClasses(version.rulesets), toConformanceClasses };

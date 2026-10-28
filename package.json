@@ -3,7 +3,7 @@
   "version": "1.4.1",
   "type": "module",
   "license": "EUPL-1.2",
-  "description": "Standards checker engine with Spectral-based validation, React UI, CLI toolkit and shared Vite/ESLint/Prettier/TS configs",
+  "description": "Standards checker engine with OpenLint-based validation, React UI, CLI toolkit and shared Vite/ESLint/Prettier/TS configs",
   "repository": {
     "type": "git",
     "url": "https://github.com/Geonovum/standards-checker"
@@ -54,6 +54,10 @@
       "types": "./dist/vitest-matchers.d.ts",
       "import": "./dist/vitest-matchers.js"
     },
+    "./openlint/*": {
+      "types": "./dist/openlint/*.d.ts",
+      "import": "./dist/openlint/*.js"
+    },
     "./spectral/*": {
       "types": "./dist/spectral/*.d.ts",
       "import": "./dist/spectral/*.js"
@@ -90,15 +94,15 @@
     "@codemirror/lint": "^6.9.7",
     "@eslint/js": "^10.0.1",
     "@modyfi/vite-plugin-yaml": "^1.1.1",
+    "@openlint/openlint-core": "^0.1.1",
+    "@openlint/openlint-formats": "^0.1.0",
+    "@openlint/openlint-functions": "^0.1.0",
+    "@openlint/openlint-parsers": "^1.0.0",
+    "@openlint/openlint-ref-resolver": "^0.1.0",
+    "@openlint/openlint-rulesets": "^0.1.0",
     "@stoplight/better-ajv-errors": "^1.0.3",
     "@stoplight/json-ref-readers": "^1.2.2",
     "@stoplight/path": "^2.0.1",
-    "@stoplight/spectral-core": "^1.23.1",
-    "@stoplight/spectral-formats": "^1.8.5",
-    "@stoplight/spectral-functions": "^1.10.5",
-    "@stoplight/spectral-parsers": "^1.0.5",
-    "@stoplight/spectral-ref-resolver": "^1.0.5",
-    "@stoplight/spectral-rulesets": "^1.22.6",
     "@stoplight/types": "^14.1.1",
     "@uiw/react-codemirror": "^4.25.11",
     "@vitejs/plugin-react": "^6.0.3",

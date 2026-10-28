@@ -15,8 +15,7 @@ const sharedConfig = defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id: string) {
-          if (id.includes('/spectral-') || id.includes('/ajv') || id.includes('/better-ajv-errors/') || id.includes('/nimma/'))
-            return 'spectral';
+          if (id.includes('/@openlint/') || id.includes('/@stoplight/') || id.includes('/ajv') || id.includes('/nimma/')) return 'openlint';
           if (id.includes('/codemirror/') || id.includes('/@uiw/')) return 'codemirror';
         },
       },

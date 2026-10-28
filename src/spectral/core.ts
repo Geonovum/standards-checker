@@ -1,41 +1,8 @@
-/**
- * Re-exports from @stoplight/spectral-core.
- * Explicit named re-exports (not `export *`) so Vite / Rolldown can statically
- * resolve names from the CJS source module.
- */
-export {
-  assertValidRuleset,
-  createRulesetFunction,
-  DEFAULT_PARSER_OPTIONS,
-  Document,
-  Formats,
-  getDiagnosticSeverity,
-  ParsedDocument,
-  Rule,
-  Ruleset,
-  RulesetValidationError,
-  Spectral,
-} from '@stoplight/spectral-core';
+/** @deprecated Import from '@geonovum/standards-checker/openlint/core' instead. Removed in the next major. */
+export * from '../openlint/core';
 
-export type {
-  Format,
-  HumanReadableDiagnosticSeverity,
-  IConstructorOpts,
-  IFunction,
-  IFunctionResult,
-  IGivenNode,
-  IRuleResult,
-  IRunOpts,
-  ISpectralDiagnostic,
-  ISpectralFullResult,
-  JSONSchema,
-  ParserOptions,
-  RuleDefinition,
-  RulesetDefinition,
-  RulesetFunction,
-  RulesetFunctionContext,
-  RulesetFunctionSchemaDefinition,
-  RulesetFunctionWithValidator,
-  StringifiedRule,
-  StringifiedRuleset,
-} from '@stoplight/spectral-core';
+/** @deprecated Use `OpenLint`. */
+export { OpenLint as Spectral } from '../openlint/core';
+
+/** @deprecated Use `IOpenLintDiagnostic` / `IOpenLintFullResult`. */
+export type { IOpenLintDiagnostic as ISpectralDiagnostic, IOpenLintFullResult as ISpectralFullResult } from '../openlint/core';

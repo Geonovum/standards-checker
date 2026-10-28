@@ -1,4 +1,4 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
+import type { RulesetDefinition } from '@openlint/openlint-core';
 
 /**
  * First-class Standard -> Version model.
@@ -30,7 +30,7 @@ export interface StandardVersion {
   status: VersionStatus;
   /** Editor default document for this version. */
   example: string;
-  /** RAW Spectral rulesets, keyed by conformance-class URI. */
+  /** RAW OpenLint rulesets, keyed by conformance-class URI. */
   rulesets: Record<string, RulesetDefinition>;
   /** Transforms a conformance-class URI into its display name; defaults to identity. */
   sourceLabel?: (confClassURI: string) => string;
