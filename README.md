@@ -1,6 +1,6 @@
 # @geonovum/standards-checker
 
-A validation framework for checking documents and APIs against specifications using [OpenLint](https://github.com/openlint/openlint) rulesets (the Spectral ruleset format). Ships a CLI toolkit, a programmatic engine, an embeddable React UI, and shared build/lint/format/typescript configs so consumer apps stay small.
+A validation framework for checking documents and APIs against specifications using [OpenLint](https://github.com/openlint/openlint) rulesets. Ships a CLI toolkit, a programmatic engine, an embeddable React UI, and shared build/lint/format/typescript configs so consumer apps stay small.
 
 [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker)](https://www.npmjs.com/package/@geonovum/standards-checker)
 

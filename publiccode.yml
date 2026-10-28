@@ -19,7 +19,7 @@ description:
       against technical standards using OpenLint rulesets.
     longDescription: |
       Standards Checker is the shared validation framework behind Geonovum's
-      checker applications. It uses OpenLint (Spectral-compatible) rulesets to validate
+      checker applications. It uses OpenLint rulesets to validate
       documents and API descriptions against technical standards, and packages
       everything needed to build a checker: a programmatic validation engine, a
       CLI toolkit for command-line validation, and an embeddable React user
