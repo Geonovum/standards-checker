@@ -1,7 +1,7 @@
 import { resolveHttp } from '@stoplight/json-ref-readers';
 import { extname } from '@stoplight/path';
-import type { RulesetFunction } from '@stoplight/spectral-core';
-import { Resolver } from '@stoplight/spectral-ref-resolver';
+import type { RulesetFunction } from '@openlint/openlint-core';
+import { Resolver } from '@openlint/openlint-ref-resolver';
 import { APPLICATION_JSON_TYPE } from '../constants';
 import { Json, Yaml } from '../encodings';
 import type { OpenAPIV3_0 } from '../openapi-types';

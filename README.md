@@ -1,6 +1,6 @@
 # @geonovum/standards-checker
 
-A validation framework for checking documents and APIs against specifications using [Spectral](https://github.com/stoplightio/spectral) rulesets. Ships a CLI toolkit, a programmatic engine, an embeddable React UI, and shared build/lint/format/typescript configs so consumer apps stay small.
+A validation framework for checking documents and APIs against specifications using [OpenLint](https://github.com/openlint/openlint) rulesets. Ships a CLI toolkit, a programmatic engine, an embeddable React UI, and shared build/lint/format/typescript configs so consumer apps stay small.
 
 [![npm](https://img.shields.io/npm/v/@geonovum/standards-checker)](https://www.npmjs.com/package/@geonovum/standards-checker)
 
@@ -103,10 +103,11 @@ One package, many subpaths:
 | `@geonovum/standards-checker/vite`               | Shared Vite config factory (`createConfig`) — React + YAML                               |
 | `@geonovum/standards-checker/vitest`             | Shared Vitest config (`createVitestConfig` + default export)                             |
 | `@geonovum/standards-checker/vitest-matchers`    | Setup file registering the `toContainViolation` custom matcher                           |
-| `@geonovum/standards-checker/spectral/core`      | Re-export of `@stoplight/spectral-core`                                                  |
-| `@geonovum/standards-checker/spectral/functions` | Re-export of `@stoplight/spectral-functions`                                             |
-| `@geonovum/standards-checker/spectral/parsers`   | Re-export of `@stoplight/spectral-parsers`                                               |
-| `@geonovum/standards-checker/spectral/rulesets`  | Re-export of `@stoplight/spectral-rulesets` (`oas`, `asyncapi`, `arazzo`, OAS functions) |
+| `@geonovum/standards-checker/openlint/core`      | Re-export of `@openlint/openlint-core` (`OpenLint`, `Document`, ruleset types)           |
+| `@geonovum/standards-checker/openlint/functions` | Re-export of `@openlint/openlint-functions`                                              |
+| `@geonovum/standards-checker/openlint/parsers`   | Re-export of `@openlint/openlint-parsers`                                                |
+| `@geonovum/standards-checker/openlint/rulesets`  | Re-export of `@openlint/openlint-rulesets` (`oas`, `asyncapi`, `arazzo`, OAS functions)  |
+| `@geonovum/standards-checker/spectral/*`         | **Deprecated** alias of `openlint/*`; removed in the next major                          |
 | `@geonovum/standards-checker/eslint.config`      | Shared ESLint flat config                                                                |
 | `@geonovum/standards-checker/prettier`           | Shared Prettier config (use via `"prettier":` field)                                     |
 | `@geonovum/standards-checker/tsconfig.app.json`  | Base TS config for app source                                                            |

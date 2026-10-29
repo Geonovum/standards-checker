@@ -1,7 +1,7 @@
 import { linter } from '@codemirror/lint';
-import type { RulesetDefinition } from '@stoplight/spectral-core';
+import type { RulesetDefinition } from '@openlint/openlint-core';
 import type { Extension } from '@uiw/react-codemirror';
-import { Document, Spectral, detectEncoding } from '../encodings';
+import { Document, OpenLint, detectEncoding } from '../encodings';
 import { mapSeverity } from '../types';
 import { getRangeMapper } from './encodings';
 
@@ -9,9 +9,9 @@ export interface Rulesets {
   [confClass: string]: RulesetDefinition;
 }
 
-export const spectralChecker = (name: string, ruleset: RulesetDefinition): Extension => {
-  const spectral = new Spectral();
-  spectral.setRuleset(ruleset);
+export const openLintChecker = (name: string, ruleset: RulesetDefinition): Extension => {
+  const openLint = new OpenLint();
+  openLint.setRuleset(ruleset);
 
   return linter(async view => {
     const doc = view.state.doc;
@@ -20,7 +20,7 @@ export const spectralChecker = (name: string, ruleset: RulesetDefinition): Exten
     const mapRange = getRangeMapper(encoding.id);
 
     try {
-      const violations = await spectral.run(new Document(content, encoding.parser));
+      const violations = await openLint.run(new Document(content, encoding.parser));
       return violations.map(violation => ({
         source: name,
         ...mapRange(doc, violation, content),
@@ -38,3 +38,6 @@ export const spectralChecker = (name: string, ruleset: RulesetDefinition): Exten
     }
   });
 };
+
+/** @deprecated Use `openLintChecker`. Removed in the next major. */
+export const spectralChecker = openLintChecker;

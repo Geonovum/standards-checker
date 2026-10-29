@@ -1,5 +1,5 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
-import { truthy } from '@stoplight/spectral-functions';
+import type { RulesetDefinition } from '@openlint/openlint-core';
+import { truthy } from '@openlint/openlint-functions';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -106,7 +106,7 @@ const refPlugin: RulesetPlugin = {
   },
 };
 
-// Spectral only resolves external `$ref`s relative to the document when the
+// OpenLint only resolves external `$ref`s relative to the document when the
 // document carries a source; without one it falls back to the process CWD, which
 // is why a sibling schema next to the input file used to fail with ENOENT.
 describe('run() — external $ref resolution', () => {

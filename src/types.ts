@@ -1,4 +1,4 @@
-import type { RulesetDefinition } from '@stoplight/spectral-core';
+import type { RulesetDefinition } from '@openlint/openlint-core';
 import type { DiagnosticSeverity } from '@stoplight/types';
 
 /**
@@ -96,7 +96,7 @@ export interface RulesetPlugin {
   rules?: RulesetDefinition | RulesetDefinition[];
   /** Optional map of rule sets keyed by identifier */
   rulesets?: Record<string, RulesetDefinition>;
-  /** Custom spectral functions */
+  /** Custom OpenLint functions */
   funcs?: Record<string, unknown>;
   /** Optional preprocessing hook */
   preprocess?: (doc: unknown, ctx: RunContext) => unknown | Promise<unknown>;
@@ -114,7 +114,7 @@ export interface RunOptions {
   format?: RunFormat | string;
   failOn?: FailLevel | string;
   /**
-   * Where the document was read from (absolute path or URL). Spectral uses it as
+   * Where the document was read from (absolute path or URL). OpenLint uses it as
    * the base URI for external `$ref`s; without it a sibling `./schema.json`
    * resolves against the process CWD instead of the document's own directory.
    */

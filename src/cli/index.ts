@@ -126,7 +126,7 @@ export const resolveSelection = (standards: Standard[], options: ValidateOptions
 
 const ACCEPT_HEADER = 'application/json, application/yaml;q=0.9, text/yaml;q=0.9, */*;q=0.1';
 
-// The source travels with the content because Spectral resolves external `$ref`s
+// The source travels with the content because OpenLint resolves external `$ref`s
 // against it. Stdin has no location, so it keeps the CWD-relative fallback.
 // Exported for unit testing; not part of the intended public CLI surface.
 export async function readInput(specifier: string): Promise<Input> {

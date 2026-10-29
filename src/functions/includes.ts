@@ -1,4 +1,4 @@
-import type { RulesetFunction } from '@stoplight/spectral-core';
+import type { RulesetFunction } from '@openlint/openlint-core';
 
 export interface Options {
   anyOf?: string[];

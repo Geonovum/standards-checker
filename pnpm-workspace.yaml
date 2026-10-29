@@ -10,3 +10,8 @@ allowBuilds:
   esbuild: true
   '@parcel/watcher': false
   '@scarf/scarf': false
+
+# OpenLint (the validation engine) is exempt from pnpm's 24 hour minimumReleaseAge so engine
+# releases can be picked up the day they ship.
+minimumReleaseAgeExclude:
+  - '@openlint/*'

@@ -1,9 +1,9 @@
-import type { ISpectralDiagnostic } from '@stoplight/spectral-core';
+import type { IOpenLintDiagnostic } from '@openlint/openlint-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { describe, expect, it } from 'vitest';
 import './vitest-matchers';
 
-const diagnostic = (code: string, message: string): ISpectralDiagnostic => ({
+const diagnostic = (code: string, message: string): IOpenLintDiagnostic => ({
   code,
   message,
   path: [],

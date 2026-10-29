@@ -1,5 +1,5 @@
 import betterAjvErrors from '@stoplight/better-ajv-errors';
-import type { IFunctionResult, RulesetFunction } from '@stoplight/spectral-core';
+import type { IFunctionResult, RulesetFunction } from '@openlint/openlint-core';
 import addFormats from 'ajv-formats';
 import Ajv, { AnySchemaObject } from 'ajv/dist/2020.js';
 

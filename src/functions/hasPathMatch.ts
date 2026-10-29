@@ -1,4 +1,4 @@
-import type { RulesetFunction } from '@stoplight/spectral-core';
+import type { RulesetFunction } from '@openlint/openlint-core';
 import type { OpenAPIV3_0 } from '../openapi-types';
 
 export interface Options {

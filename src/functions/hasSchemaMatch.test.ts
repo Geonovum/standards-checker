@@ -1,4 +1,4 @@
-import type { RulesetFunctionContext } from '@stoplight/spectral-core';
+import type { RulesetFunctionContext } from '@openlint/openlint-core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import hasSchemaMatch from './hasSchemaMatch';
 

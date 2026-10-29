@@ -75,7 +75,7 @@ describe('resolveSelection', () => {
   });
 });
 
-// The source is what lets Spectral resolve a document's external `$ref`s against
+// The source is what lets OpenLint resolve a document's external `$ref`s against
 // the document's own location rather than the process CWD.
 describe('readInput', () => {
   const originalFetch = globalThis.fetch;
