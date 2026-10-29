@@ -9,7 +9,7 @@
     "url": "https://github.com/Geonovum/standards-checker"
   },
   "engines": {
-    "node": ">=22.18"
+    "node": "^22.18 || >=24.0"
   },
   "publishConfig": {
     "access": "public"
