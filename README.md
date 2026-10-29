@@ -217,7 +217,7 @@ my-checker/
 
 ### Prerequisites
 
-- Node.js 24+
+- Node.js 22.18+ or 24+
 - pnpm 10+
 
 ### Setup
