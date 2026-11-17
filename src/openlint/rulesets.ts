@@ -20,4 +20,4 @@ export {
   oasUnusedComponent,
   refSiblings,
   typedEnum,
-} from '@openlint/openlint-rulesets/dist/oas/functions/index.js';
+} from '@openlint/ruleset-spectral-oas/dist/oas/functions/index.js';
