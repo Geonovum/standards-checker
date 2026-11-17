@@ -38,14 +38,14 @@ standard/version.
 
 ### CLI flags
 
-| Flag                | Description                                       | Default      |
-| ------------------- | ------------------------------------------------- | ------------ |
-| `--standard <slug>` | Standard to validate against                      | _(required)_ |
-| `--version <id>`    | Version of the standard                           | latest final |
-| `--ruleset <slug>`  | **Deprecated** alias for `--standard`/`--version` | —            |
-| `--input <file\|->` | Input file, URL, or `-` for stdin                 | `-`          |
-| `--format <fmt>`    | Output: `table`, `json`                           | `table`      |
-| `--fail-on <level>` | Exit code policy: `none`, `warn`, `error`         | `error`      |
+| Flag                     | Description                                       | Default      |
+| ------------------------ | ------------------------------------------------- | ------------ |
+| `--standard <slug>`      | Standard to validate against                      | _(required)_ |
+| `--version <id>`         | Version of the standard                           | latest final |
+| `--ruleset <slug>`       | **Deprecated** alias for `--standard`/`--version` | —            |
+| `--input <file\|url\|->` | Input file, URL, or `-` for stdin                 | `-`          |
+| `--format <fmt>`         | Output: `table`, `json`                           | `table`      |
+| `--fail-on <level>`      | Exit code policy: `none`, `warn`, `error`         | `error`      |
 
 Exit codes: `0` = pass, `1` = failed per `--fail-on` policy, `>1` = unexpected error.
 
