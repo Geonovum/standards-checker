@@ -99,7 +99,7 @@
     "@openlint/openlint-functions": "^0.2.0",
     "@openlint/openlint-parsers": "^1.0.0",
     "@openlint/openlint-ref-resolver": "^0.1.0",
-    "@openlint/openlint-rulesets": "^0.1.0",
+    "@openlint/openlint-rulesets": "^0.2.0",
     "@stoplight/better-ajv-errors": "^1.0.3",
     "@stoplight/json-ref-readers": "^1.2.2",
     "@stoplight/path": "^2.0.1",
