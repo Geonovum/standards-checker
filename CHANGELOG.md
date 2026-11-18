@@ -1,5 +1,22 @@
 # @geonovum/standards-checker
 
+## 1.5.1
+
+### Patch Changes
+
+- a803cc5: Make the CLI's top-level `--help` useful. It now describes the `validate` command, shows example invocations, and points
+  to `<name> validate --help` for all options. An unknown option now ends with a hint to run `--help`. Fixes #185.
+- c06c469: Require Node `^22.18 || >=24.0`, which drops Node 23. The `@openlint/*` libraries that 1.5.0 moved to already require
+  `^22.0 || >=24.0`, so Node 23 was not supported in practice; `engines` now says so.
+- 1e61636: Update `@openlint/openlint-functions` to `^0.2.0`. The re-exported functions and option types are unchanged; `schema` gains an
+  opt-in `nestedResultCache` option (off by default).
+- bf0d9c9: Update `@openlint/openlint-rulesets` to `^0.2.0`. That release moves the OAS ruleset into `@openlint/ruleset-spectral-oas`, so
+  the OAS rule functions re-exported from `./openlint/rulesets` now come from there (added as a dependency). The exported names
+  and the OAS rules are unchanged.
+- f7a39d5: Update `@openlint/openlint-rulesets` to `^0.3.0`. It depends on `@openlint/ruleset-spectral-oas` `^1.0.0`, the same version
+  `standards-checker` already uses for the re-exported OAS rule functions, so a single copy of the OAS ruleset is installed instead of
+  both 0.1.0 and 1.0.0. The exported names and the OAS rules are unchanged.
+
 ## 1.5.0
 
 ### Minor Changes
