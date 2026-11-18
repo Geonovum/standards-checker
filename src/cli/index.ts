@@ -33,18 +33,42 @@ export interface Input {
 }
 
 export const createCli = (config: CliConfig) => {
-  const { name, standards } = config;
+  createProgram(config).parseAsync(process.argv);
+};
 
-  const program = new Command().name(name);
+// Exported for unit testing; not part of the intended public CLI surface.
+export const createProgram = (config: CliConfig): Command => {
+  const { name, standards } = config;
+  // Real values so the examples run when copied; `<id>` would be a shell redirect.
+  const [first] = standards;
+  const example = first?.slug ?? '<slug>';
+  const exampleVersion = first?.versions.length ? resolveDefaultVersion(first).id : '<id>';
+
+  // Set before `.command()` so the subcommand inherits it.
+  const program = new Command()
+    .name(name)
+    .description('Validate documents against standards')
+    .showHelpAfterError('(run with --help for usage)')
+    .addHelpText(
+      'after',
+      `
+Examples:
+  $ ${name} validate --standard ${example} --input ./document.json
+  $ ${name} validate --standard ${example} --version ${exampleVersion} --input https://example.com/document.json
+  $ cat document.json | ${name} validate --standard ${example} --format json
+
+Run '${name} validate --help' for all options.`,
+    );
 
   program
     .command('validate')
+    .description('Validate a document against a standard')
     .option('--standard <slug>', `Standard to validate against (available: ${standards.map(standard => standard.slug).join(', ')})`)
     .option('--version <id>', 'Version id of the standard (default: latest final version)')
-    .option('--ruleset <name>', 'Deprecated alias for --standard/--version')
-    .option('--input <file>', "Input file, URL, or '-' for stdin", '-')
+    .option('--ruleset <slug>', 'Deprecated alias for --standard/--version')
+    .option('--input <file|url|->', "Input file, URL, or '-' for stdin", '-')
     .option('--format <fmt>', 'table|json', 'table')
-    .option('--fail-on <lvl>', 'none|warn|error', 'error')
+    .option('--fail-on <level>', 'none|warn|error', 'error')
     .action(async (options: ValidateOptions) => {
       try {
         const { standard, version } = resolveSelection(standards, options);
@@ -74,7 +98,7 @@ export const createCli = (config: CliConfig) => {
       }
     });
 
-  program.parseAsync(process.argv);
+  return program;
 };
 
 // `--ruleset` takes precedence and resolves via the legacy map (auto-derived

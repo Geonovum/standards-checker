@@ -4,7 +4,7 @@ import { join, relative } from 'node:path';
 import { Readable } from 'node:stream';
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { Standard, StandardVersion, VersionStatus } from '../standards';
-import { readInput, resolveSelection } from './index';
+import { createProgram, readInput, resolveSelection } from './index';
 
 const version = (id: string, status: VersionStatus, legacySlug?: string): StandardVersion => ({
   id,
@@ -29,6 +29,58 @@ const adr: Standard = {
 const standards = [adr];
 
 afterEach(() => vi.restoreAllMocks());
+
+// Users start at the root `--help` (issue #185), so it must lead to the
+// `validate` options rather than dead-end at a bare command list.
+describe('createProgram', () => {
+  const program = () => createProgram({ name: 'don-checker', standards });
+
+  // Runs the program like the bin does and returns what commander wrote to stderr.
+  const parseError = (argv: string[]): string => {
+    let stderr = '';
+    const root = program();
+    for (const command of [root, ...root.commands]) {
+      command.exitOverride().configureOutput({ writeErr: text => (stderr += text) });
+    }
+    expect(() => root.parse(argv, { from: 'user' })).toThrow();
+    return stderr;
+  };
+
+  it('describes validate and points to its options from the root help', () => {
+    // `outputHelp` (unlike `helpInformation`) includes the `addHelpText` sections.
+    let help = '';
+    program()
+      .configureOutput({ writeOut: text => (help += text) })
+      .outputHelp();
+
+    expect(help).toMatch(/validate \[options\]\s+Validate a document against a standard/);
+    expect(help).toContain('$ don-checker validate --standard adr --input ./document.json');
+    // The default version, not a `<id>` placeholder, so the example runs when copied.
+    expect(help).toContain('--standard adr --version 2.1 --input');
+    expect(help).toContain("Run 'don-checker validate --help' for all options.");
+  });
+
+  it('lists every validate option in the validate help', () => {
+    const validate = program().commands.find(command => command.name() === 'validate')!;
+    const help = validate.helpInformation();
+
+    for (const flag of [
+      '--standard <slug>',
+      '--version <id>',
+      '--ruleset <slug>',
+      '--input <file|url|->',
+      '--format <fmt>',
+      '--fail-on <level>',
+    ]) {
+      expect(help).toContain(flag);
+    }
+    expect(help).toContain('available: adr');
+  });
+
+  it('hints at --help after an unknown option on validate', () => {
+    expect(parseError(['validate', '--bogus'])).toMatch(/unknown option '--bogus'[\s\S]*run with --help for usage/);
+  });
+});
 
 describe('resolveSelection', () => {
   it('resolves a deprecated --ruleset alias to its (standard, version) and warns on stderr', () => {
